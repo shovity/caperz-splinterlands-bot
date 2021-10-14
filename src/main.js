@@ -50,9 +50,12 @@ app.on('activate', () => {
     }
 })
 
-ipc.on('run', (event, arg) => {
-    console.log(arg) // prints "ping"
-    event.reply('run', 'pong')
+ipc.on('worker.add', (event, arg) => {
+    master.add()
+})
+
+ipc.on('worker.remove_all', (event, arg) => {
+    master.removeAll()
 })
 
 // In this file you can include the rest of your app's specific main process

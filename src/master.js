@@ -14,12 +14,19 @@ master.add = async () => {
     const worker = {}
 
     worker.controller = new AbortController()
-    worker.child = fork(path.join(__dirname, 'worker.js'), ['child'], { signal: worker.controller.signal })
+    worker.child = fork(path.join(__dirname, 'worker.js'), [], { signal: worker.controller.signal })
     worker.status = 'running'
 
     worker.child.on('error', (err) => {
         worker.status = 'error'
     })
+
+    // setup woker
+
+
+
+
+
 
     master.workers.push(worker)
 }
