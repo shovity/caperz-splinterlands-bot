@@ -1,22 +1,20 @@
 {
   "name": "nftauto-desktop",
-  "productName": "nftauto-desktop",
+  "productName": "NFTauto Desktop",
   "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": "src/index.js",
+  "description": "NFTauto Desktop",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "publish": "electron-forge publish"
   },
-  "keywords": [],
   "author": {
     "name": "shovity",
     "email": "shovity@gmail.com"
   },
-  "license": "MIT",
+  "private": "true",
   "config": {
     "forge": {
       "packagerConfig": {},
@@ -53,6 +51,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "electron": "15.1.2"
+    "electron": "15.1.2",
+    "socket.io-client": "^2.2.0"
   }
 }
