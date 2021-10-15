@@ -1,7 +1,7 @@
 // Master will manage all worker
 // Master will run in main process
 
-const { fork } = require('child_process')
+const { Worker } = require('worker_threads')
 const path = require('path')
 
 
@@ -13,19 +13,14 @@ const master = {
 master.add = async () => {
     const worker = {}
 
-    worker.controller = new AbortController()
-    worker.child = fork(path.join(__dirname, 'worker.js'), [], { signal: worker.controller.signal })
+    worker.instance = new Worker(path.join(__dirname, 'worker.js'), {})
     worker.status = 'running'
 
-    worker.child.on('error', (err) => {
-        worker.status = 'error'
+    worker.instance.on('message', (m) => {
+        console.log(m)
     })
 
-    // setup woker
-
-
-
-
+    worker.instance.postMessage('im master')
 
 
     master.workers.push(worker)
@@ -37,7 +32,7 @@ master.remove = async () => {
 
 master.removeAll = async () => {
     for (const worker of master.workers) {
-        worker.controller.abort()
+        worker.instance.terminate()
         worker.status = 'stopped'
     }
 
