@@ -46,4 +46,7 @@ jspm_packages/
 # Electron-Forge
 out/
 
+#IDE
+.idea
+
 storage

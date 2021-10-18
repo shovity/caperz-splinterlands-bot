@@ -13,6 +13,11 @@
 
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="https://sps.nftauto.online/public/template/dashboard/css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body class="bg-gradient-primary">
@@ -28,28 +33,28 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                                     </div>
-
+                                    <div id="errorAlert" class="alert alert-danger hidden" role="alert"></div>
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <input type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="First Name" name="firstname">
+                                            <input type="text" class="form-control form-control-user" id="firstname-input" placeholder="First Name" name="firstname">
                                         </div>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control form-control-user" id="exampleLastName" placeholder="Last Name" name="lastname">
+                                            <input type="text" class="form-control form-control-user" id="lastname-input" placeholder="Last Name" name="lastname">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control form-control-user" id="exampleInputEmail" placeholder="Username" name="username">
+                                        <input type="text" class="form-control form-control-user" id="username-input" placeholder="Username" name="username">
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
-                                            <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password" name="password">
+                                            <input type="password" class="form-control form-control-user" id="password-input" placeholder="Password" name="password">
                                         </div>
                                         <div class="col-sm-6">
-                                            <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Repeat Password" name="rePassword">
+                                            <input type="password" class="form-control form-control-user" id="re-password-input" placeholder="Repeat Password" name="rePassword">
                                         </div>
                                     </div>
                                     
-                                    <a class="btn btn-primary btn-user btn-block">Register Account</a>
+                                    <a class="btn btn-primary btn-user btn-block" id="create-button">Register Account</a>
 
                                     <hr>
                                     <div class="text-center">
@@ -67,6 +72,73 @@
     <!-- Bootstrap core JavaScript-->
     <script src="https://sps.nftauto.online/public/template/dashboard/vendor/jquery/jquery.min.js"></script>
     <script src="https://sps.nftauto.online/public/template/dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="assets/axios.min.js"></script>
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', (event) => {
+        let submitBTN = document.querySelector('#create-button');
+        let errorBox = document.querySelector('#errorAlert');
+        let usernameEl = document.getElementById('username-input')
+        let passwordEl = document.getElementById('password-input')
+        let rePasswordEl = document.getElementById('re-password-input')
+        let firstNameEl = document.getElementById('firstname-input')
+        let lastNameEl = document.getElementById('lastname-input')
+
+        const createAccount = () => {
+          errorBox.classList.add('hidden')
+          let username = usernameEl.value,
+            password = passwordEl.value,
+            rePassword = rePasswordEl.value,
+            firstname = firstNameEl.value,
+            lastname = lastNameEl.value;
+
+          if ( !username || !password) {
+            errorBox.innerHTML = 'Missing username or password'
+            errorBox.classList.remove('hidden')
+            return
+          }
+          axios.post('https://sps.nftauto.online/api/v1/users', {
+            username,
+            password,
+            rePassword,
+            firstname,
+            lastname
+          })
+            .then(function ({data}) {
+              console.log('data', data);
+              //token, user
+              if ( storage ) {
+                storage.set('user', {
+                  token: data.token,
+                  userData: data.user
+                })
+                location.href = './index.html'
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+
+        const enterKeypress = (e) => {
+          if (e.keyCode === 13) {
+            login()
+          }
+        }
+
+        if (submitBTN) {
+          submitBTN.addEventListener('mouseup', (e) => {
+            createAccount()
+          })
+        }
+        if (usernameEl) {
+          usernameEl.addEventListener('keypress', enterKeypress)
+        }
+        if (passwordEl) {
+          passwordEl.addEventListener('keypress', enterKeypress)
+        }
+      });
+    </script>
 </body>
 
 </html>

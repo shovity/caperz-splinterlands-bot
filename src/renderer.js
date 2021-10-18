@@ -12,12 +12,22 @@ window.btn_remove_all.addEventListener('click', () => {
     ipc.send('worker.remove_all')
 })
 
+window.btn_logout.addEventListener('click', () => {
+    console.log('click logout')
+    // console.log(storage.get('user'))
+    storage.remove('user')
+    location.href = './sign-in.html'
+})
+
 window.addEventListener('DOMContentLoaded', () => {
-    const user = storage.getSync('user')
+    storage.get('user', (error, user)=> {
+        console.log(user)
+        // console.log(arguments)
 
-    console.log(user)
+        if (!user.token) {
+            location.href = './sign-in.html'
+        }
+    })
 
-    if (!user._id) {
-        location.href = './sign-in.html'
-    }
+
 })
