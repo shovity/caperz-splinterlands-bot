@@ -43,7 +43,6 @@
     }
   },
   "dependencies": {
-    "electron-json-storage": "^4.5.0",
     "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
@@ -52,10 +51,9 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "electron": "15.1.2",
-    "socket.io-client": "^2.2.0",
     "@hiveio/keychain": "^1.0.4",
     "axios": "^0.21.1",
+    "electron": "15.1.2",
     "eosjs-ecc": "^4.0.7",
     "form-data": "^4.0.0",
     "https-proxy-agent": "^5.0.0",
@@ -63,6 +61,7 @@
     "node-fetch": "^1.7.3",
     "qs": "^6.10.1",
     "query-string": "^7.0.1",
+    "socket.io-client": "^2.2.0",
     "steem": "^0.7.11",
     "ws": "^3.3.3"
   }

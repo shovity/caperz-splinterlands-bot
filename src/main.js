@@ -50,8 +50,8 @@ app.on('activate', () => {
     }
 })
 
-ipc.on('worker.add', (event, arg) => {
-    master.add()
+ipc.on('worker.add', (event, data) => {
+    master.add(data)
 })
 
 ipc.on('worker.remove_all', (event, arg) => {

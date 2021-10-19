@@ -85,7 +85,7 @@ class WSSplinterlandsClient {
 
   Connect(player, token, new_account) {
 
-    process.send('start');
+    // process.send('start');
     if (this.ws && this.ws.readyState == 1 && this.player == player)
       return;
 
@@ -156,20 +156,20 @@ class WSSplinterlandsClient {
           quest = await this.client.getQuest();
 
           console.log('Старт нового квеста', quest);
-          process.send({
-            time: getFormatedTime(), events: [
-              {key: 'quest', value: quest, param: 'set'},
-            ]
-          });
+          // process.send({
+          //   time: getFormatedTime(), events: [
+          //     {key: 'quest', value: quest, param: 'set'},
+          //   ]
+          // });
 
         } else { // получение новых данных
           console.log('Ошибка квеста', data?.error);
           console.log('Старт нового квеста', quest);
-          process.send({
-            time: getFormatedTime(), events: [
-              {key: 'quest', value: quest, param: 'set'},
-            ]
-          });
+          // process.send({
+          //   time: getFormatedTime(), events: [
+          //     {key: 'quest', value: quest, param: 'set'},
+          //   ]
+          // });
         }
       });
     }
@@ -207,22 +207,22 @@ class WSSplinterlandsClient {
       }
     }
 
-    process.send({
-      time: getFormatedTime(), events: [
-        {key: 'quest', value: quest, param: 'set'},
-      ]
-    });
+    // process.send({
+    //   time: getFormatedTime(), events: [
+    //     {key: 'quest', value: quest, param: 'set'},
+    //   ]
+    // });
 
     if (quest.splinter === 'sneak') {
       this.client.RefreshDailyQuest(async (data) => {
         await this.getUserQuestNew()
         await NeWQuest()
         quest = await this.client.getQuest();
-        process.send({
-          time: getFormatedTime(), events: [
-            {key: 'quest', value: quest, param: 'set'},
-          ]
-        });
+        // process.send({
+        //   time: getFormatedTime(), events: [
+        //     {key: 'quest', value: quest, param: 'set'},
+        //   ]
+        // });
       })
     }
 
@@ -334,11 +334,11 @@ class WSSplinterlandsClient {
     }
     this.balance_update_deferred = true
 
-    process.send({
-      time: getFormatedTime(), events: [
-        {key: 'ecr', value: this.client.getEcr(), param: 'set'},
-      ]
-    });
+    // process.send({
+    //   time: getFormatedTime(), events: [
+    //     {key: 'ecr', value: this.client.getEcr(), param: 'set'},
+    //   ]
+    // });
   }
 
 
@@ -461,12 +461,12 @@ class WSSplinterlandsClient {
         this.client.user.season_max_league = data.new_max_league
       }
 
-      process.send({
-        time: getFormatedTime(), events: [
-          {key: 'rating', value: this.client.user.rating, param: 'set'},
-          {key: 'collection_power', value: this.client.user.collection_power, param: 'set'},
-        ]
-      });
+      // process.send({
+      //   time: getFormatedTime(), events: [
+      //     {key: 'rating', value: this.client.user.rating, param: 'set'},
+      //     {key: 'collection_power', value: this.client.user.collection_power, param: 'set'},
+      //   ]
+      // });
     }
   }
 
@@ -501,11 +501,11 @@ class WSSplinterlandsClient {
     else {
       balance.balance = parseFloat(data.balance_end);
 
-      process.send({
-        time: getFormatedTime(), events: [
-          {key: 'dec', value: this.client.getBalance('DEC'), param: 'set'},
-        ]
-      });
+      // process.send({
+      //   time: getFormatedTime(), events: [
+      //     {key: 'dec', value: this.client.getBalance('DEC'), param: 'set'},
+      //   ]
+      // });
     }
 
     if (data.type === "dec_reward") {

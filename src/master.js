@@ -10,10 +10,11 @@ const master = {
 }
 
 
-master.add = async () => {
+master.add = async (workerData) => {
     const worker = {}
 
-    worker.instance = new Worker(path.join(__dirname, 'worker.js'), {})
+    worker.instance = new Worker(path.join(__dirname, 'worker/index.js'), { workerData })
+
     worker.status = 'running'
 
     worker.instance.on('message', (m) => {

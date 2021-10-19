@@ -68,7 +68,9 @@
 <!-- Bootstrap core JavaScript-->
 <script src="https://sps.nftauto.online/public/template/dashboard/vendor/jquery/jquery.min.js"></script>
 <script src="https://sps.nftauto.online/public/template/dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/axios.min.js"></script>
+<script src="./assets/axios.min.js"></script>
+<script src="./assets/ori.js"></script>
+
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', (event) => {
     let submitBTN = document.querySelector('#login-button');
@@ -89,13 +91,13 @@
       axios.post('https://sps.nftauto.online/api/v1/users/login', {username, password})
         .then(function ({data}) {
           console.log('data', data);
-          if ( storage ) {
-            storage.set('user', {
-              token: data.token,
-              userData: data.user
-            })
-            location.href = './index.html'
+          
+          ori.storage.user = {
+            token: data.token,
+            userData: data.user
           }
+
+          location.href = './index.html'
         })
         .catch(function (error) {
           console.log(error);
