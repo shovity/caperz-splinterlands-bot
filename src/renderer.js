@@ -33,4 +33,29 @@ ori.use('storage', () => {
         storage.user = null
         location.href = './sign-in.html'
     })
+
+    const tabs = [...document.querySelectorAll('[tab]')]
+    const navs = [...document.querySelectorAll('.nav-item a')]
+
+    event.listen('select_tab', (name) => {
+        for (const nav of navs) {
+            nav.removeClass('active')
+        }
+
+        const nav = document.querySelector(`.nav-item a[href="#${name}"]`)
+        nav && nav.addClass('active')
+
+        for (const tab of tabs) {
+            tab.addClass('d-none')
+        }
+
+        const tab = document.querySelector(`[tab="${name}"]`)
+        tab && tab.removeClass('d-none')
+
+        if (name === 'login') {
+            window.sidebar.addClass('d-none')
+        } else {
+            window.sidebar.removeClass('d-none')
+        }
+    })
 })
