@@ -1,9 +1,16 @@
-ori.use('storage', () => {
+ori.use('event store emitter storage', () => {
+
+    store.origin.watch()
+    emitter.click()
+    emitter.keyboard()
+
     const user = storage.user
 
     if (!user) {
         // location.href = './sign-in.html'
     }
+
+    store.g_username = user.userData?.username || 'Unknow'
 
     ipc.on('run', (event, arg) => {
         console.log(arg)
@@ -28,11 +35,7 @@ ori.use('storage', () => {
     window.btn_remove_all.addEventListener('click', () => {
         ipc.send('worker.remove_all')
     })
-    
-    window.btn_logout.addEventListener('click', () => {
-        storage.user = null
-        location.href = './sign-in.html'
-    })
+
 
     const tabs = [...document.querySelectorAll('[tab]')]
     const navs = [...document.querySelectorAll('.nav-item a')]
@@ -57,5 +60,10 @@ ori.use('storage', () => {
         } else {
             window.sidebar.removeClass('d-none')
         }
+    })
+
+    event.listen('logout', () => {
+        storage.user = null
+        location.href = './sign-in.html'
     })
 })

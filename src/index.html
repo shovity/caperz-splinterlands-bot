@@ -10,8 +10,8 @@
 
     <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" id="sidebar">
         <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <img class="logo" src="../icon.png">
-            <span class="fs-4">F3sext Board</span>
+            <!-- <img class="logo" src="../icon.png"> -->
+            <span class="fs-4">NFT Auto</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto" id="nav">
@@ -28,8 +28,7 @@
         <hr>
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img store-bind="picture" width="32" height="32" class="rounded-circle me-2">
-                <strong store-bind="email"></strong>
+                <strong store-bind="g_username"></strong>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                 <li><a class="dropdown-item" href="#" click-emit="logout">Logout</a></li>
@@ -39,10 +38,8 @@
 
     <div class="content">
         <div tab="profile">
-            profile
-            <button id="btn_add">Add</button>
-            <button id="btn_remove_all">Remove all</button>
-            <button id="btn_logout">Logout</button>
+            <a class="btn btn-primary" id="btn_add">Add</a>
+            <a class="btn btn-primary" id="btn_remove_all">Remove all</a>
         </div>
 
         <div tab="user" class="d-none">
