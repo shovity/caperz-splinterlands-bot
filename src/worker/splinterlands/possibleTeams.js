@@ -104,7 +104,7 @@ const getTeamFromString = (str) => {
     return data
 }
 
-const cardsIdsforSelectedBattles = (matchDetails, account) => getTeamsFromAPI(matchDetails, account)
+const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr) => getTeamsFromAPI(matchDetails, account, config, ecr)
     .then(x => {
         //[
         //     "green_0_20_27-1-c::180-4-c:29-1-c:179-4-c:185-4-c:24-1-c"
@@ -128,7 +128,7 @@ const cardsIdsforSelectedBattles = (matchDetails, account) => getTeamsFromAPI(ma
         )
     })
 
-const askFormation = function (matchDetails, account) {
+const askFormation = function ({matchDetails, account, config, ecr}) {
     const cards = matchDetails.myCards || basicCards;
     let cardIds = cards.map(card => card.split('-')[0] ? (+card.split('-')[0]) : '')
 
@@ -137,16 +137,16 @@ const askFormation = function (matchDetails, account) {
     delete matchDetails.myCards
     //arr(8) = [sum, team(6), color]
     //[ 145, 50, 51, 52, 141, '', '', 'black' ]
-    return cardsIdsforSelectedBattles(matchDetails, account)
+    return cardsIdsforSelectedBattles(matchDetails, account, config, ecr)
         .then(x => x.filter(team => availabilityCheck(cardIds, team))
             .map(element => element)//cards.cardByIds(element)
         )
 
 }
 
-const possibleTeams = async (matchDetails, account) => {
+const possibleTeams = async ({matchDetails, account, config, ecr}) => {
     let possibleTeams = [];
-    possibleTeams = await askFormation(matchDetails, account);
+    possibleTeams = await askFormation({matchDetails, account, config, ecr});
 
     if (possibleTeams.length > 0) {
         return possibleTeams;

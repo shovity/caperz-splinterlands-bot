@@ -63,7 +63,7 @@ function generatePassword(length, rng) {
 }
 
 class SplinterLandsClient {
-  constructor(proxy) {
+  constructor(proxy, config) {
     this.user = null;
     this.token = null;
     this.settings = null;
@@ -75,6 +75,8 @@ class SplinterLandsClient {
     this.balance_update_deferred = false;
     this._browser_id = null;
     this.proxy = proxy || null;
+    this.config = config;
+    this.gotReward = false
   }
 
   async GetDetailEnemyFound(battle_queue) {
@@ -155,17 +157,25 @@ class SplinterLandsClient {
   }
 
   async getSendCards() {
-    const advancedCards = [];
-    const result = await this.sendRequest(
-      `cards/collection/${this.user.name}`,
-      { username: this.user.name, token: this.token }
-    );
+    try {
+      const advancedCards = [];
+      const result = await this.sendRequest(
+        `cards/collection/${this.user.name}`,
+        { username: this.user.name, token: this.token }
+      );
 
-    result.cards.map((item) => {
-      advancedCards.push(item.uid);
-    });
+      result.cards.map((item) => {
+        advancedCards.push(item.uid);
+      });
 
-    return advancedCards;
+      if ( advancedCards.length > 0) {
+        this.advancedCards = advancedCards
+      }
+      return advancedCards;
+    }
+    catch (e) {
+      return this.advancedCards
+    }
   }
 
   GiftCards(card_ids, recipient, callback) {
@@ -196,15 +206,21 @@ class SplinterLandsClient {
   }
 
   getRevards() {
-    const res = this.sendRequest("players/rewards_revealed", {
-      username: this.user.name,
-      token: this.token,
-    });
+    try {
+      const res = this.sendRequest("players/rewards_revealed", {
+        username: this.user.name,
+        token: this.token,
+      });
 
-    if (res) {
-      return res;
-    } else {
-      return null;
+      if (res) {
+        return res;
+        this.gotReward = true
+      } else {
+        return null;
+      }
+    }
+    catch (e) {
+      return null
     }
   }
 
@@ -236,6 +252,7 @@ class SplinterLandsClient {
         splinter: this.getElementQuest(this.user.quest.name),
         total: this.user.quest.total_items,
         completed: this.user.quest.completed_items,
+        isComplete: this.user.quest.completed_items/this.user.quest.total_items === 1
       };
 
       return quest;

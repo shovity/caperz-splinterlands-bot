@@ -71,7 +71,7 @@ function generatePassword(length, rng) {
 
 class WSSplinterlandsClient {
 
-  constructor(client, proxy, getUserQuestNew) {
+  constructor(client, proxy, getUserQuestNew, config) {
     this.ws = null;
     this.ping_interval = null;
     this.session_id = null;
@@ -81,6 +81,7 @@ class WSSplinterlandsClient {
     this.proxy = proxy;
     this.token = null;
     this.getUserQuestNew = getUserQuestNew
+    this.config = config;
   }
 
   Connect(player, token, new_account) {
@@ -353,7 +354,10 @@ class WSSplinterlandsClient {
       const mana_cap = data.mana_cap;
       let ruleset = data.ruleset || 'standard';
       const myCards = await this.client.getPlayerCards();
+      const ecr = await this.client.getEcr();
+      const config = this.client.config;
       const myCardsUID = await this.client.getPlayerCardsUID();
+      let makeQuest = false
       const quest = await this.client.getQuest();
       console.log('this.client.user.league', this.client.user.league)
 
@@ -384,8 +388,22 @@ class WSSplinterlandsClient {
         leaderboard
       }
 
+      if ( ecr <= config.ecr + config.questECR ) {
+        makeQuest = true
+      }
+
+      if (quest.isComplete && ecr < config.ecr && gotReward) {
+        //stop auto
+      }
+
       console.log('matchDetails', matchDetails)
-      const possibleTeams = await ask.possibleTeams(matchDetails, this.client.user.name);
+      //matchDetails, this.client.user.name, this.client.config, this.client.getEcr()
+      const possibleTeams = await ask.possibleTeams({
+        matchDetails,
+        account: this.client.user.name,
+        config: this.client.config,
+        ecr
+      });
 
       if (possibleTeams && possibleTeams.length) {
         console.log('Possible Teams: ', possibleTeams.length);

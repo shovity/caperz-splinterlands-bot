@@ -43,6 +43,7 @@
     }
   },
   "dependencies": {
+    "electron-settings": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
