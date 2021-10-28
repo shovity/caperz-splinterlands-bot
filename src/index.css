@@ -6,9 +6,9 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: auto;
-    max-width: 38rem;
-    padding: 2rem;
+    padding: 0;
+    margin: 0;
+    width: 100%;
 }
 
 a {
@@ -42,10 +42,12 @@ a {
     background-size: 100%;
 }
 
+#app {
+    display: flex;
+    flex-grow: 1;
+}
+
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 280px;
     height: 100vh;
 }
@@ -55,8 +57,11 @@ a {
 }
 
 .content {
-    padding: 20px;
-    padding-left: 300px;
     height: 100vh;
     overflow-y: auto;
+    flex-grow: 1;
+}
+
+#setting {
+    padding: 10px;
 }
