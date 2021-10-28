@@ -8,127 +8,133 @@
 </head>
 <body>
 
-    <div id="app">
-        <div class="sidebar d-flex flex-column flex-shrink-0 p-3" id="sidebar">
-            <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-                <img class="logo" src="../icon.png">
-                <span class="fs-4">F3sext Board</span>
+<div id="app">
+    <div class="sidebar d-flex flex-column flex-shrink-0 p-3" id="sidebar">
+        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <img class="logo" src="./assets/img/icon.png">
+            <span class="fs-4">SPS NFTAuto</span>
+        </a>
+        <hr>
+        <ul class="nav flex-column mb-auto" id="nav">
+            <li class="nav-item">
+                <a href="#monitoring" class="nav-link text-white" click-emit="select_tab:monitoring">Monitoring</a>
+            </li>
+            <li class="nav-item">
+                <a href="#user" class="nav-link text-white" click-emit="select_tab:user">User</a>
+            </li>
+            <li class="nav-item">
+                <a href="#settings" class="nav-link text-white active" click-emit="select_tab:settings">Settings</a>
+            </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img store-bind="picture" width="32" height="32" class="rounded-circle me-2">
+                <strong store-bind="email"></strong>
             </a>
-            <hr>
-            <ul class="nav flex-column mb-auto" id="nav">
-                <li class="nav-item">
-                    <a href="#profile" class="nav-link text-white" click-emit="select_tab:profile">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#user" class="nav-link text-white" click-emit="select_tab:user">User</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#settings" class="nav-link text-white active" click-emit="select_tab:settings">Settings</a>
-                </li>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="#" click-emit="logout">Logout</a></li>
             </ul>
-            <hr>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img store-bind="picture" width="32" height="32" class="rounded-circle me-2">
-                    <strong store-bind="email"></strong>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="#" click-emit="logout">Logout</a></li>
-                </ul>
-            </div>
         </div>
-
-        <div class="content">
-            <div tab="profile" class="d-none"></div>
-
-            <div tab="user" class="d-none"></div>
-
-            <div tab="login" class="d-none"></div>
-
-            <div tab="settings" id="setting">
-                <div class="container">
-                    <h3>Settings</h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="ecr">Stop at ECR</label>
-                            <input type="number" class="form-control" id="ecr" placeholder="ECR (%)">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="start-quest">Start quest if ECR</label>
-                            <input type="number" class="form-control" id="start-quest" placeholder="ECR for quest">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <button class="btn btn-primary active">Save settings</button>
-                        </div>
-                    </div>
-                </div>
-                <HR>
-                <div class="container">
-                    <h3>Bot</h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="bot_per_ip">Number of bot per ip (default 5)</label>
-                            <input type="number" class="form-control" id="bot_per_ip" placeholder="Number">
-                        </div>
-                    </div>
-                </div>
-                <HR>
-                <div class="container">
-                    <h3>Proxy</h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <input type="number" class="form-control" id="add_proxy_input" placeholder="">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <button class="btn btn-primary active">Add Proxy</button>
-                        </div>
-                    </div>
-                    <HR>
-                    <h3>Proxy List</h3>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">First</th>
-                                    <th scope="col">Last</th>
-                                    <th scope="col">Handle</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
+    <div class="content">
+        <div tab="profile">
+            <a class="btn btn-primary" id="btn_add">Add</a>
+            <a class="btn btn-primary" id="btn_remove_all">Remove all</a>
+        </div>
 
-    <script src="./assets/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/ori.js"></script>
-    <script src="./renderer.js"></script>
+        <div tab="user" class="d-none">
+            user
+        </div>
+
+        <div tab="login" class="d-none">
+            <div class="card m-5" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Login</h5>
+                    <a class="btn btn-danger m-3" click-emit="login">Login as Google</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div tab="settings" id="setting">
+        <div class="container">
+            <h3>Settings</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="ecr">Stop at ECR</label>
+                    <input type="number" class="form-control" id="ecr" placeholder="ECR (%)">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="start-quest">Start quest if ECR</label>
+                    <input type="number" class="form-control" id="start-quest" placeholder="ECR for quest">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <button class="btn btn-primary active">Save settings</button>
+                </div>
+            </div>
+        </div>
+        <HR>
+        <div class="container">
+            <h3>Bot</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="bot_per_ip">Number of bot per ip (default 5)</label>
+                    <input type="number" class="form-control" id="bot_per_ip" placeholder="Number">
+                </div>
+            </div>
+        </div>
+        <HR>
+        <div class="container">
+            <h3>Proxy</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <input type="number" class="form-control" id="add_proxy_input" placeholder="">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <button class="btn btn-primary active">Add Proxy</button>
+                </div>
+            </div>
+            <HR>
+            <h3>Proxy List</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">proxy</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<script src="./assets/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/ori.js"></script>
+<script src="./renderer.js"></script>
 </body>
 </html>

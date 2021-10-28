@@ -10,7 +10,7 @@ ori.use('event store emitter storage', () => {
         // location.href = './sign-in.html'
     }
 
-    store.g_username = user.userData?.username || 'Unknow'
+    store.g_username = user?.userData?.username || 'Unknow'
 
     ipc.on('run', (event, arg) => {
         console.log(arg)
