@@ -30,11 +30,29 @@
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                 <strong store-bind="g_username"></strong>
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                <li><a class="dropdown-item" href="#" click-emit="logout">Logout</a></li>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto" id="nav">
+                <li class="nav-item">
+                    <a href="#profile" class="nav-link text-white active" click-emit="select_tab:profile">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#user" class="nav-link text-white" click-emit="select_tab:user">User</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link text-white" click-emit="select_tab:settings">Settings</a>
+                </li>
             </ul>
+            <hr>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img store-bind="picture" width="32" height="32" class="rounded-circle me-2">
+                    <strong store-bind="email"></strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                    <li><a class="dropdown-item" href="#" click-emit="logout">Logout</a></li>
+                </ul>
+            </div>
         </div>
-    </div>
 
     <div class="content">
         <div tab="profile">
@@ -42,18 +60,19 @@
             <a class="btn btn-primary" id="btn_remove_all">Remove all</a>
         </div>
 
-        <div tab="user" class="d-none">
-            user
-        </div>
-
-        <div tab="login" class="d-none">
-            <div class="card m-5" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Login</h5>
-                    <a class="btn btn-danger m-3" click-emit="login">Login as Google</a>
-                </div>
+            <div tab="user" class="d-none">
+                user
             </div>
-            
+
+            <div tab="login" class="d-none">
+                <div class="card m-5" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Login</h5>
+                        <a class="btn btn-danger m-3" click-emit="login">Login as Google</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
