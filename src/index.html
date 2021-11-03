@@ -39,7 +39,7 @@
     </div>
 
     <div class="content">
-        <div tab="monitoring">
+        <div tab="monitoring" class="d-none">
             <a class="btn btn-primary" id="btn_add">Add</a>
             <a class="btn btn-primary" id="btn_remove_all">Remove all</a>
         </div>
@@ -58,20 +58,22 @@
 
         </div>
 
-        <div tab="settings" id="setting" class="d-none">
-            <div class="container">
-                <h3>Settings</h3>
+        <div tab="settings" id="setting" >
+            <div class="container tab-header">
+                <div class="d-flex justify-content-between">
+                    <h3>Settings</h3>
+                    <button class="btn btn-primary active" click-emit="save_setting">Save settings</button>
+                </div>
+            </div>
+            <div class="container mt-3">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="ecr">Stop at ECR</label>
-                        <input type="number" class="form-control" id="ecr" placeholder="ECR (%)">
+                        <input type="number" class="form-control" id="ecr" placeholder="ECR (%)" min="1" max="100">
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="start-quest">Start quest if ECR</label>
-                        <input type="number" class="form-control" id="start-quest" placeholder="ECR for quest">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <button class="btn btn-primary active">Save settings</button>
+                        <label for="start-quest-erc">Start quest at ECR</label>
+                        <input type="number" class="form-control" id="start-quest-ecr" placeholder="ECR for quest" min="1" max="100">
                     </div>
                 </div>
             </div>
@@ -90,39 +92,27 @@
                 <h3>Proxy</h3>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <input type="number" class="form-control" id="add_proxy_input" placeholder="">
+                        <input class="form-control" id="add_proxy_input" placeholder="">
                     </div>
                     <div class="col-md-6 mb-3">
-                        <button class="btn btn-primary active">Add Proxy</button>
+                        <button class="btn btn-primary active" click-emit="add_proxy">Add Proxy</button>
                     </div>
                 </div>
                 <HR>
                 <h3>Proxy List</h3>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table">
+                        <table class="table" id="proxy_table">
                             <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">proxy</th>
+                                <th scope="col"><storng>#</storng></th>
+                                <th scope="col"><strong>Proxy</strong></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                            </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>

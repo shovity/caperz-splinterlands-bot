@@ -2,13 +2,18 @@ const { app, BrowserWindow, ipcMain: ipc } = require('electron')
 const path = require('path')
 
 const master = require('./master')
-
+const settings = require('electron-settings')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
     app.quit()
 }
 
+const loadSettingFile = async () => {
+    const app_setting = await settings.get('app_setting')
+    ipc.
+    ipc.send('load_setting', app_setting)
+}
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
@@ -20,10 +25,12 @@ const createWindow = () => {
             contextIsolation: false,
         },
     })
-    
+
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, 'index.html'))
-    
+
+    loadSettingFile()
+
     // Open the DevTools.
     mainWindow.webContents.openDevTools()
 }
@@ -56,6 +63,10 @@ ipc.on('worker.add', (event, data) => {
 
 ipc.on('worker.remove_all', (event, arg) => {
     master.removeAll()
+})
+
+ipc.on('save_setting', async (event, data) => {
+    const res = await settings.set('app_setting', data)
 })
 
 // In this file you can include the rest of your app's specific main process

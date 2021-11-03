@@ -3,7 +3,6 @@
     box-sizing: border-box;
 }
 
-
 body {
     font-family: -apple-system, Roboto, Helvetica, Arial, sans-serif;
     padding: 0;
@@ -18,7 +17,6 @@ a {
     color: #ffb320;
 }
 
-
 .logo {
     width: 36px;
     margin-right: 5px;
@@ -31,7 +29,7 @@ a {
 }
 
 .btn-loading::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 8px;
     right: 5px;
@@ -83,4 +81,25 @@ button.active {
 }
 .table {
     color: inherit;
+    counter-reset: section;
+}
+.count:before {
+    counter-increment: section;
+    content: counter(section);
+}
+.x_remove {
+    width: 20px;
+    cursor: pointer;
+}
+.x_remove > p {
+    color: red;
+    margin: 0;
+}
+.tab-header {
+    position: sticky;
+    top: 0px;
+    background-color: #252525;
+    padding-top: 10px;
+    margin-top: -10px;
+    z-index: 2;
 }
