@@ -401,9 +401,7 @@ class SplinterLandsClient {
         }
       }
     );
-    //if (!submit_and_reveal && !is_swiss)
-    // setTimeout(()=>SM.CheckBattleStatus(queue_trx, team), 10 * 1e3);
-    // localStorage.setItem("sm_submit_team", JSON.stringify(team))
+
   }
 
   getRuleset(ruleset) {

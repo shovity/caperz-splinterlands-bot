@@ -412,37 +412,41 @@ class WSSplinterlandsClient {
 
       if (possibleTeams && possibleTeams.length) {
         console.log('Possible Teams: ', possibleTeams.length);
+        let teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest);
+        //teamToPlay = { summoner, cards: arr, color: team[team.length - 1]};
+
+        const monstersSliced = teamToPlay.cards;
+
+        const summoner = `starter-${teamToPlay.summoner}-${generatePassword(5)}`;
+        const monsters = [];
+
+        monstersSliced.map((item) => {
+
+          if (item !== '') {
+            if (baseCards.indexOf(item) !== -1) {
+              // starter
+              monsters.push(`starter-${item}-${generatePassword(5)}`);
+            } else {
+              // uid
+              monsters.push(this.client.getUIDbyId(myCardsUID, item));
+            }
+          }
+        })
+
+        // let uidStarter = `starter-${card_details.id}-${generatePassword(5)}`
+
+        console.log('current ECR', this.client.getEcr());
+
+        this.client.SubmitTeam(idMatch, null, summoner, monsters, 'Ranked');
       }
       else {
-        console.log('Error:', matchDetails, possibleTeams)
+        console.log('Empty teams to play:', matchDetails)
+        // empty result
+        this.client.surrender(idMatch, () => {
+
+        })
       }
 
-      let teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest);
-      //teamToPlay = { summoner, cards: arr, color: team[team.length - 1]};
-
-      const monstersSliced = teamToPlay.cards;
-
-      const summoner = `starter-${teamToPlay.summoner}-${generatePassword(5)}`;
-      const monsters = [];
-
-      monstersSliced.map((item) => {
-
-        if (item !== '') {
-          if (baseCards.indexOf(item) !== -1) {
-            // starter
-            monsters.push(`starter-${item}-${generatePassword(5)}`);
-          } else {
-            // uid
-            monsters.push(this.client.getUIDbyId(myCardsUID, item));
-          }
-        }
-      })
-
-      // let uidStarter = `starter-${card_details.id}-${generatePassword(5)}`
-
-      console.log('current ECR', this.client.getEcr());
-
-      this.client.SubmitTeam(idMatch, null, summoner, monsters, 'Ranked');
     }
   }
 
