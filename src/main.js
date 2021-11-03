@@ -27,13 +27,16 @@ const createWindow = () => {
     // Open the DevTools.
     win.webContents.openDevTools()
 
+
+    
+
     ipc.on('run', (event, arg) => {
         console.log(arg)
     })
 
-    setTimeout(() => {
-        win.send('run', 'im main proc')
-    }, 3000)
+    win.webContents.on('did-finish-load', () => {
+        win.webContents.send('run', 'im main proc')
+    })
 }
 
 // This method will be called when Electron has finished
