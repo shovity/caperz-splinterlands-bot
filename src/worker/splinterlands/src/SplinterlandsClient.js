@@ -1,6 +1,7 @@
 var steem = require("steem");
 const eosjs_ecc = require("eosjs-ecc");
 const axios = require("axios").default;
+const { parentPort } = require('worker_threads')
 const qs = require("qs");
 var md5 = require("md5");
 const HttpsProxyAgent = require("https-proxy-agent");
@@ -34,16 +35,30 @@ steem.api.setOptions({
   useAppbaseApi: true,
 });
 
+const ERROR_CODE = {
+  INVALID_POSTING_KEY: 'INVALID_POSTING_KEY'
+}
+
+const STATUS = {
+  ERROR: "ERROR",
+  RUNNING: "RUNNING",
+  DONE: "DONE",
+}
+const TYPE = {
+  INFO_UPDATE: "INFO_UPDATE",
+  STATUS_UPDATE: "STATUS_UPDATE",
+}
+
 const quests = [
-  { name: "Defend the Borders", element: "life" },
-  { name: "Pirate Attacks", element: "water" },
-  { name: "High Priority Targets", element: "snipe" },
-  { name: "Lyanna's Call", element: "earth" },
-  { name: "Stir the Volcano", element: "fire" },
-  { name: "Rising Dead", element: "death" },
-  { name: "Stubborn Mercenaries", element: "neutral" },
-  { name: "Gloridax Revenge", element: "dragon" },
-  { name: "Stealth Mission", element: "sneak" },
+  { name: "Defend the Borders", element: "white" },
+  { name: "Pirate Attacks", element: "blue" },
+  { name: "High Priority Targets", element: "Snipe" },
+  { name: "Lyanna's Call", element: "green" },
+  { name: "Stir the Volcano", element: "red" },
+  { name: "Rising Dead", element: "black" },
+  { name: "Stubborn Mercenaries", element: "Neutral" },
+  { name: "Gloridax Revenge", element: "gold" },
+  { name: "Stealth Mission", element: "Sneak" },
 ];
 
 steem.config.set(
@@ -77,6 +92,38 @@ class SplinterLandsClient {
     this.proxy = proxy || null;
     this.config = config;
     this.gotReward = false
+    this.status = ''
+  }
+
+  sendMessage = ({player,...data}) => {
+    if (!this.user && !player) return;
+    if ( !player ) {
+      player = this.user.name.toLowerCase() || ''
+    }
+    parentPort.postMessage({...data, player})
+  }
+
+  updatePlayerInfo = () => {
+    if (!this.user ) return;
+    let player = this.user.name.toLowerCase() || ''
+    parentPort.postMessage({
+      type: "INFO_UPDATE",
+      status: this.status,
+      player,
+      ecr: this.getEcr(),
+      rating: this.getRating(),
+      dec: this.getBalance("DEC")
+    })
+  }
+
+  processDone = () => {
+    if (!this.user ) return;
+    let player = this.user.name.toLowerCase() || ''
+    parentPort.postMessage({
+      type: TYPE.STATUS_UPDATE,
+      status: STATUS.DONE,
+      player
+    })
   }
 
   async GetDetailEnemyFound(battle_queue) {
@@ -205,7 +252,7 @@ class SplinterLandsClient {
     );
   }
 
-  getRevards() {
+  getRewards() {
     try {
       const res = this.sendRequest("players/rewards_revealed", {
         username: this.user.name,
@@ -420,6 +467,12 @@ class SplinterLandsClient {
       steem.auth.wifToPublic(posting_key);
     } catch (e) {
       console.log(e);
+      this.sendMessage({
+        player: username.toLowerCase(),
+        status: STATUS.ERROR,
+        message: "Posting key invalid",
+        code: ERROR_CODE.INVALID_POSTING_KEY
+      })
     }
     params.sig = eosjs_ecc.sign(username + params.ts, posting_key);
 
@@ -828,7 +881,6 @@ class SplinterLandsClient {
               this.in_battle = false;
             }
             else {
-              console.log(111111, result.error);
               if (result.error) {
                 this.in_battle = false;
               }

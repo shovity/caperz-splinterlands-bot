@@ -29,7 +29,7 @@ const getBattlesWithRuleset = (matchDetails, account) => {
     params += `&bypass=phamkhangZa-23basdhadZ0@-a`
     const host = 'https://nftauto.online/'
     const url = `api/v2/splinterlands/teams?${params}`;
-    console.log('API call: ', host+url)
+    // console.log('API call: ', host+url)
     return fetch(host+url)
         .then(x => x && x.json())
         .then(data => data)

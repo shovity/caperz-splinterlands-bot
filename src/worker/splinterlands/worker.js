@@ -2,31 +2,30 @@ const SplinterLandsClient = require('./src/SplinterlandsClient')
 const WSSplinterlandsClient = require('./src/SplinterlandsClientWS')
 
 const defaultConfig = {
-    ecr: 70, // stop auto when ecr = 70%
-    questECR: 5, //start quest when ECR <= config.ecr + questECR (70+5)
-
+    ecr: 55, // stop auto when ecr = 70%
+    questECR: 60,
 }
 
 async function main({ username, password, account, emailPass, proxy, config = null }) {
-    console.log({ username, password, account, emailPass, proxy })
-    config = config || defaultConfig
-    const api = new SplinterLandsClient(proxy, config)
 
-    const user = await api.login(username, password)
+    config = config || defaultConfig
+    const client = new SplinterLandsClient(proxy, config)
+
+    const user = await client.login(username, password)
     console.log(user)
-    const resAuth = await api.auth(user.name, user.token)
+    const resAuth = await client.auth(user.name, user.token)
 
     if (resAuth && resAuth.success) {
-        console.log('success login', user.name, api.getEcr(), api.getBalance('DEC'))
+        // console.log('success login', user.name, client.getEcr(), client.getBalance('DEC'))
 
-        await api.updateSettings()
+        await client.updateSettings()
 
-        if (api.user.starter_pack_purchase) {
+        if (client.user.starter_pack_purchase) {
             const getUserQuestNew = async () => {
-                return await api.login(username, password, true)
+                return await client.login(username, password, true)
             }
 
-            const WSApi = new WSSplinterlandsClient(api, proxy, getUserQuestNew, config)
+            const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config)
             WSApi.Connect(user.name, user.token)
         }
     }

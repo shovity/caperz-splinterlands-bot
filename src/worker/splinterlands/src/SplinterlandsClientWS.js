@@ -81,7 +81,8 @@ class WSSplinterlandsClient {
     this.proxy = proxy;
     this.token = null;
     this.getUserQuestNew = getUserQuestNew
-    this.config = config;
+    this.config = config || {};
+    this.startQuest = false
   }
 
   Connect(player, token, new_account) {
@@ -141,7 +142,7 @@ class WSSplinterlandsClient {
     console.log('Quest: ', quest)
 
     const Update = async () => {
-      await this.getUserQuestNew()
+      // await this.getUserQuestNew()
       await this.client.updateSettings()
       await this.client.UpdatePlayerInfo();
       quest = await this.client.getQuest();
@@ -175,23 +176,25 @@ class WSSplinterlandsClient {
       });
     }
 
-    // получение награды
     if (quest && quest.completed === quest.total && !quest.claim_date) {
       console.log('get reward --------->');
 
       await Update()
-      this.client.claimReward('quest', {quest_id: quest.id}, async (data) => {
-        console.log('quest was completed --------->', data);
-        if (!!data?.error === false) {
-
-          const res = await this.client.getRevards();
+      try {
+        let questReward = await this.client.claimReward('quest', {quest_id: quest.id});
+        console.log('quest was completed --------->', questReward);
+        if (!!questReward?.error === false) {
+          const res = await this.client.getRewards();
           console.log('got reward --------->', res)
           NeWQuest()
         }
-      });
+      }
+      catch (e) {
+
+      }
+
     }
 
-    // старт квеста
     if (quest && quest.completed === quest.total && quest.claim_date) {
       console.log('try start new quest')
       const startQuestTime = new Date(quest.created_date).getTime() / 1000;
@@ -202,36 +205,38 @@ class WSSplinterlandsClient {
       if (currentTimestamp > startQuestTime + 83000) {
         await Update()
         NeWQuest()
-      } else {
+      }
+      else {
         console.log("wait for 24h from at time you start the quest")
         console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
       }
     }
 
-    // process.send({
-    //   time: getFormatedTime(), events: [
-    //     {key: 'quest', value: quest, param: 'set'},
-    //   ]
-    // });
-
     if (quest.splinter === 'sneak') {
       this.client.RefreshDailyQuest(async (data) => {
-        await this.getUserQuestNew()
+        // await this.getUserQuestNew()
         await NeWQuest()
         quest = await this.client.getQuest();
-        // process.send({
-        //   time: getFormatedTime(), events: [
-        //     {key: 'quest', value: quest, param: 'set'},
-        //   ]
-        // });
       })
     }
 
     if (quest) {
-      if (!(quest.completed === quest.total) || ECR > 60) {
+      //ecr: 70, // stop auto when ecr = 70%
+      //     questECR: 75,
+      if ( !(quest.completed === quest.total) && ECR <= this.config.questECR) {
+        // start Quest
+        this.startQuest = true
+      }
+      else {
+        this.startQuest = false
+      }
+
+      if (!(quest.completed === quest.total) || ECR > this.config.ecr) {
         console.log("Start ranked match, ECR=", ECR)
+        this.client.updatePlayerInfo()
         this.client.findMatch('Ranked');
-      } else {
+      }
+      else {
 
         // if (dec > 100 && userName !== mainUser) {
         //     await Update()
@@ -251,13 +256,13 @@ class WSSplinterlandsClient {
         //     setTimeout(() => {  console.log("Waiting 1m after sending."); }, 60000);
         // }
 
+        //done
+        this.client.processDone()
+        process.exit()
 
-        console.log('Sleep 1min')
-        setTimeout(() => {
-          this.CheckCondition();
-        }, 1000 * 60 * 1);
       }
-    } else {
+    }
+    else {
       console.log('Sleep 1m QUEST NOT FOUND: ' + userName)
       setTimeout(() => {
         this.CheckCondition();
@@ -319,7 +324,7 @@ class WSSplinterlandsClient {
     if (!this.client.user.balances)
       this.client.user.balances = [];
 
-    let balance = this.client.user.balances.find(b => b.token == "ECR");
+    let balance = this.client.user.balances.find(b => b.token === "ECR");
     if (!balance) {
       this.client.user.balances.push({
         player: data.player,
@@ -355,11 +360,9 @@ class WSSplinterlandsClient {
       let ruleset = data.ruleset || 'standard';
       const myCards = await this.client.getPlayerCards();
       const ecr = await this.client.getEcr();
-      const config = this.client.config;
       const myCardsUID = await this.client.getPlayerCardsUID();
-      let makeQuest = false
       const quest = await this.client.getQuest();
-      console.log('this.client.user.league', this.client.user.league)
+      // console.log('this.client.user.league', this.client.user.league)
 
       // console.log(myCardsUID)
       let leaderboard = 0
@@ -388,15 +391,17 @@ class WSSplinterlandsClient {
         leaderboard
       }
 
-      if ( ecr <= config.ecr + config.questECR ) {
-        makeQuest = true
+      if (this.startQuest && quest) {
+        // make the quest
+        if ( ['Snipe', 'Neutral', 'Sneak'].indexOf(quest.splinter) > -1) {
+          matchDetails.quest = quest.splinter
+        }
+        else {
+          matchDetails.color = quest.splinter
+        }
       }
 
-      if (quest.isComplete && ecr < config.ecr && gotReward) {
-        //stop auto
-      }
-
-      console.log('matchDetails', matchDetails)
+      // console.log('matchDetails', matchDetails)
       //matchDetails, this.client.user.name, this.client.config, this.client.getEcr()
       const possibleTeams = await ask.possibleTeams({
         matchDetails,
@@ -407,7 +412,8 @@ class WSSplinterlandsClient {
 
       if (possibleTeams && possibleTeams.length) {
         console.log('Possible Teams: ', possibleTeams.length);
-      } else {
+      }
+      else {
         console.log('Error:', matchDetails, possibleTeams)
       }
 
@@ -465,27 +471,6 @@ class WSSplinterlandsClient {
 
   quest_progress(data) {
     this.client.user.quest = data
-  }
-
-  rating_update(data) {
-    if (this.client.user) {
-      this.client.user.rating = data.new_rating;
-      this.client.user.league = data.new_league;
-      if (data.new_collection_power !== undefined && this.client.user.collection_power != data.new_collection_power) {
-        this.client.user.collection_power = data.new_collection_power;
-        this.client.user.collection_dirty = true
-      }
-      if (data.new_max_league !== undefined) {
-        this.client.user.season_max_league = data.new_max_league
-      }
-
-      // process.send({
-      //   time: getFormatedTime(), events: [
-      //     {key: 'rating', value: this.client.user.rating, param: 'set'},
-      //     {key: 'collection_power', value: this.client.user.collection_power, param: 'set'},
-      //   ]
-      // });
-    }
   }
 
   rating_update(data) {
