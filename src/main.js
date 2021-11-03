@@ -9,7 +9,7 @@ if (require('electron-squirrel-startup')) {
     app.quit()
 }
 
-const loadSettingFile = async () => {
+const loadSettingFile = async (win) => {
     const app_setting = await settings.get('app_setting')
     win.send('load_setting', app_setting)
 }
@@ -28,7 +28,7 @@ const createWindow = () => {
     // and load the index.html of the app
 
     win.loadFile(path.join(__dirname, 'index.html'))
-    loadSettingFile()
+    loadSettingFile(win)
     // Open the DevTools.
     win.webContents.openDevTools()
 
