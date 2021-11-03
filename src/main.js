@@ -11,7 +11,7 @@ if (require('electron-squirrel-startup')) {
 
 const createWindow = () => {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    const win = new BrowserWindow({
         width: 1200,
         height: 600,
         icon: path.join(__dirname, 'assets/img/icon.png'),
@@ -22,10 +22,18 @@ const createWindow = () => {
     })
     
     // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, 'index.html'))
+    win.loadFile(path.join(__dirname, 'index.html'))
     
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    win.webContents.openDevTools()
+
+    ipc.on('run', (event, arg) => {
+        console.log(arg)
+    })
+
+    setTimeout(() => {
+        win.send('run', 'im main proc')
+    }, 3000)
 }
 
 // This method will be called when Electron has finished
