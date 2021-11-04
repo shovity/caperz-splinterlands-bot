@@ -2,7 +2,7 @@ ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
     emitter.keyboard()
-    $('#monitoring_table').DataTable({ columnDefs: [{ orderable: false, targets: 0 }], order: [[1, 'desc']] })
+    let monitorTable
 
     const user = storage.user
 
@@ -39,6 +39,9 @@ ori.use('event store emitter storage', () => {
     }
 
     event.listen('select_tab', (name) => {
+        if (name == 'monitoring') {
+            ipc.send('redraw')
+        }
         for (const nav of navs) {
             nav.removeClass('active')
         }
@@ -153,6 +156,18 @@ ori.use('event store emitter storage', () => {
         showNotice('saved')
     })
 
+    event.listen('start', () => {
+        startButton.addClass('d-none')
+        stopButton.removeClass('d-none')
+        ipc.send('start')
+    })
+
+    event.listen('stop', () => {
+        startButton.removeClass('d-none')
+        stopButton.addClass('d-none')
+        ipc.send('stop')
+    })
+
     ipc.on('load_setting', (event, data) => {
         if (!data) {
             return
@@ -177,10 +192,28 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('load_account', (event, data) => {
-        console.log(data)
         if (!data) {
             return
         }
+        const tableData = data.map((d) => {
+            return {
+                username: d.username,
+                ecr: d.ecr,
+                dec: d.dec,
+                status:
+                    d.status == 'none'
+                        ? "<span class='status_none'>none</span>"
+                        : d.status == 'running'
+                        ? "<span class='status_running'>running</span>"
+                        : "<span class='status_done'>done</span>",
+            }
+        })
+        monitorTable = $('#monitoring_table').DataTable({
+            data: tableData,
+            columns: [{ data: 'username' }, { data: 'ecr' }, { data: 'dec' }, { data: 'status' }],
+            columnDefs: [{ orderable: false, targets: 0 }],
+            order: [[1, 'desc']],
+        })
         data.forEach((account) => {
             let row = account_table.insertRow(1)
             let cell1 = document.createElement('th')
@@ -195,5 +228,23 @@ ori.use('event store emitter storage', () => {
             cell3.innerHTML = '<p>x</p>'
             row.appendChild(cell3)
         })
+    })
+    ipc.on('redraw', (event, data) => {
+        const tableData = data.map((d) => {
+            return {
+                username: d.username,
+                ecr: d.ecr,
+                dec: d.dec,
+                status:
+                    d.status == 'none'
+                        ? "<span class='status_none'>none</span>"
+                        : d.status == 'running'
+                        ? "<span class='status_running'>running</span>"
+                        : "<span class='status_done'>done</span>",
+            }
+        })
+        monitorTable.clear().draw()
+        monitorTable.rows.add(tableData) // Add new data
+        monitorTable.columns.adjust().draw()
     })
 })

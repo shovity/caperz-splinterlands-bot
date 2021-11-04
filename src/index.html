@@ -43,7 +43,25 @@
     </div>
 
     <div class="content">
+        
         <div tab="monitoring" >
+            <div class="container tab-header">
+                <div class="d-flex justify-content-between">
+                    <h3>Monitoring</h3>
+                    <button id="startButton" class="btn btn-primary active" click-emit="start">
+                        <div class="d-flex align-items-center">
+                            <img src="./assets/img/play.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
+                            <span>Start</span>
+                        </div>
+                    </button>
+                    <button id="stopButton" class="btn btn-primary active d-none" click-emit="stop">
+                        <div class="d-flex align-items-center">
+                            <img src="./assets/img/pause.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
+                            <span>Running</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
             <div class="container" >
                 <div id="monitor_table">
                     <table id="monitoring_table" class="cell-border stripe" >
@@ -53,7 +71,6 @@
                             <th class="th-sm">ECR (%)</th>
                             <th class="th-sm">DEC</th>
                             <th class="th-sm">Status</th>
-                            <th class="th-sm">Action</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -62,13 +79,11 @@
                             <td>55</td>
                             <td>19845</td>
                             <td>Ready</td>
-                            <td>Ready</td>
                           </tr>
                           <tr>
                             <td>sonhoangpham</td>
                             <td>63</td>
                             <td>12869</td>
-                            <td>Ready</td>
                             <td>Ready</td>
                           </tr>
                       </table>

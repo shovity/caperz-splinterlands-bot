@@ -127,3 +127,18 @@ button.active {
     background-color: #252525;
     border-color: #131313;
 }
+.status_none {
+    background-color: #6b6b6b!important;
+    border-radius: 99px;
+    padding: 1px 6px;
+}
+.status_running {
+    background-color: #ffb320!important;
+    border-radius: 99px;
+    padding: 1px 6px;
+}
+.status_done {
+    background-color: #48a300!important;
+    border-radius: 99px;
+    padding: 1px 6px;
+}
