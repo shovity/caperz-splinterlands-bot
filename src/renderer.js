@@ -99,6 +99,56 @@ ori.use('event store emitter storage', () => {
         }
     })
 
+    
+    event.listen('save_setting', () => {
+        let ecr1 = document.getElementById('ecr')
+        let ecr2 = document.getElementById('start_quest_ecr')
+        let botPerIp = document.getElementById('bot_per_ip')
+        let proxyTable = document.getElementById('proxy_table')
+        let proxyArray = []
+        let rowLength = proxyTable.rows.length
+        for (i = 1; i < rowLength; i++) {
+            let cells = proxyTable.rows.item(i).cells
+            proxyArray.push({
+                ip: cells[1].innerHTML,
+                count: 0,
+                status: 'active'
+            })
+        }
+        ipc.send('save_setting', {
+            ecr1: ecr1.value,
+            ecr2: ecr2.value,
+            botPerIp: botPerIp.value,
+            proxies: proxyArray,
+        })
+        showNotice('saved')
+    })
+
+    
+    ipc.on('load_setting', (event, data) => {
+        console.log(data)
+        if (!data) {
+            return
+        }
+        ecr.value = data.ecr1
+        start_quest_ecr.value = data.ecr2
+        bot_per_ip.value = data.botPerIp
+        data.proxies.forEach((proxy) => {
+            let row = proxy_table.insertRow(1)
+            let cell1 = document.createElement('th')
+            cell1.setAttribute('scope', 'row')
+            cell1.setAttribute('class', 'count')
+            row.appendChild(cell1)
+            let cell2 = row.insertCell(1)
+            cell2.innerHTML = proxy.ip
+            let cell3 = document.createElement('td')
+            cell3.setAttribute('class', 'x_remove')
+            cell3.setAttribute('click-emit', `remove_proxy:${proxy.ip}`)
+            cell3.innerHTML = '<p>x</p>'
+            row.appendChild(cell3)
+        })
+    })
+
     event.listen('add_account', () => {
         if (username.value && password.value) {
             let row = account_table.insertRow(1)
@@ -136,25 +186,6 @@ ori.use('event store emitter storage', () => {
         }
     })
 
-    event.listen('save_setting', () => {
-        let ecr1 = document.getElementById('ecr')
-        let ecr2 = document.getElementById('start_quest_ecr')
-        let botPerIp = document.getElementById('bot_per_ip')
-        let proxyTable = document.getElementById('proxy_table')
-        let proxyArray = []
-        let rowLength = proxyTable.rows.length
-        for (i = 1; i < rowLength; i++) {
-            let cells = proxyTable.rows.item(i).cells
-            proxyArray.push(cells[1].innerHTML)
-        }
-        ipc.send('save_setting', {
-            ecr1: ecr1.value,
-            ecr2: ecr2.value,
-            botPerIp: botPerIp.value,
-            proxies: proxyArray,
-        })
-        showNotice('saved')
-    })
 
     event.listen('start', () => {
         startButton.addClass('d-none')
@@ -168,33 +199,11 @@ ori.use('event store emitter storage', () => {
         ipc.send('stop')
     })
 
-    ipc.on('load_setting', (event, data) => {
-        if (!data) {
-            return
-        }
-        ecr.value = data.ecr1
-        start_quest_ecr.value = data.ecr2
-        bot_per_ip.value = data.botPerIp
-        data.proxies.forEach((proxy) => {
-            let row = proxy_table.insertRow(1)
-            let cell1 = document.createElement('th')
-            cell1.setAttribute('scope', 'row')
-            cell1.setAttribute('class', 'count')
-            row.appendChild(cell1)
-            let cell2 = row.insertCell(1)
-            cell2.innerHTML = proxy
-            let cell3 = document.createElement('td')
-            cell3.setAttribute('class', 'x_remove')
-            cell3.setAttribute('click-emit', `remove_proxy:${proxy}`)
-            cell3.innerHTML = '<p>x</p>'
-            row.appendChild(cell3)
-        })
-    })
-
     ipc.on('load_account', (event, data) => {
         if (!data) {
             return
         }
+        console.log(data)
         const tableData = data.map((d) => {
             return {
                 username: d.username,
@@ -230,6 +239,7 @@ ori.use('event store emitter storage', () => {
         })
     })
     ipc.on('redraw', (event, data) => {
+        console.log(data)
         const tableData = data.map((d) => {
             return {
                 username: d.username,
