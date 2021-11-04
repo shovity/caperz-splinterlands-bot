@@ -9,9 +9,11 @@ if (require('electron-squirrel-startup')) {
     app.quit()
 }
 
-const loadSettingFile = async (win) => {
+const loadConfigData = async (win) => {
     const app_setting = await settings.get('app_setting')
-    win.send('load_setting', app_setting)
+    win.webContents.send('load_setting', app_setting)
+    const account_list = await settings.get('account_list')
+    win.webContents.send('load_account', account_list)
 }
 const createWindow = () => {
     // Create the browser window.
@@ -28,7 +30,6 @@ const createWindow = () => {
     // and load the index.html of the app
 
     win.loadFile(path.join(__dirname, 'index.html'))
-    loadSettingFile(win)
     // Open the DevTools.
     win.webContents.openDevTools()
 
@@ -36,9 +37,10 @@ const createWindow = () => {
         console.log(arg)
     })
 
-    setTimeout(() => {
-        win.send('run', 'im main proc')
-    }, 3000)
+    win.webContents.on('did-finish-load', () => {
+        loadConfigData(win)
+        win.webContents.send('run', 'im main proc')
+    })
 }
 
 // This method will be called when Electron has finished
@@ -73,6 +75,22 @@ ipc.on('worker.remove_all', (event, arg) => {
 
 ipc.on('save_setting', async (event, data) => {
     const res = await settings.set('app_setting', data)
+})
+
+ipc.on('add_account', async (event, data) => {
+    let list = await settings.get('account_list')
+    if (!list) {
+        list = []
+    }
+    let newList = list
+    newList.push({ ...data, ecr: null, dec: null, status: 'none' })
+    await settings.set('account_list', newList)
+})
+
+ipc.on('delete_account', async (event, data) => {
+    let list = await settings.get('account_list')
+    let newList = list.filter((account) => account.username != data)
+    await settings.set('account_list', newList)
 })
 
 // In this file you can include the rest of your app's specific main process

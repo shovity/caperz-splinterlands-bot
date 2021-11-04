@@ -57,6 +57,19 @@ a {
     fill: #fff;
 }
 
+#notice {
+    position: absolute;
+    top: 16px;
+    left: calc(50% + 100px);
+    z-index: 99;
+    background: #003c95;
+    padding: 4px 16px;
+    border-radius: 99px;
+}
+#notice:not(.show) {
+    display: none;
+}
+
 .content {
     height: 100vh;
     overflow-y: auto;
@@ -102,4 +115,15 @@ button.active {
     padding-top: 10px;
     margin-top: -10px;
     z-index: 2;
+}
+#monitor_table {
+    padding: 16px 0px;
+}
+#monitor_table * {
+    color: #fff;
+}
+#monitoring_table * {
+    color: #fff;
+    background-color: #252525;
+    border-color: #131313;
 }

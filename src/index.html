@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <title>NFTAuto Desktop</title>
     <link rel="stylesheet" href="./assets/css/bootstrap.min.css.css">
+    <link rel="stylesheet" href="./assets/css/datatables.min.css">
     <link rel="stylesheet" href="./index.css">
+    <script src="./assets/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="./assets/js/jquery-3.6.0.min.js"></script>
+    <script src="./assets/js/datatables.min.js"></script>
 </head>
 <body>
 
@@ -20,7 +25,7 @@
                 <a href="#monitoring" class="nav-link text-white active" click-emit="select_tab:monitoring">Monitoring</a>
             </li>
             <li class="nav-item">
-                <a href="#user" class="nav-link text-white" click-emit="select_tab:user">User</a>
+                <a href="#account" class="nav-link text-white" click-emit="select_tab:account">Account</a>
             </li>
             <li class="nav-item">
                 <a href="#settings" class="nav-link text-white" click-emit="select_tab:settings">Settings</a>
@@ -29,8 +34,7 @@
         <hr>
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img store-bind="picture" width="32" height="32" class="rounded-circle me-2">
-                <strong store-bind="email"></strong>
+                <strong store-bind="g_username"></strong>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                 <li><a class="dropdown-item" href="#" click-emit="logout">Logout</a></li>
@@ -39,26 +43,79 @@
     </div>
 
     <div class="content">
-        <div tab="monitoring" class="d-none">
-            <a class="btn btn-primary" id="btn_add">Add</a>
-            <a class="btn btn-primary" id="btn_remove_all">Remove all</a>
+        <div tab="monitoring" >
+            <div class="container" >
+                <div id="monitor_table">
+                    <table id="monitoring_table" class="cell-border stripe" >
+                        <thead>
+                          <tr>
+                            <th class="th-sm">Player</th>
+                            <th class="th-sm">ECR (%)</th>
+                            <th class="th-sm">DEC</th>
+                            <th class="th-sm">Status</th>
+                            <th class="th-sm">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>lanlanpham</td>
+                            <td>55</td>
+                            <td>19845</td>
+                            <td>Ready</td>
+                          </tr>
+                          <tr>
+                            <td>sonhoangpham</td>
+                            <td>63</td>
+                            <td>12869</td>
+                            <td>Ready</td>
+                          </tr>
+                      </table>
+                </div>
+                
+            </div>
         </div>
 
-        <div tab="user" class="d-none">
-            user
-        </div>
-
-        <div tab="login" class="d-none">
-            <div class="card m-5" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Login</h5>
-                    <a class="btn btn-danger m-3" click-emit="login">Login as Google</a>
+        <div tab="account" class="d-none">
+            <div class="container tab-header">
+                <div class="d-flex">
+                    <h3>Player Management</h3>
                 </div>
             </div>
-
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="username">Player</label>
+                        <input class="form-control" id="username">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="password">Posting Key</label>
+                        <input type="password" class="form-control" id="password">
+                    </div>
+                    <div class="col-md-3 mb-3 d-flex align-items-end">
+                        <button class="btn btn-primary active" click-emit="add_account">Add player</button>
+                    </div>
+                </div>
+                <HR>
+                <h3>Player List</h3>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table" id="account_table">
+                            <thead>
+                            <tr>
+                                <th scope="col"><storng>#</storng></th>
+                                <th scope="col"><strong>Player</strong></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div tab="settings" id="setting" >
+        <div tab="settings" id="setting" class="d-none">
             <div class="container tab-header">
                 <div class="d-flex justify-content-between">
                     <h3>Settings</h3>
@@ -72,8 +129,8 @@
                         <input type="number" class="form-control" id="ecr" placeholder="ECR (%)" min="1" max="100">
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="start-quest-erc">Start quest at ECR</label>
-                        <input type="number" class="form-control" id="start-quest-ecr" placeholder="ECR for quest" min="1" max="100">
+                        <label for="start-quest-ecr">Start quest at ECR</label>
+                        <input type="number" class="form-control" id="start_quest_ecr" placeholder="ECR for quest" min="1" max="100">
                     </div>
                 </div>
             </div>
@@ -118,8 +175,12 @@
             </div>
         </div>
     </div>
-</div>
 
+    <div id="notice">
+        <span></span>
+    </div>
+
+</div>
 </div>
 
 
