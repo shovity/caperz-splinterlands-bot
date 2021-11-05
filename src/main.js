@@ -3,6 +3,7 @@ const path = require('path')
 
 const master = require('./master')
 const settings = require('electron-settings')
+const utils = require('./utils')
 let win
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -78,13 +79,21 @@ ipc.on('save_setting', async (event, data) => {
 })
 
 ipc.on('add_account', async (event, data) => {
-    let list = await settings.get('account_list')
-    if (!list) {
-        list = []
+    const res = await utils.login(data.username, data.password)
+    if (!res?.balances) {
+        win.webContents.send('add_account_failed')
+        return
     }
-    let newList = list
-    newList.push({ ...data, ecr: null, dec: null, status: 'none' })
+    let list = await settings.get('account_list')
+    let newList = list || []
+    newList.push({
+        username: res.name,
+        ecr: res.balances.find((b) => b.token == 'ECR').balance,
+        dec: res.balances.find((b) => b.token == 'DEC').balance,
+        status: 'none',
+    })
     await settings.set('account_list', newList)
+    win.webContents.send('add_account_success')
 })
 
 ipc.on('delete_account', async (event, data) => {
@@ -97,6 +106,3 @@ ipc.on('redraw', async () => {
     const account_list = await settings.get('account_list')
     win.webContents.send('redraw', account_list)
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.

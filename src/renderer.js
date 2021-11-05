@@ -7,7 +7,7 @@ ori.use('event store emitter storage', () => {
     const user = storage.user
 
     if (!user) {
-        // location.href = './sign-in.html'
+        location.href = './sign-in.html'
     }
 
     store.g_username = user?.userData?.username || 'Unknow'
@@ -99,7 +99,6 @@ ori.use('event store emitter storage', () => {
         }
     })
 
-    
     event.listen('save_setting', () => {
         let ecr = document.getElementById('ecr')
         let startQuestEcr = document.getElementById('start_quest_ecr')
@@ -112,7 +111,7 @@ ori.use('event store emitter storage', () => {
             proxyArray.push({
                 ip: cells[1].innerHTML,
                 count: 0,
-                status: 'active'
+                status: 'active',
             })
         }
         ipc.send('save_setting', {
@@ -124,7 +123,6 @@ ori.use('event store emitter storage', () => {
         showNotice('saved')
     })
 
-    
     ipc.on('load_setting', (event, data) => {
         console.log(data)
         if (!data) {
@@ -151,6 +149,28 @@ ori.use('event store emitter storage', () => {
 
     event.listen('add_account', () => {
         if (username.value && password.value) {
+            
+        add_player_button.addClass('d-none')
+        add_player_loading.removeClass('d-none')
+            let rowLength = account_table.rows.length
+            for (i = 1; i < rowLength; i++) {
+                let cells = account_table.rows.item(i).cells
+                if (username.value == cells[1].innerHTML) {
+                    showNotice('Account already exists!')
+                    return
+                }
+            }
+            ipc.send('add_account', {
+                username: username.value,
+                password: password.value,
+            })
+        }
+    })
+
+    ipc.on('add_account_success', () => {
+        
+        add_player_button.removeClass('d-none')
+        add_player_loading.addClass('d-none')
             let row = account_table.insertRow(1)
             let cell1 = document.createElement('th')
             cell1.setAttribute('scope', 'row')
@@ -163,14 +183,15 @@ ori.use('event store emitter storage', () => {
             cell3.setAttribute('click-emit', `remove_account:${username.value}`)
             cell3.innerHTML = '<p>x</p>'
             row.appendChild(cell3)
-            ipc.send('add_account', {
-                username: username.value,
-                password: password.value,
-            })
             username.value = ''
             password.value = ''
             showNotice('Account added!')
-        }
+    })
+    ipc.on('add_account_failed', () => {
+        
+        add_player_button.removeClass('d-none')
+        add_player_loading.addClass('d-none')
+            showNotice('Failed! Try again.')
     })
 
     event.listen('remove_account', (account) => {
@@ -185,7 +206,6 @@ ori.use('event store emitter storage', () => {
             }
         }
     })
-
 
     event.listen('start', () => {
         startButton.addClass('d-none')
