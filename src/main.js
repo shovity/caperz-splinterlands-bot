@@ -43,6 +43,11 @@ const createWindow = () => {
     })
 }
 
+const onChangeAccountList = async () => {
+    const account_list = await settings.get('account_list')
+    win.webContents.send('redraw', account_list)
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -93,10 +98,7 @@ ipc.on('delete_account', async (event, data) => {
     await settings.set('account_list', newList)
 })
 
-ipc.on('redraw', async () => {
-    const account_list = await settings.get('account_list')
-    win.webContents.send('redraw', account_list)
-})
+ipc.on('redraw', onChangeAccountList)
 
 ipc.on('start_bots', async (e) => {
     const account_list = await settings.get('account_list')
@@ -135,7 +137,20 @@ ipc.on('start_bots', async (e) => {
 
 ipc.on('stop_bots', async (e) => {
     master.removeAll()
+    const app_setting = await settings.get('app_setting')
+
+    for (let i = 0; i< app_setting.proxies.length; i++) {
+        app_setting.proxies[i].count = 0
+    }
 })
+
+master.change = async (name) => {
+    switch (name) {
+        case 'account_list':
+            onChangeAccountList()
+            break
+    }
+}
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
