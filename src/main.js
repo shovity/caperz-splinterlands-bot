@@ -42,6 +42,16 @@ const createWindow = () => {
         loadConfigData()
         win.webContents.send('run', 'im main proc')
     })
+    win.webContents.on('close',()=>{
+        const account_list = await settings.get('account_list')
+        const newList = account_list.map((account) => {
+            return {
+                ...account,
+                status: 'none'
+            }
+        })
+        await settings.set('account_list', newList)
+    })
 }
 
 // This method will be called when Electron has finished
