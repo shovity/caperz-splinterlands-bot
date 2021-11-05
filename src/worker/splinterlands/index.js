@@ -14,7 +14,6 @@ let username, password, account, emailPass, proxy;
 
 async function main() {
   // create new client
-
   process.send('start');
   process.send({
     time: getFormatedTime(), events: [
