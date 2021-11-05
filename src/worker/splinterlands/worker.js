@@ -11,7 +11,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
     config = config || defaultConfig
     const client = new SplinterLandsClient(proxy, config)
 
-    const user = await client.login(username, password)
+    const user = await client.loginEmail(username, password)
     console.log(user)
     const resAuth = await client.auth(user.name, user.token)
 

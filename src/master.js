@@ -3,6 +3,7 @@
 
 const { Worker } = require('worker_threads')
 const path = require('path')
+const settings = require('electron-settings')
 
 
 const master = {
@@ -12,6 +13,8 @@ const master = {
 
 master.add = async (workerData) => {
     const worker = {}
+
+    console.log(workerData)
 
     worker.instance = new Worker(path.join(__dirname, 'worker/index.js'), { workerData })
 

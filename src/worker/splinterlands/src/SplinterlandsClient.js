@@ -998,7 +998,7 @@ class SplinterLandsClient {
 
   async loginEmail(email, password) {
     let params = {
-      email: email,
+      email: email.toLowerCase(),
     };
 
     let password_key = steem.auth.getPrivateKeys(email, password).owner;
