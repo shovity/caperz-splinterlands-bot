@@ -20,18 +20,24 @@
     </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body style="background-color: #252525;">
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-xl-10 col-lg-12 col-md-9">
             <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
+                <div class="card-body p-0" style="background-color: #000;">
                     <div class="row">
-                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                        <div 
+                            class="col-lg-6 d-none d-lg-block" 
+                            style="background: url(./assets/img/login-image.png);background-position: center;
+                                background-repeat: no-repeat;
+                                background-size: cover;">
+                            
+                        </div>
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                    <h1 class="h4 mb-4" style="color: #ffb320;">Welcome Back!</h1>
                                 </div>
                                 <div id="errorAlert" class="alert alert-danger hidden" role="alert"></div>
                                 <div class="form-group">
@@ -49,12 +55,12 @@
                                             Me</label>
                                     </div>
                                 </div> -->
-                                <button type="submit" class="btn btn-primary btn-user btn-block" id="login-button">
+                                <button type="submit" class="btn btn-user btn-block" style="background-color: #ffb320;color: #000;font-weight: bold;" id="login-button">
                                     Login
                                 </button>
                                 <hr>
                                 <div class="text-center">
-                                    <a class="small" href="./sign-up.html">Create an Account!</a>
+                                    <a class="small" style="color: #ffb320;" href="./sign-up.html">Create an Account!</a>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +106,9 @@
           location.href = './index.html'
         })
         .catch(function (error) {
-          console.log(error);
+            errorBox.innerHTML = 'Login failed!'
+            errorBox.classList.remove('hidden')
+            console.log(error);
         });
     }
 

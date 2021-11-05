@@ -6,10 +6,6 @@
     <link rel="stylesheet" href="./assets/css/bootstrap.min.css.css">
     <link rel="stylesheet" href="./assets/css/datatables.min.css">
     <link rel="stylesheet" href="./index.css">
-    <script src="./assets/js/bootstrap.bundle.min.js"></script>
-    
-    <script src="./assets/js/jquery-3.6.0.min.js"></script>
-    <script src="./assets/js/datatables.min.js"></script>
 </head>
 <body>
 
@@ -74,18 +70,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>lanlanpham</td>
-                            <td>55</td>
-                            <td>19845</td>
-                            <td>Ready</td>
-                          </tr>
-                          <tr>
-                            <td>sonhoangpham</td>
-                            <td>63</td>
-                            <td>12869</td>
-                            <td>Ready</td>
-                          </tr>
+                          
                       </table>
                 </div>
                 
@@ -109,7 +94,11 @@
                         <input type="password" class="form-control" id="password">
                     </div>
                     <div class="col-md-3 mb-3 d-flex align-items-end">
-                        <button class="btn btn-primary active" click-emit="add_account">Add player</button>
+                        <button class="btn btn-primary active" style="min-width: 94px;" click-emit="add_account" id='add_player_button'>Add player</button>
+                        <button class="btn btn-primary active d-none" style="min-width: 94px;" id='add_player_loading'>
+                            <div class="spinner-border" role="status" style="width: 18px;height: 18px;">
+                            </div>
+                        </button>
                     </div>
                 </div>
                 <HR>
@@ -202,6 +191,8 @@
 
 
 <script src="./assets/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/jquery-3.6.0.min.js"></script>
+<script src="./assets/js/datatables.min.js"></script>
 <script src="./assets/js/ori.js"></script>
 <script src="./renderer.js"></script>
 </body>
