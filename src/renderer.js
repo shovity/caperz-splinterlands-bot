@@ -210,13 +210,13 @@ ori.use('event store emitter storage', () => {
     event.listen('start', () => {
         startButton.addClass('d-none')
         stopButton.removeClass('d-none')
-        ipc.send('start')
+        ipc.send('start_bots')
     })
 
     event.listen('stop', () => {
         startButton.removeClass('d-none')
         stopButton.addClass('d-none')
-        ipc.send('stop')
+        ipc.send('stop_bots')
     })
 
     ipc.on('load_account', (event, data) => {

@@ -66,7 +66,7 @@ app.on('activate', () => {
     }
 })
 
-ipc.on('worker.add', (event, data) => {
+ipc.on('worker.add', async (event, data) => {
     master.add(data)
 })
 
@@ -106,3 +106,45 @@ ipc.on('redraw', async () => {
     const account_list = await settings.get('account_list')
     win.webContents.send('redraw', account_list)
 })
+
+ipc.on('start_bots', async (e) => {
+    const account_list = await settings.get('account_list')
+    const app_setting = await settings.get('app_setting')
+
+    const botPerIp = app_setting.botPerIp || 5
+
+    for (let account of account_list) {
+        const config = {}
+
+        config.ecr = app_setting.ecr === '' ? 55 : +app_setting.ecr
+        config.questECR = app_setting.startQuestEcr === '' ? 60 : +app_setting.startQuestEcr
+
+        const proxyIndex = app_setting.proxies.findIndex(p => p.count < botPerIp)
+
+        if (proxyIndex >= 0) {
+            master.add({
+                worker: {
+                    name: 'splinterlands',
+                },
+                username: account.username,
+                password: account.password,
+                // proxy: app_setting.proxies[proxyIndex].ip,
+                config,
+            })
+
+            app_setting.proxies[proxyIndex].count++
+            if (app_setting.proxies[proxyIndex].count === botPerIp) {
+                app_setting.proxies[proxyIndex].status === 'enough_account'
+            }
+
+            console.log(app_setting.proxies)
+        }
+    }
+})
+
+ipc.on('stop_bots', async (e) => {
+    master.removeAll()
+})
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and import them here.
