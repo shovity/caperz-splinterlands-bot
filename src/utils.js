@@ -1,7 +1,7 @@
-var steem = require("steem");
-const eosjs_ecc = require("eosjs-ecc");
-const axios = require("axios").default;
-const qs = require("qs");
+var steem = require('steem')
+const eosjs_ecc = require('eosjs-ecc')
+const axios = require('axios').default
+const qs = require('qs')
 
 const utils = {}
 const sendRequest = async (url, params, method = 'get') => {
@@ -51,16 +51,15 @@ const sendRequest = async (url, params, method = 'get') => {
     }
 }
 const generatePassword = (length, rng) => {
-    if (!rng) rng = Math.random;
-    var charset =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-      retVal = "";
+    if (!rng) rng = Math.random
+    var charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+        retVal = ''
     for (var i = 0, n = charset.length; i < length; ++i) {
-      retVal += charset.charAt(Math.floor(rng() * n));
+        retVal += charset.charAt(Math.floor(rng() * n))
     }
-    return retVal;
-  }
-  
+    return retVal
+}
+
 utils.login = async (username, posting_key, re) => {
     const browserId = 'bid_' + generatePassword(20)
     const sessionId = 'sid_' + generatePassword(20)
@@ -73,62 +72,50 @@ utils.login = async (username, posting_key, re) => {
         ts: Date.now(),
     }
 
-    try {
-        steem.auth.wifToPublic(posting_key)
-    } catch (e) {
-        console.log(e)
-    }
+    steem.auth.wifToPublic(posting_key)
     params.sig = eosjs_ecc.sign(username + params.ts, posting_key)
     const result = await sendRequest('players/login', params)
-    return result
+
+    return {
+        ...result,
+        posting_key
+    }
 }
 
 utils.auth = async (username, token) => {
     // players/authenticate
     const params = {
-      username,
-      token,
-    };
+        username,
+        token,
+    }
 
-    return await sendRequest("players/authenticate", params);
+    return await sendRequest('players/authenticate', params)
 }
 
 utils.loginEmail = async (email, password) => {
     email = email.toLowerCase()
     let params = {
-      email: email,
-    };
-
-    let password_key = steem.auth.getPrivateKeys(email, password).owner;
-
-    params.ts = Date.now()
-    params.sig = eosjs_ecc.sign((email + params.ts).toString(), password_key);
-
-    // send to api login through email
-
-    const result = await sendRequest("players/login_email", params)
-    if (!result?.username) {
-        return {
-            success: false,
-        }
+        email: email,
     }
 
+    let password_key = steem.auth.getPrivateKeys(email, password).owner
+
+    params.ts = Date.now()
+    params.sig = eosjs_ecc.sign((email + params.ts).toString(), password_key)
+
+    // send to api login through email
+    const result = await sendRequest('players/login_email', params)
+    if (!result?.username) {
+        throw new Error('Login by email failed!')
+    }
     const user = await utils.login(result.username, result.posting_key)
     const resAuth = await utils.auth(user.name, user.token)
 
     if (!resAuth?.success) {
-        return {
-            success: false,
-        }
+        throw new Error('Login failed!')
     }
 
-    return{
-        success: true,
-        user: {
-            ...user,
-            posting_key: result.posting_key,
-        },
-    }
-  }
+    return user
+}
 
 module.exports = utils

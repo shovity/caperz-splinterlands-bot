@@ -47,7 +47,7 @@ const createWindow = () => {
         const newList = account_list.map((account) => {
             return {
                 ...account,
-                status: 'none'
+                status: 'none',
             }
         })
         await settings.set('account_list', newList)
@@ -94,28 +94,45 @@ ipc.on('save_setting', async (event, data) => {
 })
 
 ipc.on('add_account', async (event, data) => {
-    const res = await utils.loginEmail(data.username, data.password)
-    if (!res.success) {
-        win.webContents.send('add_account_failed')
+    let res
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+    try {
+        if (emailRegex.test(data.username)) {
+            res = await utils.loginEmail(data.username, data.password)
+        } else {
+            res = await utils.login(data.username, data.password)
+        }
+    } catch (error) {
+        win.webContents.send('add_account_failed', {
+            byEmail: emailRegex.test(data.username),
+            player: data.username,
+            email: data.username || '',
+        })
         return
     }
     let list = await settings.get('account_list')
     let newList = list || []
     newList.push({
-        username: res.user.name,
-        postingKey: res.user.posting_key,
-        token: res.user.token,
-        ecr: res.user.balances.find((b) => b.token == 'ECR').balance / 100,
-        dec: res.user.balances.find((b) => b.token == 'DEC').balance,
+        username: res.name,
+        email: res.email || '',
+        power: res.collection_power,
+        postingKey: res.posting_key,
+        token: res.token,
+        ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
+        dec: res.balances.find((b) => b.token == 'DEC').balance,
         status: 'none',
     })
     await settings.set('account_list', newList)
-    win.webContents.send('add_account_success')
+    win.webContents.send('add_account_success', {
+        byEmail: emailRegex.test(data.username),
+        player: res.name,
+        email: res.email || '',
+    })
 })
 
 ipc.on('delete_account', async (event, data) => {
     let list = await settings.get('account_list')
-    let newList = list.filter((account) => account.username != data)
+    let newList = list.filter((account) => account.username != data && account.email != data)
     await settings.set('account_list', newList)
 })
 

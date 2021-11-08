@@ -66,6 +66,7 @@
                             <th class="th-sm">Player</th>
                             <th class="th-sm">ECR (%)</th>
                             <th class="th-sm">DEC</th>
+                            <th class="th-sm">Power</th>
                             <th class="th-sm">Status</th>
                           </tr>
                         </thead>
@@ -86,19 +87,16 @@
             <div class="container mt-3">
                 <div class="row">
                     <div class="col-md-3 mb-3">
-                        <label for="username">Player</label>
+                        <label for="username">Player/Email</label>
                         <input class="form-control" id="username">
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="password">Posting Key</label>
+                        <label for="password">Posting Key/Password</label>
                         <input type="password" class="form-control" id="password">
                     </div>
                     <div class="col-md-3 mb-3 d-flex align-items-end">
                         <button class="btn btn-primary active" style="min-width: 94px;" click-emit="add_account" id='add_player_button'>Add player</button>
-                        <button class="btn btn-primary active d-none" style="min-width: 94px;" id='add_player_loading'>
-                            <div class="spinner-border" role="status" style="width: 18px;height: 18px;">
-                            </div>
-                        </button>
+                        
                     </div>
                 </div>
                 <HR>
@@ -110,6 +108,7 @@
                             <tr>
                                 <th scope="col"><storng>#</storng></th>
                                 <th scope="col"><strong>Player</strong></th>
+                                <th scope="col"><strong>Email</strong></th>
                                 <th></th>
                             </tr>
                             </thead>
