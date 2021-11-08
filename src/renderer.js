@@ -80,22 +80,29 @@ ori.use('event store emitter storage', () => {
     })
 
     event.listen('add_proxy', () => {
-        let table = document.getElementById('proxy_table')
-        let newProxy = document.getElementById('add_proxy_input')
-        if (newProxy.value) {
-            let row = table.insertRow(1)
+        const vl = add_proxy_input.value
+        if (vl) {
+            let rowLength = proxy_table.rows.length
+            for (i = 1; i < rowLength; i++) {
+                let cells = proxy_table.rows.item(i).cells
+                if (vl == cells[1].innerHTML) {
+                    showNotice('Proxy already exists!')
+                    return
+                }
+            }
+            let row = proxy_table.insertRow(1)
             let cell1 = document.createElement('th')
             cell1.setAttribute('scope', 'row')
             cell1.setAttribute('class', 'count')
             row.appendChild(cell1)
             let cell2 = row.insertCell(1)
-            cell2.innerHTML = newProxy.value
+            cell2.innerHTML = vl
             let cell3 = document.createElement('td')
             cell3.setAttribute('class', 'x_remove')
-            cell3.setAttribute('click-emit', `remove_proxy:${newProxy.value}`)
+            cell3.setAttribute('click-emit', `remove_proxy:${vl}`)
             cell3.innerHTML = '<p>x</p>'
             row.appendChild(cell3)
-            newProxy.value = ''
+            add_proxy_input.value = ''
         }
     })
 
@@ -243,7 +250,7 @@ ori.use('event store emitter storage', () => {
                 status:
                     d.status.toLowerCase() == 'stopped'
                         ? "<span class='status_stopped'>stopped</span>"
-                        : d.status == 'running'
+                        : d.status.toLowerCase() == 'running'
                         ? "<span class='status_running'>running</span>"
                         : "<span class='status_done'>done</span>",
             }
@@ -280,9 +287,9 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec,
                 power: d.power || '--',
                 status:
-                    d.status == 'stopped'
+                    d.status.toLowerCase() == 'stopped'
                         ? "<span class='status_stopped'>stopped</span>"
-                        : d.status == 'running'
+                        : d.status.toLowerCase() == 'running'
                         ? "<span class='status_running'>running</span>"
                         : "<span class='status_done'>done</span>",
             }
