@@ -20,6 +20,14 @@ const ACCOUNT_STATUS = {
     PAUSED: 'PAUSED',
 }
 
+const master = {
+    workers: [],
+    priorityQueue: new PriorityQueue((a, b) => {return calculateECR(b.updatedAt, b.ecr) - calculateECR(a.updatedAt, a.ecr) }),
+    dailyIntervalId: null,
+
+    change: () => {},
+}
+
 const calculateECR = (updatedAt = 0, ecr) => {
     const ONE_HOUR = 60 * 60 * 1000
     
@@ -76,14 +84,6 @@ master.handleAddAccount = async (account) => {
 
     await master.change('account_list', { account_list })
     await master.change('app_setting', { app_setting })
-}
-
-const master = {
-    workers: [],
-    priorityQueue: new PriorityQueue((a, b) => {return calculateECR(b.updatedAt, b.ecr) - calculateECR(a.updatedAt, a.ecr) }),
-    dailyIntervalId: null,
-
-    change: () => {},
 }
 
 
