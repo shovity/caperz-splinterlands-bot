@@ -185,7 +185,7 @@ master.startWorkers = async () => {
         await master.handleAddAccount(account_list[i])
     }
 
-    const ONE_DAY_TIME = 60 * 1000 || 24 * 60 * 60 * 1000
+    const ONE_DAY_TIME = 24 * 60 * 60 * 1000
 
     master.dailyIntervalId = setInterval(async () => {
         let account_list = await settings.get('account_list')
