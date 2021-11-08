@@ -83,23 +83,45 @@ utils.login = async (username, posting_key, re) => {
     return result
 }
 
+utils.auth = async (username, token) => {
+    // players/authenticate
+    const params = {
+      username,
+      token,
+    };
 
-const loginEmail = async (email, password) => {
+    return await sendRequest("players/authenticate", params);
+}
+
+utils.loginEmail = async (email, password) => {
+    email = email.toLowerCase()
     let params = {
       email: email,
     };
 
     let password_key = steem.auth.getPrivateKeys(email, password).owner;
 
-    params.ts = Date.now();
+    params.ts = Date.now()
     params.sig = eosjs_ecc.sign((email + params.ts).toString(), password_key);
 
     // send to api login through email
 
-    const result = await sendRequest("players/login_email", params);
+    const result = await sendRequest("players/login_email", params)
+    const user = await utils.login(result.username, result.posting_key)
+    const resAuth = await utils.auth(user.name, user.token)
 
-    if (result) {
-      return result;
+    if (!resAuth?.success) {
+        return {
+            success: false,
+        }
+    }
+
+    return{
+        success: true,
+        user: {
+            ...user,
+            posting_key: result.posting_key,
+        },
     }
   }
 

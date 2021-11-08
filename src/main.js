@@ -42,7 +42,7 @@ const createWindow = () => {
         loadConfigData()
         win.webContents.send('run', 'im main proc')
     })
-    win.webContents.on('close',()=>{
+    win.webContents.on('close', async () => {
         const account_list = await settings.get('account_list')
         const newList = account_list.map((account) => {
             return {
@@ -94,17 +94,19 @@ ipc.on('save_setting', async (event, data) => {
 })
 
 ipc.on('add_account', async (event, data) => {
-    const res = await utils.login(data.username, data.password)
-    if (!res?.balances) {
+    const res = await utils.loginEmail(data.username, data.password)
+    if (!res.success) {
         win.webContents.send('add_account_failed')
         return
     }
     let list = await settings.get('account_list')
     let newList = list || []
     newList.push({
-        username: res.name,
-        ecr: res.balances.find((b) => b.token == 'ECR').balance,
-        dec: res.balances.find((b) => b.token == 'DEC').balance,
+        username: res.user.name,
+        postingKey: res.user.posting_key,
+        token: res.user.token,
+        ecr: res.user.balances.find((b) => b.token == 'ECR').balance / 100,
+        dec: res.user.balances.find((b) => b.token == 'DEC').balance,
         status: 'none',
     })
     await settings.set('account_list', newList)
@@ -117,50 +119,16 @@ ipc.on('delete_account', async (event, data) => {
     await settings.set('account_list', newList)
 })
 
-ipc.on('redraw', onChangeAccountList)
+ipc.on('redraw', () => {
+    onChangeAccountList()
+})
 
 ipc.on('start_bots', async (e) => {
-    const account_list = await settings.get('account_list')
-    const app_setting = await settings.get('app_setting')
-
-    const botPerIp = app_setting.botPerIp || 5
-
-    for (let account of account_list) {
-        const config = {}
-
-        config.ecr = app_setting.ecr === '' ? 55 : +app_setting.ecr
-        config.questECR = app_setting.startQuestEcr === '' ? 60 : +app_setting.startQuestEcr
-
-        const proxyIndex = app_setting.proxies.findIndex(p => p.count < botPerIp)
-
-        if (proxyIndex >= 0) {
-            master.add({
-                worker: {
-                    name: 'splinterlands',
-                },
-                username: account.username,
-                password: account.password,
-                // proxy: app_setting.proxies[proxyIndex].ip,
-                config,
-            })
-
-            app_setting.proxies[proxyIndex].count++
-            if (app_setting.proxies[proxyIndex].count === botPerIp) {
-                app_setting.proxies[proxyIndex].status === 'enough_account'
-            }
-
-            console.log(app_setting.proxies)
-        }
-    }
+    master.startWorkers()
 })
 
 ipc.on('stop_bots', async (e) => {
-    master.removeAll()
-    const app_setting = await settings.get('app_setting')
-
-    for (let i = 0; i< app_setting.proxies.length; i++) {
-        app_setting.proxies[i].count = 0
-    }
+    master.stopWorkers()
 })
 
 master.change = async (name) => {

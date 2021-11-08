@@ -3808,10 +3808,9 @@ ssri@^8.0.0, ssri@^8.0.1:
   dependencies:
     minipass "^3.1.1"
 
-steem@^0.7.11:
-  version "0.7.11"
-  resolved "https://registry.yarnpkg.com/steem/-/steem-0.7.11.tgz#0e8349b4cb677b1438d929537670b028d1ef864e"
-  integrity sha512-ZKOJKVZRtm3eVxJbFOjCY7HcCry8018FWQZHSB64gvzlQUJ7x3qKu0fj1kffvA9AgUjVtxNo+KV7zg/xFI1kLg==
+"steem@git+https://github.com/vansi99/steem-js.git":
+  version "1.0.3"
+  resolved "git+https://github.com/vansi99/steem-js.git#2a7503b8992baf71772b6f7c60ce52d8f9a4d07f"
   dependencies:
     "@steemit/rpc-auth" "^1.1.1"
     bigi "^1.4.2"
@@ -3830,6 +3829,7 @@ steem@^0.7.11:
     lodash "^4.16.4"
     retry "^0.12.0"
     secure-random "^1.1.2"
+    sumi-hash "^1.0.1"
     ws "^3.3.2"
 
 strict-uri-encode@^2.0.0:
@@ -3945,6 +3945,11 @@ sumchecker@^3.0.1:
   integrity sha512-MvjXzkz/BOfyVDkG0oFOtBxHX2u3gKbMHIF/dXblZsgD3BWOFLmHovIpZY7BykJdAjcqRCBi1WYBNdEC9yI7vg==
   dependencies:
     debug "^4.1.0"
+
+sumi-hash@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/sumi-hash/-/sumi-hash-1.0.1.tgz#5bc1f40e31b20cf99c7e1cec3517825464bd6742"
+  integrity sha1-W8H0DjGyDPmcfhzsNReCVGS9Z0I=
 
 supports-color@^7.1.0:
   version "7.2.0"

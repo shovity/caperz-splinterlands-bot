@@ -45,7 +45,15 @@ master.add = async (workerData) => {
             settings.set('account_list', account_list)
 
             master.change('account_list')
+
+            if (m.status === 'done') {
+                worker.instance.terminate()
+            }
         }
+    })
+
+    worker.instance.on('exit', async (m) => {
+        console.log('exit', m)
     })
 
     worker.instance.postMessage('im master')
@@ -64,6 +72,61 @@ master.removeAll = async () => {
     }
 
     master.workers = []
+}
+
+master.stopWorkers = async () => {
+    master.removeAll()
+
+    const app_setting = await settings.get('app_setting')
+    const account_list = await settings.get('account_list')
+
+    for (let i = 0; i< app_setting.proxies.length; i++) {
+        app_setting.proxies[i].count = 0
+    }
+
+    for (let i = 0; i< account_list.length; i++) {
+        account_list[i].status = 'STOPPED'
+    }
+
+    settings.set('account_list', account_list)
+
+    master.change('account_list')
+}
+
+master.startWorkers = async () => {
+    const account_list = await settings.get('account_list')
+    const app_setting = await settings.get('app_setting')
+
+    const botPerIp = app_setting.botPerIp || 5
+
+    for (let account of account_list) {
+        const config = {}
+
+        config.ecr = app_setting.ecr === '' ? 55 : +app_setting.ecr
+        config.questECR = app_setting.startQuestEcr === '' ? 60 : +app_setting.startQuestEcr
+
+        const proxyIndex = app_setting.proxies.findIndex(p => p.count < botPerIp)
+
+
+
+        if (proxyIndex >= 0) {
+            master.add({
+                worker: {
+                    name: 'splinterlands',
+                },
+                username: account.username,
+                postingKey: account.postingKey,
+                token: account.token,
+                // proxy: app_setting.proxies[proxyIndex].ip,
+                config,
+            })
+
+            app_setting.proxies[proxyIndex].count++
+            if (app_setting.proxies[proxyIndex].count === botPerIp) {
+                app_setting.proxies[proxyIndex].status === 'Enough Account'
+            }
+        }
+    }
 }
 
 
