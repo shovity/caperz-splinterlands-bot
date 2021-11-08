@@ -118,4 +118,16 @@ utils.loginEmail = async (email, password) => {
     return user
 }
 
+utils.statusMapping = (status) => {
+    switch (status) {
+        case 'PENDING':
+            return "<span class='status_pending'>Pending</span>"
+        case 'PAUSED':
+            return "<span class='status_paused'>Paused</span>"
+        case 'DONE':
+            return "<span class='status_done'>Done</span>"
+        default:
+            return "<span class='status_none'>None</span>"
+    }
+}
 module.exports = utils

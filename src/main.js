@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain: ipc } = require('electron')
+const { app, BrowserWindow, ipcMain: ipc, nativeTheme } = require('electron')
 const path = require('path')
 
 const master = require('./master')
@@ -19,8 +19,8 @@ const loadConfigData = async () => {
 const createWindow = () => {
     // Create the browser window.
     win = new BrowserWindow({
-        width: 1200,
-        height: 600,
+        autoHideMenuBar: true,
+        show: false,
         icon: path.join(__dirname, 'assets/img/icon.png'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -33,6 +33,8 @@ const createWindow = () => {
     win.loadFile(path.join(__dirname, 'index.html'))
     // Open the DevTools.
     win.webContents.openDevTools()
+    win.maximize()
+    win.show()
 
     ipc.on('run', (event, arg) => {
         console.log(arg)
@@ -72,7 +74,7 @@ app.on('before-quit', async (e) => {
         const newList = account_list.map((account) => {
             return {
                 ...account,
-                status: 'STOPPED',
+                status: 'NONE',
             }
         })
         await settings.set('account_list', newList)
@@ -129,7 +131,7 @@ ipc.on('add_account', async (event, data) => {
         token: res.token,
         ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
         dec: res.balances.find((b) => b.token == 'DEC').balance,
-        status: 'STOPPED',
+        status: 'NONE',
     })
     await settings.set('account_list', newList)
     win.webContents.send('add_account_success', {

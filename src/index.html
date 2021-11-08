@@ -43,7 +43,7 @@
         <div tab="monitoring" >
             <div class="container tab-header">
                 <div class="d-flex justify-content-between">
-                    <h3>Monitoring</h3>
+                    <h3>Dashboard</h3>
                     <button id="startButton" class="btn btn-primary active" click-emit="start">
                         <div class="d-flex align-items-center">
                             <img src="./assets/img/play.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
@@ -58,9 +58,11 @@
                     </button>
                 </div>
             </div>
+            <hr/>
             <div class="container" >
-                <div id="monitor_table">
-                    <table id="monitoring_table" class="cell-border stripe" >
+                <div id="player_monitoring">
+                <h5>Player Table</h5>
+                    <table id="player_monitoring_table" class="cell-border stripe" >
                         <thead>
                           <tr>
                             <th class="th-sm">Player</th>
@@ -70,10 +72,22 @@
                             <th class="th-sm">Status</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          
+                        <tbody>      
                       </table>
                 </div>
+                <hr/>
+                <div id="proxy_monitoring">
+                    <h5>Proxy Table</h5>
+                        <table id="proxy_monitoring_table" class="cell-border stripe" >
+                            <thead>
+                              <tr>
+                                <th class="th-sm">Proxy IP</th>
+                                <th class="th-sm">Bot Usage</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                          </table>
+                    </div>
                 
             </div>
         </div>

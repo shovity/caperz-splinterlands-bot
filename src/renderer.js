@@ -6,6 +6,19 @@ ori.use('event store emitter storage', () => {
 
     const user = storage.user
 
+    const statusMapping = (status) => {
+        switch (status) {
+            case 'PENDING':
+                return "<span class='status_pending'>Pending</span>"
+            case 'PAUSED':
+                return "<span class='status_paused'>Paused</span>"
+            case 'DONE':
+                return "<span class='status_done'>Done</span>"
+            default:
+                return "<span class='status_none'>None</span>"
+        }
+    }
+
     if (!user) {
         location.href = './sign-in.html'
     }
@@ -196,7 +209,7 @@ ori.use('event store emitter storage', () => {
             cell4.innerHTML = '<p>x</p>'
             row.appendChild(cell4)
             showNotice(name + ' is added to verifying!')
-            name = ''
+            username.value = ''
             password.value = ''
         }
     })
@@ -247,15 +260,10 @@ ori.use('event store emitter storage', () => {
                 ecr: d.ecr || '--',
                 dec: d.dec || '--',
                 power: d.power || '--',
-                status:
-                    d.status.toLowerCase() == 'stopped'
-                        ? "<span class='status_stopped'>stopped</span>"
-                        : d.status.toLowerCase() == 'running'
-                        ? "<span class='status_running'>running</span>"
-                        : "<span class='status_done'>done</span>",
+                status: statusMapping(d.status),
             }
         })
-        monitorTable = $('#monitoring_table').DataTable({
+        monitorTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             columns: [{ data: 'username' }, { data: 'ecr' }, { data: 'dec' }, { data: 'power' }, { data: 'status' }],
             columnDefs: [{ orderable: false, targets: 0 }],
@@ -286,12 +294,7 @@ ori.use('event store emitter storage', () => {
                 ecr: d.ecr,
                 dec: d.dec,
                 power: d.power || '--',
-                status:
-                    d.status.toLowerCase() == 'stopped'
-                        ? "<span class='status_stopped'>stopped</span>"
-                        : d.status.toLowerCase() == 'running'
-                        ? "<span class='status_running'>running</span>"
-                        : "<span class='status_done'>done</span>",
+                status: statusMapping(d.status),
             }
         })
         monitorTable.clear().draw()

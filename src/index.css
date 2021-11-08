@@ -116,41 +116,50 @@ button.active {
     margin-top: -10px;
     z-index: 2;
 }
-#monitor_table {
+#player_monitoring {
     padding: 16px 0px;
 }
-#monitor_table * {
+#player_monitoring * {
     color: #fff;
 }
-#monitoring_table * {
+#player_monitoring_table * {
     color: #fff;
     background-color: #252525;
     border-color: #131313;
 }
-.status_stopped {
-    background-color: #6b6b6b!important;
+
+.status_running,
+.status_done,
+.status_paused,
+.status_none {
     border-radius: 99px;
     padding: 1px 6px;
+    font-size: 12px;
 }
-.status_running {
-    background-color: #ffb320!important;
-    border-radius: 99px;
-    padding: 1px 6px;
+.status_none {
+    background-color: #6b6b6b !important;
 }
-.status_done {
-    background-color: #48a300!important;
-    border-radius: 99px;
-    padding: 1px 6px;
-}
-.verify_pending {
-    background-color: #ffb320!important;
-}
-.verify_pending,.verify_failed *{
+.status_paused {
+    background-color: #ffb320 !important;
     color: #000!important;
 }
+.status_running {
+    background-color: #2098ff !important;
+    color: #000!important;
+}
+.status_done {
+    background-color: #48a300 !important;
+}
+.verify_pending {
+    background-color: #ffb320 !important;
+}
+.verify_pending,
+.verify_failed * {
+    color: #000 !important;
+}
 .verify_success {
-    background-color: #48a300!important;
+    background-color: #48a300 !important;
 }
 .verify_failed {
-    background-color: #dc3545!important;
+    background-color: #dc3545 !important;
 }
