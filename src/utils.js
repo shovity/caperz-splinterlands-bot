@@ -66,7 +66,7 @@ utils.login = async (username, posting_key, re) => {
     const sessionId = 'sid_' + generatePassword(20)
 
     let params = {
-        name: username.toLowerCase(),
+        name: username?.toLowerCase(),
         ref: '',
         browser_id: browserId,
         session_id: sessionId,
@@ -107,6 +107,12 @@ utils.loginEmail = async (email, password) => {
     // send to api login through email
 
     const result = await sendRequest("players/login_email", params)
+    if (!result?.username) {
+        return {
+            success: false,
+        }
+    }
+
     const user = await utils.login(result.username, result.posting_key)
     const resAuth = await utils.auth(user.name, user.token)
 
