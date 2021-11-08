@@ -149,10 +149,11 @@ ori.use('event store emitter storage', () => {
 
     event.listen('add_account', () => {
         if (username.value && password.value) {
+            const name = username.value.trim().toLowerCase()
             let rowLength = account_table.rows.length
             for (i = 1; i < rowLength; i++) {
                 let cells = account_table.rows.item(i).cells
-                if (username.value == cells[1].innerHTML) {
+                if (name == cells[1].innerHTML) {
                     add_player_button.removeClass('d-none')
                     add_player_loading.addClass('d-none')
                     showNotice('Account already exists!')
@@ -160,35 +161,35 @@ ori.use('event store emitter storage', () => {
                 }
             }
             ipc.send('add_account', {
-                username: username.value,
+                username: name,
                 password: password.value,
             })
             const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
             let row = account_table.insertRow(1)
-            row.setAttribute('id', username.value)
+            row.setAttribute('id', name)
             row.addClass('verify_pending')
             let cell1 = document.createElement('th')
             cell1.setAttribute('scope', 'row')
             cell1.setAttribute('class', 'count')
             row.appendChild(cell1)
-            if (emailRegex.test(username.value)) {
+            if (emailRegex.test(name)) {
                 let cell2 = row.insertCell(1)
                 cell2.innerHTML = ''
                 let cell3 = row.insertCell(2)
-                cell3.innerHTML = username.value
+                cell3.innerHTML = name
             } else {
                 let cell2 = row.insertCell(1)
-                cell2.innerHTML = username.value
+                cell2.innerHTML = name
                 let cell3 = row.insertCell(2)
                 cell3.innerHTML = ''
             }
             let cell4 = document.createElement('td')
             cell4.setAttribute('class', 'x_remove')
-            cell4.setAttribute('click-emit', `remove_account:${username.value}`)
+            cell4.setAttribute('click-emit', `remove_account:${name}`)
             cell4.innerHTML = '<p>x</p>'
             row.appendChild(cell4)
-            showNotice(username.value + ' is added to verifying!')
-            username.value = ''
+            showNotice(name + ' is added to verifying!')
+            name = ''
             password.value = ''
         }
     })
@@ -272,7 +273,6 @@ ori.use('event store emitter storage', () => {
         })
     })
     ipc.on('redraw', (event, data) => {
-        console.log(data)
         const tableData = data.map((d) => {
             return {
                 username: d.username,
