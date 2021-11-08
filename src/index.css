@@ -2,6 +2,15 @@
     outline: none;
     box-sizing: border-box;
 }
+*::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
 
 body {
     font-family: -apple-system, Roboto, Helvetica, Arial, sans-serif;
@@ -96,6 +105,15 @@ button.active {
     color: inherit;
     counter-reset: section;
 }
+.player_monitoring_table,
+.proxy_monitoring_table {
+    margin: 0 auto;
+    width: 100%;
+    clear: both;
+    border-collapse: collapse;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
 .count:before {
     counter-increment: section;
     content: counter(section);
@@ -116,13 +134,16 @@ button.active {
     margin-top: -10px;
     z-index: 2;
 }
-#player_monitoring {
+#player_monitoring,
+#proxy_monitoring {
     padding: 16px 0px;
 }
-#player_monitoring * {
+#player_monitoring *,
+#proxy_monitoring * {
     color: #fff;
 }
-#player_monitoring_table * {
+#player_monitoring_table *,
+#proxy_monitoring_table * {
     color: #fff;
     background-color: #252525;
     border-color: #131313;
@@ -131,6 +152,7 @@ button.active {
 .status_running,
 .status_done,
 .status_paused,
+.status_pending,
 .status_none {
     border-radius: 99px;
     padding: 1px 6px;
@@ -141,11 +163,15 @@ button.active {
 }
 .status_paused {
     background-color: #ffb320 !important;
-    color: #000!important;
+    color: #000 !important;
 }
 .status_running {
     background-color: #2098ff !important;
-    color: #000!important;
+    color: #000 !important;
+}
+.status_pending {
+    background-color: #8fc7f7 !important;
+    color: #000 !important;
 }
 .status_done {
     background-color: #48a300 !important;

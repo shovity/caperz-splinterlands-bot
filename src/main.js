@@ -48,7 +48,11 @@ const createWindow = () => {
 
 const onChangeAccountList = async () => {
     const account_list = await settings.get('account_list')
-    win.webContents.send('redraw', account_list)
+    win.webContents.send('redraw_player_table', account_list)
+}
+const onChangeProxyList = async () => {
+    const app_setting = await settings.get('app_setting')
+    win.webContents.send('redraw_proxy_table', app_setting)
 }
 
 // This method will be called when Electron has finished
@@ -147,8 +151,11 @@ ipc.on('delete_account', async (event, data) => {
     await settings.set('account_list', newList)
 })
 
-ipc.on('redraw', () => {
+ipc.on('redraw_player_table', () => {
     onChangeAccountList()
+})
+ipc.on('redraw_proxy_table', () => {
+    onChangeProxyList()
 })
 
 ipc.on('start_bots', async (e) => {

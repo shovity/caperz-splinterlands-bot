@@ -2,14 +2,17 @@ ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
     emitter.keyboard()
-    let monitorTable
+    let playerMonitoringTable
+    let proxyMonitoringTable
 
     const user = storage.user
 
     const statusMapping = (status) => {
-        switch (status) {
+        switch (status.toUpperCase()) {
             case 'PENDING':
                 return "<span class='status_pending'>Pending</span>"
+            case 'RUNNING':
+                return "<span class='status_running'>Running</span>"
             case 'PAUSED':
                 return "<span class='status_paused'>Paused</span>"
             case 'DONE':
@@ -53,7 +56,8 @@ ori.use('event store emitter storage', () => {
 
     event.listen('select_tab', (name) => {
         if (name == 'monitoring') {
-            ipc.send('redraw')
+            ipc.send('redraw_player_table')
+            ipc.send('redraw_proxy_table')
         }
         for (const nav of navs) {
             nav.removeClass('active')
@@ -148,6 +152,16 @@ ori.use('event store emitter storage', () => {
         if (!data) {
             return
         }
+        const tableData = data.proxies.map((d) => {
+            return {
+                ip: d.ip,
+                botUsage: d.count + '/' + data.botPerIp,
+            }
+        })
+        proxyMonitoringTable = $('#proxy_monitoring_table').DataTable({
+            data: tableData,
+            columns: [{ data: 'ip' }, { data: 'botUsage' }],
+        })
         ecr.value = data.ecr
         start_quest_ecr.value = data.startQuestEcr
         bot_per_ip.value = data.botPerIp
@@ -263,10 +277,13 @@ ori.use('event store emitter storage', () => {
                 status: statusMapping(d.status),
             }
         })
-        monitorTable = $('#player_monitoring_table').DataTable({
+        playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
+            responsive: true,
             columns: [{ data: 'username' }, { data: 'ecr' }, { data: 'dec' }, { data: 'power' }, { data: 'status' }],
             columnDefs: [{ orderable: false, targets: 0 }],
+            columnDefs: [{ width: '110px', targets: 4 }],
+            fixedColumns: true,
             order: [[1, 'desc']],
         })
         data.forEach((account) => {
@@ -287,7 +304,10 @@ ori.use('event store emitter storage', () => {
             row.appendChild(cell4)
         })
     })
-    ipc.on('redraw', (event, data) => {
+
+    ipc.on('redraw_player_table', (event, data) => {
+        console.log('redraw_player_table')
+        console.log(data)
         const tableData = data.map((d) => {
             return {
                 username: d.username,
@@ -297,8 +317,21 @@ ori.use('event store emitter storage', () => {
                 status: statusMapping(d.status),
             }
         })
-        monitorTable.clear().draw()
-        monitorTable.rows.add(tableData) // Add new data
-        monitorTable.columns.adjust().draw()
+        playerMonitoringTable.clear().draw()
+        playerMonitoringTable.rows.add(tableData) // Add new data
+        playerMonitoringTable.columns.adjust().draw()
+    })
+    ipc.on('redraw_proxy_table', (event, data) => {
+        console.log('redraw_proxy_table')
+        console.log(data)
+        const tableData = data.proxies.map((d) => {
+            return {
+                ip: d.ip,
+                botUsage: d.count + '/' + data.botPerIp,
+            }
+        })
+        proxyMonitoringTable.clear().draw()
+        proxyMonitoringTable.rows.add(tableData) // Add new data
+        proxyMonitoringTable.columns.adjust().draw()
     })
 })
