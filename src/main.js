@@ -42,16 +42,6 @@ const createWindow = () => {
         loadConfigData()
         win.webContents.send('run', 'im main proc')
     })
-    win.webContents.on('close', async () => {
-        const account_list = await settings.get('account_list')
-        const newList = account_list.map((account) => {
-            return {
-                ...account,
-                status: 'none',
-            }
-        })
-        await settings.set('account_list', newList)
-    })
 }
 
 const onChangeAccountList = async () => {
@@ -67,8 +57,26 @@ app.on('ready', createWindow)
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+// app.on('window-all-closed', () => {
+//     if (process.platform !== 'darwin') {
+//         app.quit()
+//     }
+// })
+
+let asyncOperationDone = false
+
+app.on('before-quit', async (e) => {
+    if (!asyncOperationDone) {
+        e.preventDefault()
+        const account_list = await settings.get('account_list')
+        const newList = account_list.map((account) => {
+            return {
+                ...account,
+                status: 'STOPPED',
+            }
+        })
+        await settings.set('account_list', newList)
+        asyncOperationDone = true
         app.quit()
     }
 })
@@ -117,10 +125,11 @@ ipc.on('add_account', async (event, data) => {
         email: res.email || '',
         power: res.collection_power,
         postingKey: res.posting_key,
+        updatedAt: Date.now(),
         token: res.token,
         ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
         dec: res.balances.find((b) => b.token == 'DEC').balance,
-        status: 'none',
+        status: 'STOPPED',
     })
     await settings.set('account_list', newList)
     win.webContents.send('add_account_success', {

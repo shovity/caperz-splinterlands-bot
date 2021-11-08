@@ -241,8 +241,8 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec || '--',
                 power: d.power || '--',
                 status:
-                    d.status == 'none'
-                        ? "<span class='status_none'>none</span>"
+                    d.status.toLowerCase() == 'stopped'
+                        ? "<span class='status_stopped'>stopped</span>"
                         : d.status == 'running'
                         ? "<span class='status_running'>running</span>"
                         : "<span class='status_done'>done</span>",
@@ -280,8 +280,8 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec,
                 power: d.power || '--',
                 status:
-                    d.status == 'none'
-                        ? "<span class='status_none'>none</span>"
+                    d.status == 'stopped'
+                        ? "<span class='status_stopped'>stopped</span>"
                         : d.status == 'running'
                         ? "<span class='status_running'>running</span>"
                         : "<span class='status_done'>done</span>",

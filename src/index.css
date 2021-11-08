@@ -127,7 +127,7 @@ button.active {
     background-color: #252525;
     border-color: #131313;
 }
-.status_none {
+.status_stopped {
     background-color: #6b6b6b!important;
     border-radius: 99px;
     padding: 1px 6px;
