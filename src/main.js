@@ -156,13 +156,23 @@ ipc.on('start_bots', async (e) => {
 })
 
 ipc.on('stop_bots', async (e) => {
-    master.stopWorkers()
+    master.pauseWorkers()
 })
 
-master.change = async (name) => {
+master.change = async (name, param) => {
+    const now = Date.now()
     switch (name) {
         case 'account_list':
+            await settings.set('account_list', param.account_list.map(a => {
+                return {
+                    ...a,
+                    updatedAt: now,
+                }
+            }))
             onChangeAccountList()
+            break
+        case 'app_setting':
+            await settings.set('app_setting', param.app_setting)
             break
     }
 }

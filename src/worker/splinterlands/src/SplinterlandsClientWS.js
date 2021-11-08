@@ -91,19 +91,19 @@ class WSSplinterlandsClient {
     if (this.ws && this.ws.readyState == 1 && this.player == player)
       return;
 
-    console.log('try connect', player);
+    // console.log('try connect', player);
     this.token = token;
     this.player = player;
     if (!this.session_id)
       this.session_id = generatePassword(10);
-    console.log(Config.ws_url);
+    // console.log(Config.ws_url);
     this.ws = new WebSocket(Config.ws_url, {
       origin: 'https://splinterlands.com',
       // agent: new HttpsProxyAgent(`http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`),
     });
-    console.log("Opening socket connection...");
+    // console.log("Opening socket connection...");
     this.ws.onopen = async () => {
-      console.log('ws open try');
+      // console.log('ws open try');
       if (new_account)
         this.Send({
           type: "new_account",
@@ -138,8 +138,8 @@ class WSSplinterlandsClient {
     const dec = this.client.getBalance('DEC')
     const sendCards = await this.client.getSendCards();
 
-    console.log('Rating: ', rat)
-    console.log('Quest: ', quest)
+    // console.log('Rating: ', rat)
+    // console.log('Quest: ', quest)
 
     const Update = async () => {
       // await this.getUserQuestNew()
@@ -157,7 +157,7 @@ class WSSplinterlandsClient {
           await this.client.setNewQuest(newQuest)
           quest = await this.client.getQuest();
 
-          console.log('Старт нового квеста', quest);
+          // console.log('Старт нового квеста', quest);
           // process.send({
           //   time: getFormatedTime(), events: [
           //     {key: 'quest', value: quest, param: 'set'},
@@ -165,8 +165,8 @@ class WSSplinterlandsClient {
           // });
 
         } else { // получение новых данных
-          console.log('Ошибка квеста', data?.error);
-          console.log('Старт нового квеста', quest);
+          // console.log('Ошибка квеста', data?.error);
+          // console.log('Старт нового квеста', quest);
           // process.send({
           //   time: getFormatedTime(), events: [
           //     {key: 'quest', value: quest, param: 'set'},
@@ -177,15 +177,15 @@ class WSSplinterlandsClient {
     }
 
     if (quest && quest.completed === quest.total && !quest.claim_date) {
-      console.log('get reward --------->');
+      // console.log('get reward --------->');
 
       await Update()
       try {
         let questReward = await this.client.claimReward('quest', {quest_id: quest.id});
-        console.log('quest was completed --------->', questReward);
+        // console.log('quest was completed --------->', questReward);
         if (!!questReward?.error === false) {
           const res = await this.client.getRewards();
-          console.log('got reward --------->', res)
+          // console.log('got reward --------->', res)
           NeWQuest()
         }
       }
@@ -196,19 +196,19 @@ class WSSplinterlandsClient {
     }
 
     if (quest && quest.completed === quest.total && quest.claim_date) {
-      console.log('try start new quest')
+      // console.log('try start new quest')
       const startQuestTime = new Date(quest.created_date).getTime() / 1000;
 
-      console.log('now ', currentTimestamp)
-      console.log('quest ', startQuestTime)
+      // console.log('now ', currentTimestamp)
+      // console.log('quest ', startQuestTime)
 
       if (currentTimestamp > startQuestTime + 83000) {
         await Update()
         NeWQuest()
       }
       else {
-        console.log("wait for 24h from at time you start the quest")
-        console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
+        // console.log("wait for 24h from at time you start the quest")
+        // console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
       }
     }
 
@@ -232,7 +232,7 @@ class WSSplinterlandsClient {
       }
 
       if (!(quest.completed === quest.total) || ECR > this.config.ecr) {
-        console.log("Start ranked match, ECR=", ECR)
+        // console.log("Start ranked match, ECR=", ECR)
         this.client.updatePlayerInfo()
         this.client.findMatch('Ranked');
       }
@@ -263,7 +263,7 @@ class WSSplinterlandsClient {
       }
     }
     else {
-      console.log('Sleep 1m QUEST NOT FOUND: ' + userName)
+      // console.log('Sleep 1m QUEST NOT FOUND: ' + userName)
       setTimeout(() => {
         this.CheckCondition();
       }, 1000 * 60 * 1);
@@ -288,13 +288,13 @@ class WSSplinterlandsClient {
   }
 
   OnError(e) {
-    console.log("Socket error...");
+    // console.log("Socket error...");
     // console.log(e)
   }
 
   OnClose(e) {
-    console.log("Socket closed...", this.player);
-    console.log('close', this.ws.readyState);
+    // console.log("Socket closed...", this.player);
+    // console.log('close', this.ws.readyState);
     if (this.player)
       setTimeout(() => this.Connect(this.player, this.token), 1e3)
   }
@@ -411,7 +411,7 @@ class WSSplinterlandsClient {
       });
 
       if (possibleTeams && possibleTeams.length) {
-        console.log('Possible Teams: ', possibleTeams.length);
+        // console.log('Possible Teams: ', possibleTeams.length);
         let teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest);
         //teamToPlay = { summoner, cards: arr, color: team[team.length - 1]};
 
@@ -435,7 +435,7 @@ class WSSplinterlandsClient {
 
         // let uidStarter = `starter-${card_details.id}-${generatePassword(5)}`
 
-        console.log('current ECR', this.client.getEcr());
+        // console.log('current ECR', this.client.getEcr());
 
         this.client.SubmitTeam(idMatch, null, summoner, monsters, 'Ranked');
       }
@@ -452,7 +452,7 @@ class WSSplinterlandsClient {
 
   async battle_result(data) {
 
-    console.log('battle_result', data.id, '; winner = ', data.winner);
+    // console.log('battle_result', data.id, '; winner = ', data.winner);
     this.client._currentBattle = null;
     this.client.in_battle = false
 
