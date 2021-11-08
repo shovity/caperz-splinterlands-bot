@@ -105,6 +105,7 @@ ipc.on('worker.remove_all', (event, arg) => {
 
 ipc.on('save_setting', async (event, data) => {
     const res = await settings.set('app_setting', data)
+    master.dequeue()
 })
 
 ipc.on('add_account', async (event, data) => {
@@ -180,6 +181,7 @@ master.change = async (name, param) => {
             break
         case 'app_setting':
             await settings.set('app_setting', param.app_setting)
+            onChangeProxyList()
             break
     }
 }

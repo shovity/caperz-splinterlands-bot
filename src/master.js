@@ -33,16 +33,61 @@ const calculateECR = (updatedAt = 0, ecr) => {
     return recoverECR + ecr
 }
 
+master.handleAddAccount = async (account) => {
+
+    if (account.status === ACCOUNT_STATUS.RUNNING) {
+        return
+    }
+
+    let account_list = await settings.get('account_list')
+    const accountIndex = account_list.findIndex(a => a.username === account.username)
+    const app_setting = await settings.get('app_setting')
+
+    const config = {
+        ecr:  app_setting.ecr
+    }
+
+    const proxyIndex = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
+
+    if (
+        proxyIndex >= 0 && 
+        calculateECR(account.updatedAt, account.ecr) > config.ecr
+    ) {
+        account_list[accountIndex].proxy = app_setting.proxies[proxyIndex].ip
+        account_list[accountIndex].status = ACCOUNT_STATUS.RUNNING
+
+        master.add({
+            worker: {
+                name: 'splinterlands',
+            },
+            username: account.username,
+            postingKey: account.postingKey,
+            token: account.token,
+            proxy: account.proxy,
+            config,
+        })
+
+        app_setting.proxies[proxyIndex].count++
+    } else {
+        account_list[accountIndex].status = ACCOUNT_STATUS.PENDING
+
+        master.priorityQueue.enq(account)
+    }
+
+    await master.change('account_list', { account_list })
+    await master.change('app_setting', { app_setting })
+}
+
 const master = {
     workers: [],
-    priorityQueue: new PriorityQueue((a, b)=> {return calculateECR(b.updatedAt, b.ecr) - calculateECR(a.updatedAt, a.ecr) }),
+    priorityQueue: new PriorityQueue((a, b) => {return calculateECR(b.updatedAt, b.ecr) - calculateECR(a.updatedAt, a.ecr) }),
+    dailyIntervalId: null,
 
     change: () => {},
 }
 
 
 master.add = async (workerData) => {
-    console.log('add')
     const worker = {}
 
     worker.instance = new Worker(path.join(__dirname, 'worker/index.js'), { workerData })
@@ -50,7 +95,6 @@ master.add = async (workerData) => {
     worker.status = 'running'
 
     worker.instance.on('message', async (m) => {
-        console.log('worker message: ', m)
         const account_list = await settings.get('account_list')
         const app_setting = await settings.get('app_setting')
 
@@ -67,16 +111,16 @@ master.add = async (workerData) => {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
             account_list[accountIndex].status = m.status
 
-            master.change('account_list', { account_list })
+            await master.change('account_list', { account_list })
 
             const proxyIndex = app_setting.proxies.findIndex(p => p.ip === account_list[accountIndex].proxy)
             app_setting.proxies[proxyIndex].count--
 
-            master.change('app_setting', { app_setting })
+            await master.change('app_setting', { app_setting })
 
             await master.dequeue()
 
-            if (m.status === 'done') {
+            if (m.status === 'DONE') {
                 worker.instance.terminate()
             }
         }
@@ -102,6 +146,8 @@ master.removeAll = async () => {
     }
 
     master.workers = []
+
+    clearInterval(master.dailyIntervalId);
 }
 
 master.pauseWorkers = async () => {
@@ -110,85 +156,67 @@ master.pauseWorkers = async () => {
     const app_setting = await settings.get('app_setting')
     const account_list = await settings.get('account_list')
 
-    for (let i = 0; i< app_setting.proxies.length; i++) {
+    for (let i = 0; i < app_setting.proxies.length; i++) {
         app_setting.proxies[i].count = 0
     }
 
-    for (let i = 0; i< account_list.length; i++) {
+    for (let i = 0; i < account_list.length; i++) {
         account_list[i].status = ACCOUNT_STATUS.PAUSED
     }
 
     master.change('account_list', { account_list })
+    master.change('app_setting', { app_setting })
 }
 
 master.startWorkers = async () => {
     let account_list = await settings.get('account_list')
-    const app_setting = await settings.get('app_setting')
+    account_list = account_list.map(a => {
+        if (a.status === ACCOUNT_STATUS.NONE) {
+            a.status = ACCOUNT_STATUS.PENDING
+        }
+        return a
+    })
 
-    const botPerIp = app_setting.botPerIp || 5
+    await master.change('account_list', { account_list })
 
     account_list = account_list.sort((a, b)=> { return b.ecr - a.ecr })
 
     for (let i = 0; i < account_list.length; i++) {
-        const config = {}
-
-        config.ecr = app_setting.ecr === '' ? 55 : + app_setting.ecr
-        config.questECR = app_setting.startQuestEcr === '' ? 60 : + app_setting.startQuestEcr
-
-        const proxyIndex = app_setting.proxies.findIndex(p => p.count < botPerIp)
-
-        if (
-            proxyIndex >= 0 && 
-            calculateECR(account_list[i].updatedAt, account_list[i].ecr) < config.ecr
-        ) {
-            account_list[i].status = 'RUNNING'
-
-            master.add({
-                worker: {
-                    name: 'splinterlands',
-                },
-                username: account_list[i].username,
-                postingKey: account_list[i].postingKey,
-                token: account_list[i].token,
-                proxy: app_setting.proxies[proxyIndex].ip,
-                config,
-            })
-
-            app_setting.proxies[proxyIndex].count++
-        } else {
-            console.log('enq', account_list[i].username)
-            account_list[i].status = ACCOUNT_STATUS.PENDING
-            master.priorityQueue.enq(account_list[i])
-        }
+        await master.handleAddAccount(account_list[i])
     }
 
-    master.change('account_list', { account_list })
-    master.change('app_setting', { app_setting })
+    const ONE_DAY_TIME = 60 * 1000 || 24 * 60 * 60 * 1000
+
+    master.dailyIntervalId = setInterval(async () => {
+        let account_list = await settings.get('account_list')
+
+        await master.dequeue()
+        for (let i = 0; i < account_list.length; i++) {
+            await handleAddAccount(account_list[i])
+        }
+
+    }, ONE_DAY_TIME)
 }
 
-master.dequeue = async (proxyIp) => {
-    console.log('dequeue', proxyIp)
-    const app_setting = await settings.get('app_setting')
+master.dequeue = async () => {
+    if (master.priorityQueue.isEmpty()) {
+        return
+    }
 
-    const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxyIp)
+    let accountPeek = master.priorityQueue.peek()
+    let app_setting = await settings.get('app_setting')
+    const ecr = app_setting.ecr
+    let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-    const account = master.priorityQueue.deq()
+    while (calculateECR(accountPeek.updatedAt, accountPeek.ecr) > ecr && proxyFree >= 0) {
+        await handleAddAccount(accountPeek)
+        
+        let app_setting = await settings.get('app_setting')
+        proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-    master.add({
-        worker: {
-            name: 'splinterlands',
-        },
-        username: account.username,
-        postingKey: account.postingKey,
-        token: account.token,
-        proxy: app_setting.proxies[proxyIndex].ip,
-        config,
-    })
-
-    app_setting.proxies[proxyIndex].count++
-
-    master.change('app_setting', { app_setting })
-}
+        master.priorityQueue.deq()
+    }
+}   
 
 
 module.exports = master
