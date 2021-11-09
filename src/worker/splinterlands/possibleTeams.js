@@ -36,6 +36,22 @@ const getBattlesWithRuleset = (matchDetails, account) => {
         .catch((e) => console.log('fetch ', e))
 }
 
+const defaultDataForNoTeams = {
+    fire: "red_1_12_5-1-c::8-1-c:158-4-c:3-1-c",
+    water: "blue_0_12_16-1-c::174-4-c:172-4-c",
+    earth: "green_0_12_189-4-c::25-1-c:183-4-c",
+    death: "black_1_12_49-1-c::50-1-c:51-1-c",
+    life: "white_0_12_38-1-c::64-1-c:66-1-c:39-1-c",
+    dragon: "gold_0_12_224-4-c::50-1-c:47-1-c",
+
+    red: "red_1_12_5-1-c::8-1-c:158-4-c:3-1-c",
+    blue: "blue_0_12_16-1-c::174-4-c:172-4-c",
+    green: "green_0_12_189-4-c::25-1-c:183-4-c",
+    black: "black_1_12_49-1-c::50-1-c:51-1-c",
+    white: "white_0_12_38-1-c::64-1-c:66-1-c:39-1-c",
+    gold: "gold_0_12_224-4-c::50-1-c:47-1-c",
+}
+
 const getTeamsFromAPI = async (matchDetails, account) => {
 
     let {data} = await getBattlesWithRuleset(matchDetails, account);
@@ -44,7 +60,15 @@ const getTeamsFromAPI = async (matchDetails, account) => {
         return data
     }
     else {
-        return []
+        let rs = []
+        if ( matchDetails.active.length > 0 ) {
+            matchDetails.active.forEach(splinter => {
+                if (defaultDataForNoTeams[splinter]) {
+                    rs.push(defaultDataForNoTeams[splinter])
+                }
+            })
+        }
+        return rs
     }
 }
 
@@ -106,9 +130,7 @@ const getTeamFromString = (str) => {
 
 const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr) => getTeamsFromAPI(matchDetails, account, config, ecr)
     .then(x => {
-        //[
-        //     "green_0_20_27-1-c::180-4-c:29-1-c:179-4-c:185-4-c:24-1-c"
-        //   ]
+
         return x.map(
             (team) => {
                 let teamData = getTeamFromString(team)
