@@ -43,19 +43,19 @@
     }
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "electron-settings": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0",
-    "priorityqueuejs": "^2.0.0",
-    "steem": "git+https://github.com/vansi99/steem-js.git",
-    "axios": "^0.21.1",
     "eosjs-ecc": "^4.0.7",
     "form-data": "^4.0.0",
     "https-proxy-agent": "^5.0.0",
     "md5": "^2.3.0",
     "node-fetch": "^1.7.3",
+    "priorityqueuejs": "^2.0.0",
     "qs": "^6.10.1",
     "query-string": "^7.0.1",
     "socket.io-client": "^2.2.0",
+    "steem": "git+https://github.com/vansi99/steem-js.git",
     "ws": "^3.3.3"
   },
   "devDependencies": {
@@ -66,6 +66,5 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "@hiveio/keychain": "^1.0.4",
     "electron": "15.1.2"
-    
   }
 }
