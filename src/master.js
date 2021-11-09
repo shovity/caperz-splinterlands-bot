@@ -34,6 +34,8 @@ const master = {
     change: () => {},
 }
 
+master.change('master_state', {state: master.state})
+
 const calculateECR = (updatedAt = 0, ecr) => {
     const ONE_HOUR = 60 * 60 * 1000
     
@@ -93,6 +95,7 @@ master.handleAddAccount = async (account) => {
 
 master.add = async (workerData) => {
     if (master.state === MASTER_STATE.PAUSED) {
+        master.change('master_state', {state: master.state})
         return
     }
 
@@ -180,6 +183,7 @@ master.pauseWorkers = async () => {
 
 master.startWorkers = async () => {
     master.state = MASTER_STATE.RUNNING
+    master.change('master_state', {state: master.state})
 
     let account_list = await settings.get('account_list')
     account_list = account_list.map(a => {
@@ -228,7 +232,7 @@ master.dequeue = async () => {
 
         master.priorityQueue.deq()
     }
-}   
+}
 
 
 module.exports = master

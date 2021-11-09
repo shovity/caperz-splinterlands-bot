@@ -185,6 +185,9 @@ master.change = async (name, param) => {
             await settings.set('app_setting', param.app_setting)
             onChangeProxyList()
             break
+        case 'master_state':
+            win.webContents.send('modify', { state: param.state })
+            break
     }
 }
 
