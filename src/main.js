@@ -11,9 +11,13 @@ if (require('electron-squirrel-startup')) {
 }
 
 const loadConfigData = async () => {
-    const app_setting = await settings.get('app_setting')
+    let app_setting = await settings.get('app_setting')
+    app_setting = app_setting || {
+        proxies: [],
+    }
     win.webContents.send('load_setting', app_setting)
-    const account_list = await settings.get('account_list')
+    let account_list = await settings.get('account_list')
+    account_list = account_list || []
     win.webContents.send('load_account', account_list)
 }
 const createWindow = () => {
