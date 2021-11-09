@@ -35,8 +35,6 @@ const createWindow = () => {
     // and load the index.html of the app
 
     win.loadFile(path.join(__dirname, 'index.html'))
-    // Open the DevTools.
-    win.webContents.openDevTools()
     win.maximize()
     win.show()
 

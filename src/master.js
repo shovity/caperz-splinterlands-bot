@@ -4,7 +4,7 @@
 const { Worker } = require('worker_threads')
 const path = require('path')
 const settings = require('electron-settings')
-const PriorityQueue = require('priorityQueuejs')
+const PriorityQueue = require('priorityqueuejs')
 
 const MESSAGE_STATUS = {
     INFO_UPDATE: "INFO_UPDATE",

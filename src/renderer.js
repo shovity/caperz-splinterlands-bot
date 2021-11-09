@@ -334,4 +334,13 @@ ori.use('event store emitter storage', () => {
         proxyMonitoringTable.rows.add(tableData) // Add new data
         proxyMonitoringTable.columns.adjust().draw()
     })
+    ipc.on('modify', (event, data) => {
+        if (!data.isRunning) {
+            stopButton.addClass('d-none')
+            startButton.removeClass('d-none')
+        } else {
+            startButton.addClass('d-none')
+            stopButton.removeClass('d-none')
+        }
+    })
 })
