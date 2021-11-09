@@ -147,7 +147,7 @@ ipc.on('add_account', async (event, data) => {
 })
 
 ipc.on('delete_account', async (event, data) => {
-    let list = await settings.get('account_list')
+    let list = await settings.get('account_list')    
     let newList = list.filter((account) => account.username != data && account.email != data)
     await settings.set('account_list', newList)
 })
@@ -159,11 +159,11 @@ ipc.on('redraw_proxy_table', () => {
     onChangeProxyList()
 })
 
-ipc.on('start_bots', async (e) => {
+ipc.on('worker.start', async (e) => {
     master.startWorkers()
 })
 
-ipc.on('stop_bots', async (e) => {
+ipc.on('worker.stop', async (e) => {
     master.pauseWorkers()
 })
 

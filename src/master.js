@@ -20,8 +20,14 @@ const ACCOUNT_STATUS = {
     PAUSED: 'PAUSED',
 }
 
+const MASTER_STATE = {
+    RUNNING: 'RUNNING',
+    PAUSED: 'PAUSED',
+}
+
 const master = {
     workers: [],
+    state: null,
     priorityQueue: new PriorityQueue((a, b) => {return calculateECR(b.updatedAt, b.ecr) - calculateECR(a.updatedAt, a.ecr) }),
     dailyIntervalId: null,
 
@@ -42,8 +48,7 @@ const calculateECR = (updatedAt = 0, ecr) => {
 }
 
 master.handleAddAccount = async (account) => {
-
-    if (account.status === ACCOUNT_STATUS.RUNNING) {
+    if (account.status === ACCOUNT_STATUS.PAUSED) {
         return
     }
 
@@ -86,8 +91,11 @@ master.handleAddAccount = async (account) => {
     await master.change('app_setting', { app_setting })
 }
 
-
 master.add = async (workerData) => {
+    if (master.state === MASTER_STATE.PAUSED) {
+        return
+    }
+
     const worker = {}
 
     worker.instance = new Worker(path.join(__dirname, 'worker/index.js'), { workerData })
@@ -136,7 +144,7 @@ master.add = async (workerData) => {
 }
 
 master.remove = async () => {
-    
+
 }
 
 master.removeAll = async () => {
@@ -166,9 +174,13 @@ master.pauseWorkers = async () => {
 
     master.change('account_list', { account_list })
     master.change('app_setting', { app_setting })
+
+    master.state = MASTER_STATE.PAUSED
 }
 
 master.startWorkers = async () => {
+    master.state = MASTER_STATE.RUNNING
+
     let account_list = await settings.get('account_list')
     account_list = account_list.map(a => {
         if (a.status === ACCOUNT_STATUS.NONE) {
