@@ -337,14 +337,12 @@ ori.use('event store emitter storage', () => {
     ipc.on('modify', (event, data) => {
 
         if (data.state === 'RUNNING') {
-            console.log('running')
-            console.log(stopButton)
-            stopButton.addClass('d-none')
-            startButton.removeClass('d-none')
-        } else {
-            console.log('paused')
             startButton.addClass('d-none')
             stopButton.removeClass('d-none')
+        } else {
+            console.log('paused')
+            stopButton.addClass('d-none')
+            startButton.removeClass('d-none')
         }
     })
 })
