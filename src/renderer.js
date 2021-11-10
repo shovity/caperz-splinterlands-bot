@@ -17,6 +17,8 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_paused'>Paused</span>"
             case 'DONE':
                 return "<span class='status_done'>Done</span>"
+            case 'STOPPED':
+                return "<span class='status_stopped'>Stopped</span>"
             default:
                 return "<span class='status_none'>None</span>"
         }

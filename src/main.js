@@ -48,6 +48,7 @@ const createWindow = () => {
     win.webContents.on('did-finish-load', () => {
         loadConfigData()
         win.webContents.send('run', 'im main proc')
+        win.webContents.send('modify', { state: master.state })
     })
 }
 
@@ -80,13 +81,24 @@ app.on('before-quit', async (e) => {
     if (!asyncOperationDone) {
         e.preventDefault()
         const account_list = await settings.get('account_list')
+        const app_setting = await settings.get('app_setting')
+
         const newList = account_list.map((account) => {
-            return {
-                ...account,
-                status: 'NONE',
+            if (account.status === 'RUNNING') {
+                account.status = 'PAUSED'
+            } else {
+                account.status = 'STOPPED'
             }
+            return account
         })
+
+        for (let i = 0; i < app_setting.proxies.length; i++) {
+            app_setting.proxies[i].count = 0
+        }
+
         await settings.set('account_list', newList)
+        await settings.set('app_setting', app_setting)
+
         asyncOperationDone = true
         app.quit()
     }
@@ -110,7 +122,8 @@ ipc.on('worker.remove_all', (event, arg) => {
 
 ipc.on('save_setting', async (event, data) => {
     const res = await settings.set('app_setting', data)
-    master.dequeue()
+    master.stopECR = data.ecr || 50
+    await master.dequeue()
 })
 
 ipc.on('add_account', async (event, data) => {
@@ -138,6 +151,7 @@ ipc.on('add_account', async (event, data) => {
         power: res.collection_power,
         postingKey: res.posting_key,
         updatedAt: Date.now(),
+        lastRewardTime: new Date(res.last_reward_time).getTime(),
         token: res.token,
         ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
         dec: res.balances.find((b) => b.token == 'DEC').balance,
@@ -149,6 +163,20 @@ ipc.on('add_account', async (event, data) => {
         player: res.name,
         email: res.email || '',
     })
+
+    master.priorityQueue.enq({
+        username: res.name,
+        email: res.email || '',
+        power: res.collection_power,
+        postingKey: res.posting_key,
+        updatedAt: Date.now(),
+        token: res.token,
+        ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
+        dec: res.balances.find((b) => b.token == 'DEC').balance,
+        status: 'NONE',
+    })
+
+    await master.dequeue()
 })
 
 ipc.on('delete_account', async (event, data) => {
@@ -189,6 +217,7 @@ master.change = async (name, param) => {
             break
         case 'app_setting':
             await settings.set('app_setting', param.app_setting)
+            master.stopECR = param.app_setting.ecr || 50
             onChangeProxyList()
             break
         case 'master_state':

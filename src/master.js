@@ -15,7 +15,7 @@ const ACCOUNT_STATUS = {
     PENDING: 'PENDING',
     DONE: 'DONE',
     RUNNING: 'RUNNING',
-    // STOPPED: 'STOPPED',
+    STOPPED: 'STOPPED',
     NONE: 'NONE',
     PAUSED: 'PAUSED',
 }
@@ -25,32 +25,63 @@ const MASTER_STATE = {
     PAUSED: 'PAUSED',
 }
 
+const PRIORITY_POINT = {
+    PAUSED: 1000,
+    PENDING: 500,
+    GREATER_STOP_ECR: 1500,
+}
+
+
 const master = {
     workers: [],
     state: null,
-    priorityQueue: new PriorityQueue((a, b) => {return calculateECR(b.updatedAt, b.ecr) - calculateECR(a.updatedAt, a.ecr) }),
+    priorityQueue: new PriorityQueue((a, b) =>  {calculatePriority(a) - calculatePriority(b)}),
     dailyIntervalId: null,
+    hourlyDeqIntervalId: null,
+    stopECR: 50,
 
     change: () => {},
 }
 
-master.change('master_state', {state: master.state})
+const calculatePriority = (account) => {
+    let priority = 0
+    const ecrNow = calculateECR(account.lastRewardTime, account.ecr)
 
-const calculateECR = (updatedAt = 0, ecr) => {
+    priority += ecrNow
+
+    switch (account.status) {
+        case ACCOUNT_STATUS.PAUSED: 
+            priority += PRIORITY_POINT.PAUSED
+            break
+        case ACCOUNT_STATUS.PENDING:
+            priority += PRIORITY_POINT.PENDING
+            break
+    }
+
+    if (ecrNow > master.stopECR) {
+        priority += PRIORITY_POINT.GREATER_STOP_ECR
+    }
+
+    return priority
+}
+
+const calculateECR = (lastRewardTime = 0, ecr) => {
     const ONE_HOUR = 60 * 60 * 1000
     
     const now = Date.now()
     let recoverECR = 0
 
-    if (updatedAt) {
-        recoverECR = Math.floor((now - updatedAt) / ONE_HOUR)
+    if (lastRewardTime) {
+        recoverECR = Math.floor((now - lastRewardTime) / ONE_HOUR)
     }
 
     return recoverECR + ecr
 }
 
+master.change('master_state', {state: master.state})
+
 master.handleAddAccount = async (account) => {
-    if (account.status === ACCOUNT_STATUS.PAUSED) {
+    if (master.state === MASTER_STATE.PAUSED) {
         return
     }
 
@@ -66,10 +97,11 @@ master.handleAddAccount = async (account) => {
 
     if (
         proxyIndex >= 0 && 
-        calculateECR(account.updatedAt, account.ecr) > config.ecr
+        calculateECR(account.lastRewardTime, account.ecr) > config.ecr
     ) {
         account_list[accountIndex].proxy = app_setting.proxies[proxyIndex].ip
         account_list[accountIndex].status = ACCOUNT_STATUS.RUNNING
+        const proxy = account.proxy === 'Default IP' ? null : account.proxy
 
         master.add({
             worker: {
@@ -78,7 +110,7 @@ master.handleAddAccount = async (account) => {
             username: account.username,
             postingKey: account.postingKey,
             token: account.token,
-            proxy: account.proxy,
+            proxy,
             config,
         })
 
@@ -114,6 +146,7 @@ master.add = async (workerData) => {
             account_list[accountIndex].ecr = m.ecr
             account_list[accountIndex].rating = m.rating
             account_list[accountIndex].dec = m.dec
+            account_list[accountIndex].lastRewardTime = m.lastRewardTime
 
             settings.set('account_list', account_list)
 
@@ -124,14 +157,14 @@ master.add = async (workerData) => {
 
             await master.change('account_list', { account_list })
 
-            const proxyIndex = app_setting.proxies.findIndex(p => p.ip === account_list[accountIndex].proxy)
-            app_setting.proxies[proxyIndex].count--
-
-            await master.change('app_setting', { app_setting })
-
-            await master.dequeue()
-
             if (m.status === 'DONE') {
+                const proxyIndex = app_setting.proxies.findIndex(p => p.ip === account_list[accountIndex].proxy)
+                app_setting.proxies[proxyIndex].count--
+
+                await master.change('app_setting', { app_setting })
+
+                await master.dequeue()
+
                 worker.instance.terminate()
             }
         }
@@ -157,8 +190,10 @@ master.removeAll = async () => {
     }
 
     master.workers = []
+    master.priorityQueue = new PriorityQueue((a, b) => calculatePriority(a) - calculatePriority(b))
 
-    clearInterval(master.dailyIntervalId);
+    clearInterval(master.dailyIntervalId)
+    clearInterval(master.hourlyDeqIntervalId)
 }
 
 master.pauseWorkers = async () => {
@@ -172,50 +207,76 @@ master.pauseWorkers = async () => {
     }
 
     for (let i = 0; i < account_list.length; i++) {
-        account_list[i].status = ACCOUNT_STATUS.PAUSED
+        if (account_list[i].status === ACCOUNT_STATUS.RUNNING) {
+            account_list[i].status = ACCOUNT_STATUS.PAUSED
+        } else {
+            account_list[i].status = ACCOUNT_STATUS.STOPPED
+        }
     }
 
-    master.change('account_list', { account_list })
-    master.change('app_setting', { app_setting })
+    await master.change('account_list', { account_list })
+    await master.change('app_setting', { app_setting })
 
     master.state = MASTER_STATE.PAUSED
 }
 
 master.startWorkers = async () => {
     master.state = MASTER_STATE.RUNNING
-    master.change('master_state', {state: master.state})
+    master.change('master_state', { state: master.state })
 
+    await master.enqAccounts()
+    await master.setIntervals()
+}
+
+master.enqAccounts = async () => {
     let account_list = await settings.get('account_list')
+
+    for (let i = 0; i < account_list.length; i++) {
+        await master.priorityQueue.enq(account_list[i])
+    }
+
+    await master.dequeue()
+
+    account_list = await settings.get('account_list')
+
     account_list = account_list.map(a => {
-        if (a.status === ACCOUNT_STATUS.NONE) {
+        if ([ACCOUNT_STATUS.NONE, ACCOUNT_STATUS.PAUSED, ACCOUNT_STATUS.DONE, ACCOUNT_STATUS.STOPPED].includes(a.status)) {
             a.status = ACCOUNT_STATUS.PENDING
         }
+
         return a
     })
 
     await master.change('account_list', { account_list })
+}
 
-    account_list = account_list.sort((a, b)=> { return b.ecr - a.ecr })
-
-    for (let i = 0; i < account_list.length; i++) {
-        await master.handleAddAccount(account_list[i])
-    }
-
-    const ONE_DAY_TIME = 24 * 60 * 60 * 1000
+master.setIntervals = async () => {
+    const ONE_HOUR_TIME = 60 * 60 * 1000
+    const ONE_DAY_TIME = 24 * ONE_HOUR_TIME
 
     master.dailyIntervalId = setInterval(async () => {
         let account_list = await settings.get('account_list')
 
         await master.dequeue()
+
         for (let i = 0; i < account_list.length; i++) {
-            await handleAddAccount(account_list[i])
+            if ([ACCOUNT_STATUS.PENDING, ACCOUNT_STATUS.RUNNING].includes(account_list[i].status)) {
+                account_list[i].status = NONE
+            }
+            await master.priorityQueue.enq(account_list[i])
         }
 
+        await master.dequeue()
+
     }, ONE_DAY_TIME)
+
+    master.hourlyDeqIntervalId = setInterval(async () => {
+        await master.dequeue()
+    }, ONE_HOUR_TIME)
 }
 
 master.dequeue = async () => {
-    if (master.priorityQueue.isEmpty()) {
+    if (master.priorityQueue.isEmpty() || master.state !== MASTER_STATE.RUNNING) {
         return
     }
 
@@ -224,13 +285,15 @@ master.dequeue = async () => {
     const ecr = app_setting.ecr
     let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-    while (calculateECR(accountPeek.updatedAt, accountPeek.ecr) > ecr && proxyFree >= 0) {
-        await handleAddAccount(accountPeek)
+    while (calculateECR(accountPeek.lastRewardTime, accountPeek.ecr) > ecr && proxyFree >= 0) {
+        master.priorityQueue.deq()
+
+        await master.handleAddAccount(accountPeek)
         
         let app_setting = await settings.get('app_setting')
         proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-        master.priorityQueue.deq()
+        accountPeek = master.priorityQueue.peek()
     }
 }
 

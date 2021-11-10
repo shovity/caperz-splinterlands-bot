@@ -112,7 +112,8 @@ class SplinterLandsClient {
       player,
       ecr: this.getEcr(),
       rating: this.getRating(),
-      dec: this.getBalance("DEC")
+      dec: this.getBalance("DEC"),
+      lastRewardTime: this.getLastRewardTime(),
     })
   }
 
@@ -484,9 +485,12 @@ class SplinterLandsClient {
       this.user.league = result.league
       return result;
     } else {
-      this.user.quest = result.quest;
-      this.user.league = result.league
-      this.token = result.token;
+      this.user = {
+        ...this.user,
+        quest: result?.quest,
+        league: result?.league,
+      }.quest = result?.quest;
+      this.token = result?.token;
     }
   }
 
@@ -1000,6 +1004,14 @@ class SplinterLandsClient {
     if (!this.user) return 0;
 
     return this.user.rating;
+  }
+
+  getLastRewardTime() {
+    if (!this.user?.last_reward_time) {
+      return null
+    }
+
+    return new Date(this.user.last_reward_time).getTime()
   }
 
   async loginEmail(email, password) {

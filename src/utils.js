@@ -124,6 +124,8 @@ utils.statusMapping = (status) => {
             return "<span class='status_pending'>Pending</span>"
         case 'PAUSED':
             return "<span class='status_paused'>Paused</span>"
+        case 'STOPPED':
+            return "<span class='status_stopped'>Stopped</span>"
         case 'DONE':
             return "<span class='status_done'>Done</span>"
         default:

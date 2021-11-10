@@ -153,6 +153,7 @@ button.active {
 .status_done,
 .status_paused,
 .status_pending,
+.status_stopped,
 .status_none {
     border-radius: 99px;
     padding: 1px 6px;
@@ -175,6 +176,9 @@ button.active {
 }
 .status_done {
     background-color: #48a300 !important;
+}
+.status_stopped {
+    background-color: #dc3545 !important;
 }
 .verify_pending * {
     color: #ffb320 !important;

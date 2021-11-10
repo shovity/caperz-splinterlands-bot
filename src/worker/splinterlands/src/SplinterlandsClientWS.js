@@ -97,10 +97,14 @@ class WSSplinterlandsClient {
     if (!this.session_id)
       this.session_id = generatePassword(10);
     // console.log(Config.ws_url);
-    this.ws = new WebSocket(Config.ws_url, {
+    const config =  {
       origin: 'https://splinterlands.com',
-      agent: new HttpsProxyAgent(`http://${this.proxy}`),
-    });
+    }
+
+    if (this.proxy) {
+      config.agent = new HttpsProxyAgent(`http://${this.proxy}`)
+    }
+    this.ws = new WebSocket(Config.ws_url, config);
     // console.log("Opening socket connection...");
     this.ws.onopen = async () => {
       // console.log('ws open try');
