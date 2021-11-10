@@ -66,6 +66,9 @@ ori.use('event store emitter storage', () => {
     password.addEventListener('keypress', (e) => {
         enterKeypress(e, () => event.emit('add_account'))
     })
+    add_proxy_input.addEventListener('keypress', (e) => {
+        enterKeypress(e, () => event.emit('add_proxy'))
+    })
 
     event.listen('select_tab', (name) => {
         if (name == 'monitoring') {
@@ -112,6 +115,12 @@ ori.use('event store emitter storage', () => {
     event.listen('add_proxy', () => {
         const vl = add_proxy_input.value
         if (vl) {
+            const reg =
+                /^.+\:.+\@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
+            if (!reg.test(vl)) {
+                showNotice('Invalid proxy format')
+                return
+            }
             let rowLength = proxy_table.rows.length
             for (i = 1; i < rowLength; i++) {
                 let cells = proxy_table.rows.item(i).cells
@@ -187,9 +196,11 @@ ori.use('event store emitter storage', () => {
             let cell2 = row.insertCell(1)
             cell2.innerHTML = proxy.ip
             let cell3 = document.createElement('td')
-            cell3.setAttribute('class', 'x_remove')
-            cell3.setAttribute('click-emit', `remove_proxy:${proxy.ip}`)
-            cell3.innerHTML = '<p>x</p>'
+            if (proxy.ip != 'Default IP') {
+                cell3.setAttribute('class', 'x_remove')
+                cell3.setAttribute('click-emit', `remove_proxy:${proxy.ip}`)
+                cell3.innerHTML = '<p>x</p>'
+            }
             row.appendChild(cell3)
         })
     })

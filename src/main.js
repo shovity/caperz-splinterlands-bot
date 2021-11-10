@@ -13,13 +13,15 @@ if (require('electron-squirrel-startup')) {
 const loadConfigData = async () => {
     let app_setting = await settings.get('app_setting')
     app_setting = app_setting || {
-        proxies: [],
+        ecr: 50,
+        startQuestEcr: 60,
+        botPerIp: 5,
+        proxies: [{ ip: 'Default IP', count: 0 }],
     }
     win.webContents.send('load_setting', app_setting)
     let account_list = await settings.get('account_list')
     account_list = account_list || []
     win.webContents.send('load_account', account_list)
-
 }
 const createWindow = () => {
     // Create the browser window.
@@ -150,7 +152,7 @@ ipc.on('add_account', async (event, data) => {
 })
 
 ipc.on('delete_account', async (event, data) => {
-    let list = await settings.get('account_list')    
+    let list = await settings.get('account_list')
     let newList = list.filter((account) => account.username != data && account.email != data)
     await settings.set('account_list', newList)
 })
@@ -174,12 +176,15 @@ master.change = async (name, param) => {
     const now = Date.now()
     switch (name) {
         case 'account_list':
-            await settings.set('account_list', param.account_list.map(a => {
-                return {
-                    ...a,
-                    updatedAt: now,
-                }
-            }))
+            await settings.set(
+                'account_list',
+                param.account_list.map((a) => {
+                    return {
+                        ...a,
+                        updatedAt: now,
+                    }
+                })
+            )
             onChangeAccountList()
             break
         case 'app_setting':
