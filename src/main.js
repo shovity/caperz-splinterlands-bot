@@ -16,12 +16,14 @@ const loadConfigData = async () => {
         ecr: 50,
         startQuestEcr: 60,
         botPerIp: 5,
-        proxies: [{ ip: 'Default IP', count: 0 }],
+        proxies: [{ ip: 'Default IP', count: 0, status: 'active' }],
     }
+    await settings.set('app_setting', app_setting)
     win.webContents.send('load_setting', app_setting)
     let account_list = await settings.get('account_list')
     account_list = account_list || []
     win.webContents.send('load_account', account_list)
+    await settings.set('account_list', account_list)
 }
 const createWindow = () => {
     // Create the browser window.
@@ -109,7 +111,25 @@ ipc.on('worker.remove_all', (event, arg) => {
 })
 
 ipc.on('save_setting', async (event, data) => {
-    const res = await settings.set('app_setting', data)
+    const oldSetting = await settings.get('app_setting')
+    let newSetting = {
+        ...oldSetting,
+        ecr: data.ecr,
+        startQuestEcr: data.startQuestEcr,
+    }
+    newSetting.proxies = data.proxies.map((p) => {
+        const oldProxy = oldSetting.proxies.find((pr) => p.ip == pr.ip)
+        if (oldProxy) {
+            return oldProxy
+        } else {
+            return {
+                ip: p.ip,
+                count: 2,
+                status: 'active',
+            }
+        }
+    })
+    const res = await settings.set('app_setting', newSetting)
     master.dequeue()
 })
 

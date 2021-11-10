@@ -156,8 +156,6 @@ ori.use('event store emitter storage', () => {
             let cells = proxyTable.rows.item(i).cells
             proxyArray.push({
                 ip: cells[1].innerHTML,
-                count: 0,
-                status: 'active',
             })
         }
         ipc.send('save_setting', {
