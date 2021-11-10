@@ -789,7 +789,7 @@ class SplinterLandsClient {
       if ( this.proxy ) {
         objectAxios.proxy = true
         objectAxios.httpsAgent = new HttpsProxyAgent(
-          `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
+          `http://${this.proxy}`
         )
       }
 
@@ -815,9 +815,6 @@ class SplinterLandsClient {
         method: method,
         url: "https://api2.splinterlands.com/" + url,
         proxy: false,
-        // httpsAgent: new HttpsProxyAgent(
-        //   `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
-        // ),
         timeout: 10000,
         headers: {
           authority: "api2.splinterlands.com",
@@ -850,6 +847,13 @@ class SplinterLandsClient {
         objectAxios.params = params;
       } else {
         objectAxios.data = qs.stringify(params);
+      }
+
+      if (this.proxy) {
+        objectAxios.proxy = true
+        objectAxios.httpsAgent = new HttpsProxyAgent(
+          `https://${this.proxy}`
+        )
       }
 
       let res = await axios(objectAxios);

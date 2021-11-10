@@ -99,7 +99,7 @@ class WSSplinterlandsClient {
     // console.log(Config.ws_url);
     this.ws = new WebSocket(Config.ws_url, {
       origin: 'https://splinterlands.com',
-      // agent: new HttpsProxyAgent(`http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`),
+      agent: new HttpsProxyAgent(`http://${this.proxy}`),
     });
     // console.log("Opening socket connection...");
     this.ws.onopen = async () => {
