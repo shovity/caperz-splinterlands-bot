@@ -54,6 +54,19 @@ ori.use('event store emitter storage', () => {
         setTimeout(() => notice.removeClass('show'), 1500)
     }
 
+    const enterKeypress = (e, f) => {
+        if (e.keyCode === 13) {
+            f()
+        }
+    }
+
+    username.addEventListener('keypress', (e) => {
+        enterKeypress(e, () => password.focus())
+    })
+    password.addEventListener('keypress', (e) => {
+        enterKeypress(e, () => event.emit('add_account'))
+    })
+
     event.listen('select_tab', (name) => {
         if (name == 'monitoring') {
             ipc.send('redraw_player_table')
@@ -231,7 +244,6 @@ ori.use('event store emitter storage', () => {
     ipc.on('add_account_success', (event, data) => {
         let row = document.getElementById(data.byEmail ? data.email : data.player)
         row.removeClass('verify_pending')
-        row.addClass('verify_success')
         if (data.byEmail) {
             row.children[1].innerHTML = data.player
         } else {
@@ -335,7 +347,6 @@ ori.use('event store emitter storage', () => {
         proxyMonitoringTable.columns.adjust().draw()
     })
     ipc.on('modify', (event, data) => {
-
         if (data.state === 'RUNNING') {
             startButton.addClass('d-none')
             stopButton.removeClass('d-none')

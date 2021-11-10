@@ -176,16 +176,9 @@ button.active {
 .status_done {
     background-color: #48a300 !important;
 }
-.verify_pending {
-    background-color: #ffb320 !important;
+.verify_pending * {
+    color: #ffb320 !important;
 }
-.verify_pending,
 .verify_failed * {
-    color: #000 !important;
-}
-.verify_success {
-    background-color: #48a300 !important;
-}
-.verify_failed {
-    background-color: #dc3545 !important;
+    color: #dc3545 !important;
 }

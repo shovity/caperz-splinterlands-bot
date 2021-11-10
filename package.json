@@ -9,7 +9,9 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "build": "npx electron-packager . --out='dist' --asar"
+    "package-win": "electron-packager . --overwrite --out='dist' --asar",
+    "package-mac": "electron-packager . --overwrite --asar --platform=darwin --arch=x64 --out=dist",
+    "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite"
   },
   "author": {
     "name": "shovity",
@@ -67,6 +69,7 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "@hiveio/keychain": "^1.0.4",
     "electron": "15.1.2",
-    "electron-wix-msi": "^3.2.0"
+    "electron-installer-dmg": "^3.0.0",
+    "electron-wix-msi": "2.1.1"
   }
 }
