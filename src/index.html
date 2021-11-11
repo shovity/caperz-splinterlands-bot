@@ -165,12 +165,25 @@
             </div>
             <HR>
             <div class="container">
-                <h3>Proxy</h3>
+                <h3>Proxy </h3>
+                
+                <label>Proxy input format: account:password@ip:port</label>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        
-                        <label for="add_proxy_input">Input format: account:pass@ip:port</label>
-                        <input class="form-control" id="add_proxy_input" placeholder="">
+                        <div class="row">
+                            <div class="col-2">
+                                <select class="form-control" id="protocol">
+                                    <option>HTTPS</option>
+                                    <!-- <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option> -->
+                                  </select>
+                            </div>
+                            <div class="col-10">
+                                <input class="form-control" id="add_proxy_input" placeholder="account:password@192.168.1.1:3000">
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6 mb-3 d-flex align-items-end">
                         <button class="btn btn-primary active" click-emit="add_proxy">Add Proxy</button>
