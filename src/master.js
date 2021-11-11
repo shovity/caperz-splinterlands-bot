@@ -138,7 +138,6 @@ master.add = async (workerData) => {
     worker.status = 'running'
 
     worker.instance.on('message', async (m) => {
-        console.log(m)
         const account_list = await settings.get('account_list')
         const app_setting = await settings.get('app_setting')
 
@@ -296,6 +295,8 @@ master.dequeue = async () => {
         accountFront = master.priorityQueue.front()?.element
     }
 }
+
+master.calculatePriority = calculatePriority
 
 
 module.exports = master

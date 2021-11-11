@@ -184,19 +184,24 @@ ipc.on('add_account', async (event, data) => {
         email: res.email || '',
     })
 
-    master.priorityQueue.enqueue({
-        username: res.name,
-        email: res.email || '',
-        power: res.collection_power,
-        postingKey: res.posting_key,
-        updatedAt: Date.now(),
-        token: res.token,
-        ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
-        dec: res.balances.find((b) => b.token == 'DEC').balance,
-        status: 'PENDING',
-    })
-
-    await master.dequeue()
+    if (master.state === 'RUNNING') {
+        const account = {
+            username: res.name,
+            email: res.email || '',
+            power: res.collection_power,
+            postingKey: res.posting_key,
+            updatedAt: Date.now(),
+            lastRewardTime: new Date(res.last_reward_time).getTime(),
+            token: res.token,
+            ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
+            dec: res.balances.find((b) => b.token == 'DEC').balance,
+            status: 'PENDING',
+        }
+    
+        master.priorityQueue.enqueue(account, master.calculatePriority(account))
+    
+        await master.dequeue()
+    }
 })
 
 ipc.on('delete_account', async (event, data) => {

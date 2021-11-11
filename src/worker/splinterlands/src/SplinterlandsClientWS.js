@@ -16,6 +16,8 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
+const log = false
+
 const activeObj = {
   gold: 'dragon',
   blue: 'water',
@@ -92,12 +94,12 @@ class WSSplinterlandsClient {
     if (this.ws && this.ws.readyState == 1 && this.player == player)
       return;
 
-    console.log('try connect', player);
+    log && console.log('try connect', player);
     this.token = token;
     this.player = player;
     if (!this.session_id)
       this.session_id = generatePassword(10);
-    console.log(Config.ws_url);
+    log && console.log(Config.ws_url);
     const config = {
       origin: 'https://splinterlands.com',
     }
@@ -105,9 +107,9 @@ class WSSplinterlandsClient {
     //   config.agent = new HttpsProxyAgent(`https://${this.proxy}`)
     // }
     this.ws = new WebSocket(Config.ws_url, config);
-    console.log("Opening socket connection...");
+    log && console.log("Opening socket connection...");
     this.ws.onopen = async () => {
-      // console.log('ws open try');
+      // log && console.log('ws open try');
       if (new_account)
         this.Send({
           type: "new_account",
@@ -133,7 +135,7 @@ class WSSplinterlandsClient {
   }
 
   async CheckCondition() {
-    console.log('CheckCondition')
+    log && console.log('CheckCondition')
     const ECR = this.client.getEcr();
     const rat = this.client.getRating();
     const userName = this.client.getUserName();
@@ -143,8 +145,8 @@ class WSSplinterlandsClient {
     const dec = this.client.getBalance('DEC')
     const sendCards = await this.client.getSendCards();
 
-    console.log('Rating: ', rat)
-    console.log('Quest: ', quest)
+    log && console.log('Rating: ', rat)
+    log && console.log('Quest: ', quest)
 
     const Update = async () => {
       // await this.getUserQuestNew()
@@ -162,7 +164,7 @@ class WSSplinterlandsClient {
           await this.client.setNewQuest(newQuest)
           quest = await this.client.getQuest();
 
-          // console.log('Старт нового квеста', quest);
+          // log && console.log('Старт нового квеста', quest);
           // process.send({
           //   time: getFormatedTime(), events: [
           //     {key: 'quest', value: quest, param: 'set'},
@@ -170,8 +172,8 @@ class WSSplinterlandsClient {
           // });
 
         } else { // получение новых данных
-          // console.log('Ошибка квеста', data?.error);
-          // console.log('Старт нового квеста', quest);
+          // log && console.log('Ошибка квеста', data?.error);
+          // log && console.log('Старт нового квеста', quest);
           // process.send({
           //   time: getFormatedTime(), events: [
           //     {key: 'quest', value: quest, param: 'set'},
@@ -182,15 +184,15 @@ class WSSplinterlandsClient {
     }
 
     if (quest && quest.completed === quest.total && !quest.claim_date) {
-      // console.log('get reward --------->');
+      // log && console.log('get reward --------->');
 
       await Update()
       try {
         let questReward = await this.client.claimReward('quest', {quest_id: quest.id});
-        console.log('quest was completed --------->', questReward);
+        log && console.log('quest was completed --------->', questReward);
         if (!!questReward?.error === false) {
           const res = await this.client.getRewards();
-          console.log('got reward --------->', res)
+          log && console.log('got reward --------->', res)
           NeWQuest()
         }
       }
@@ -201,19 +203,19 @@ class WSSplinterlandsClient {
     }
 
     if (quest && quest.completed === quest.total && quest.claim_date) {
-      // console.log('try start new quest')
+      // log && console.log('try start new quest')
       const startQuestTime = new Date(quest.created_date).getTime() / 1000;
 
-      // console.log('now ', currentTimestamp)
-      // console.log('quest ', startQuestTime)
+      // log && console.log('now ', currentTimestamp)
+      // log && console.log('quest ', startQuestTime)
 
       if (currentTimestamp > startQuestTime + 83000) {
         await Update()
         NeWQuest()
       }
       else {
-        // console.log("wait for 24h from at time you start the quest")
-        // console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
+        // log && console.log("wait for 24h from at time you start the quest")
+        // log && console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
       }
     }
 
@@ -237,7 +239,7 @@ class WSSplinterlandsClient {
       }
 
       if (!(quest.completed === quest.total) || ECR > this.config.ecr) {
-        // console.log("Start ranked match, ECR=", ECR)
+        // log && console.log("Start ranked match, ECR=", ECR)
         this.client.updatePlayerInfo()
         this.client.findMatch('Ranked');
       }
@@ -245,20 +247,20 @@ class WSSplinterlandsClient {
 
         // if (dec > 100 && userName !== mainUser) {
         //     await Update()
-        //     console.log('Sending DEC.')
+        //     log && console.log('Sending DEC.')
         //     let decSend = parseInt(dec);
         //     this.client.TransferDEC(mainUser, decSend, (data) => {
-        //         console.log(data);
+        //         log && console.log(data);
         //     });
-        //     setTimeout(() => {  console.log("Waiting 1m after sending."); }, 60000);
+        //     setTimeout(() => {  log && console.log("Waiting 1m after sending."); }, 60000);
         // }
         // if (sendCards.length != 0 && userName !== mainUser) {
         //     await Update()
-        //     console.log('Sending cards.')
+        //     log && console.log('Sending cards.')
         //     this.client.GiftCards(sendCards, mainUser, (data) => {
-        //         console.log(data);
+        //         log && console.log(data);
         //     });
-        //     setTimeout(() => {  console.log("Waiting 1m after sending."); }, 60000);
+        //     setTimeout(() => {  log && console.log("Waiting 1m after sending."); }, 60000);
         // }
 
         //done
@@ -268,7 +270,7 @@ class WSSplinterlandsClient {
       }
     }
     else {
-      // console.log('Sleep 1m QUEST NOT FOUND: ' + userName)
+      // log && console.log('Sleep 1m QUEST NOT FOUND: ' + userName)
       setTimeout(() => {
         this.CheckCondition();
       }, 1000 * 60 * 1);
@@ -293,13 +295,13 @@ class WSSplinterlandsClient {
   }
 
   OnError(e) {
-    // console.log("Socket error...");
-    // console.log(e)
+    // log && console.log("Socket error...");
+    // log && console.log(e)
   }
 
   OnClose(e) {
-    // console.log("Socket closed...", this.player);
-    // console.log('close', this.ws.readyState);
+    // log && console.log("Socket closed...", this.player);
+    // log && console.log('close', this.ws.readyState);
     if (this.player)
       setTimeout(() => this.Connect(this.player, this.token), 1e3)
   }
@@ -367,9 +369,9 @@ class WSSplinterlandsClient {
       const ecr = await this.client.getEcr();
       const myCardsUID = await this.client.getPlayerCardsUID();
       const quest = await this.client.getQuest();
-      // console.log('this.client.user.league', this.client.user.league)
+      // log && console.log('this.client.user.league', this.client.user.league)
 
-      // console.log(myCardsUID)
+      // log && console.log(myCardsUID)
       let leaderboard = 0
       if (this.client.user.league) {
         leaderboard = Math.floor((this.client.user.league - 1) / 3)
@@ -406,7 +408,7 @@ class WSSplinterlandsClient {
         }
       }
 
-      // console.log('matchDetails', matchDetails)
+      // log && console.log('matchDetails', matchDetails)
       //matchDetails, this.client.user.name, this.client.config, this.client.getEcr()
       const possibleTeams = await ask.possibleTeams({
         matchDetails,
@@ -417,7 +419,7 @@ class WSSplinterlandsClient {
       });
 
       if (possibleTeams && possibleTeams.length) {
-        console.log('Possible Teams: ', possibleTeams.length);
+        log && console.log('Possible Teams: ', possibleTeams.length);
         let teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest);
         //teamToPlay = { summoner, cards: arr, color: team[team.length - 1]};
 
@@ -441,12 +443,12 @@ class WSSplinterlandsClient {
 
         // let uidStarter = `starter-${card_details.id}-${generatePassword(5)}`
 
-        console.log('current ECR', this.client.getEcr());
+        log && console.log('current ECR', this.client.getEcr());
 
         this.client.SubmitTeam(idMatch, null, summoner, monsters, 'Ranked');
       }
       else {
-        console.log('Empty teams to play:', matchDetails)
+        log && console.log('Empty teams to play:', matchDetails)
         // empty result
         this.client.surrender(idMatch, () => {
 
@@ -458,14 +460,14 @@ class WSSplinterlandsClient {
 
   async battle_result(data) {
 
-    console.log('battle_result', data.id, '; winner = ', data.winner);
+    log && console.log('battle_result', data.id, '; winner = ', data.winner);
     this.client._currentBattle = null;
     this.client.in_battle = false
 
     this.CheckCondition();
 
     if (this.client.user.battles === 0) {
-      console.log("completed_first_battle")
+      log && console.log("completed_first_battle")
     }
   }
 
@@ -476,7 +478,7 @@ class WSSplinterlandsClient {
   }
 
   system_message(data) {
-    console.log("system_message", data)
+    log && console.log("system_message", data)
   }
 
   quest_progress(data) {
@@ -538,7 +540,7 @@ class WSSplinterlandsClient {
         //     timeout: 3e4,
         //     text: "There was an error completing this transaction: " + data.error
         // }).show()
-        console.log("There was an error completing this transaction: " + data.error);
+        log && console.log("There was an error completing this transaction: " + data.error);
       }
       clearTimeout(trx.timeout);
       if (trx.callback)

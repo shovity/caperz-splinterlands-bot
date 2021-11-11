@@ -29,6 +29,8 @@ const Config = {
   ],
 };
 
+const log = false
+
 steem.api.setOptions({
   transport: "http",
   uri: Config.rpc_nodes[0],
@@ -275,7 +277,7 @@ class SplinterLandsClient {
 
   setNewQuest(data) {
     this.user.quest = data;
-    console.log("user: ", this.user);
+    log && console.log("user: ", this.user);
   }
 
   getUserName() {
@@ -345,7 +347,7 @@ class SplinterLandsClient {
     match_type,
     extra_data
   ) {
-    console.log('submit team')
+    log && console.log('submit team')
     var secret = generatePassword(10);
     var team_hash = md5(summoner + "," + monsters.join() + "," + secret);
     var team = {
@@ -392,10 +394,10 @@ class SplinterLandsClient {
           result.trx_info &&
           result.trx_info.success
         ) {
-          console.log("sm_submit_team", result.trx_info.id);
+          log && console.log("sm_submit_team", result.trx_info.id);
         } else {
           if (result) {
-            console.log(
+            log && console.log(
               "An error has occurred submitting your team - Error: " +
                 result.error
             );
@@ -438,7 +440,7 @@ class SplinterLandsClient {
           this._transactions[trx_id] &&
           this._transactions[trx_id].status != "complete"
         ) {
-          console.log(
+          log && console.log(
             "Your transaction could not be found. This may be an issue with the game server. Please try refreshing the site to see if the transaction went through."
           );
           delete this._transactions[trx_id];
@@ -449,7 +451,7 @@ class SplinterLandsClient {
   }
 
   async login(username, posting_key, re) {
-    console.log('login====')
+    log && console.log('login====')
     const browserId = "bid_" + generatePassword(20);
     const sessionId = "sid_" + generatePassword(20);
 
@@ -466,7 +468,7 @@ class SplinterLandsClient {
     try {
       steem.auth.wifToPublic(posting_key);
     } catch (e) {
-      console.log(e);
+      log && console.log(e);
       this.sendMessage({
         player: username.toLowerCase(),
         status: STATUS.ERROR,
@@ -520,7 +522,7 @@ class SplinterLandsClient {
         url: Config.rpc_nodes[rpc_index],
         useAppbaseApi: true,
       });
-      console.log(`Set node to ${Config.rpc_nodes[rpc_index]}`)
+      log && console.log(`Set node to ${Config.rpc_nodes[rpc_index]}`)
     }
 
     return result;
@@ -583,7 +585,7 @@ class SplinterLandsClient {
         if (response && response.id)
           this.trxLookup(response.id, null, callback, 10, supressErrors);
         else
-          console.log(
+          log && console.log(
             `Error sending transaction: ${
               response ? response.error : "Unknown error"
             }`
@@ -602,37 +604,37 @@ class SplinterLandsClient {
         },
         "post"
       );
-      console.log("response && response.id", response && response.id);
+      log && console.log("response && response.id", response && response.id);
       if (response && response.id) {
         // this.trxLookup(response.id, null, callback, 10);
       } else {
-        console.log(
+        log && console.log(
           `Error sending transaction: ${
             response ? response.error : "Unknown error"
           }`
         );
       }
     }
-    console.log(!active_auth || active_auth);
+    log && console.log(!active_auth || active_auth);
     if (!active_auth || active_auth) {
       try {
         let response = await this.serverBroadcastTx(tx, active_auth);
-        console.log("response ------------ > 381", response);
+        log && console.log("response ------------ > 381", response);
         if (response && response.id)
           return this.trxLookup(response.id, null, callback, 10, supressErrors);
         if (response.error == "user_cancel") {
-          console.log("Transaction was cancelled.");
+          log && console.log("Transaction was cancelled.");
         }
         else if (
           response.error &&
           JSON.stringify(response.error).indexOf("Please wait to transact") >= 0
         ) {
-          console.log("request delegation");
+          log && console.log("request delegation");
         } else {
           //setTimeout(()=>SM.BroadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
         }
       } catch (err) {
-        console.log(111, err);
+        log && console.log(111, err);
         // SM.BroadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors)
       }
     }
@@ -688,7 +690,7 @@ class SplinterLandsClient {
             "post"
           );
 
-          console.log("resultBattleTx", resultBattleTx);
+          log && console.log("resultBattleTx", resultBattleTx);
 
           if (resultBattleTx) {
             resolve(resultBattleTx);
@@ -809,7 +811,7 @@ class SplinterLandsClient {
 
       return res.data;
     } catch (e) {
-      console.log(e);
+      log && console.log(e);
       return null;
     }
   }
@@ -865,7 +867,7 @@ class SplinterLandsClient {
 
       return res.data;
     } catch (e) {
-      console.log(e);
+      log && console.log(e);
       return null;
     }
   }
@@ -929,7 +931,7 @@ class SplinterLandsClient {
     );
 
     if (response && !response.error) {
-      console.log("response", response);
+      log && console.log("response", response);
     }
     return response;
   }
@@ -981,7 +983,7 @@ class SplinterLandsClient {
 
       return res.data;
     } catch (e) {
-      console.log(e);
+      log && console.log(e);
       return null;
     }
   }
