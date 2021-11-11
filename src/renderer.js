@@ -163,7 +163,6 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('load_setting', (event, data) => {
-        console.log(data)
         if (!data) {
             return
         }
@@ -285,7 +284,7 @@ ori.use('event store emitter storage', () => {
         if (!data) {
             return
         }
-        console.log(data)
+
         const tableData = data.map((d) => {
             return {
                 username: d.username,
@@ -324,8 +323,6 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('redraw_player_table', (event, data) => {
-        console.log('redraw_player_table')
-        console.log(data)
         const tableData = data.map((d) => {
             return {
                 username: d.username,
@@ -340,8 +337,6 @@ ori.use('event store emitter storage', () => {
         playerMonitoringTable.columns.adjust().draw()
     })
     ipc.on('redraw_proxy_table', (event, data) => {
-        console.log('redraw_proxy_table')
-        console.log(data)
         const tableData = data.proxies.map((d) => {
             return {
                 ip: d.ip,
@@ -357,7 +352,6 @@ ori.use('event store emitter storage', () => {
             startButton.addClass('d-none')
             stopButton.removeClass('d-none')
         } else {
-            console.log('paused')
             stopButton.addClass('d-none')
             startButton.removeClass('d-none')
         }
