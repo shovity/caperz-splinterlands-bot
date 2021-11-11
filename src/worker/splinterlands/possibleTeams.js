@@ -26,7 +26,7 @@ const getBattlesWithRuleset = (matchDetails, account) => {
     if ( matchDetails.quest ) {
         params += `&quest=${matchDetails.quest}`
     }
-    params += `&bypass=phamkhangZa-23basdhadZ0@-a`
+    //add user token to header
     const host = 'https://nftauto.online/'
     const url = `api/v2/splinterlands/teams?${params}`;
     // console.log('API call: ', host+url)
