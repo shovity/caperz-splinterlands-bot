@@ -16,7 +16,7 @@ const loadConfigData = async () => {
         ecr: 50,
         startQuestEcr: 60,
         botPerIp: 5,
-        proxies: [{ ip: 'Default IP', count: 0, status: 'active' }],
+        proxies: [{ ip: 'Default IP', count: 0, protocol: 'https', status: 'active' }],
     }
     await settings.set('app_setting', app_setting)
     win.webContents.send('load_setting', app_setting)
@@ -136,7 +136,8 @@ ipc.on('save_setting', async (event, data) => {
         } else {
             return {
                 ip: p.ip,
-                count: 2,
+                protocol: p.protocol,
+                count: 0,
                 status: 'active',
             }
         }

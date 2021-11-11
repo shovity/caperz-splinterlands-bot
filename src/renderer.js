@@ -115,10 +115,17 @@ ori.use('event store emitter storage', () => {
     })
 
     event.listen('add_proxy', () => {
-        const vl = add_proxy_input.value
+        let vl = add_proxy_input.value
         if (vl) {
+            if (vl.includes('http://')) {
+                showNotice('Protocol have to be HTTPS. HTTP is not accepted')
+                return
+            }
+            if (vl.includes('https://')) {
+                vl = vl.replace('https://', '')
+            }
             const reg =
-                /^.+\:.+\@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
+                /^[^:]+\:[^:]+\@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
             if (!reg.test(vl)) {
                 showNotice('Invalid proxy format')
                 return
@@ -131,18 +138,20 @@ ori.use('event store emitter storage', () => {
                     return
                 }
             }
-            let row = proxy_table.insertRow(1)
+            let row = proxy_table.insertRow(2)
             let cell1 = document.createElement('th')
             cell1.setAttribute('scope', 'row')
             cell1.setAttribute('class', 'count')
             row.appendChild(cell1)
             let cell2 = row.insertCell(1)
             cell2.innerHTML = vl
-            let cell3 = document.createElement('td')
-            cell3.setAttribute('class', 'x_remove')
-            cell3.setAttribute('click-emit', `remove_proxy:${vl}`)
-            cell3.innerHTML = '<p>x</p>'
-            row.appendChild(cell3)
+            let cell3 = row.insertCell(2)
+            cell3.innerHTML = protocol.value
+            let cell4 = document.createElement('td')
+            cell4.setAttribute('class', 'x_remove')
+            cell4.setAttribute('click-emit', `remove_proxy:${vl}`)
+            cell4.innerHTML = '<p>x</p>'
+            row.appendChild(cell4)
             add_proxy_input.value = ''
         }
     })
@@ -158,6 +167,7 @@ ori.use('event store emitter storage', () => {
             let cells = proxyTable.rows.item(i).cells
             proxyArray.push({
                 ip: cells[1].innerHTML,
+                protocol: cells[2].innerHTML,
             })
         }
         ipc.send('save_setting', {
@@ -195,13 +205,15 @@ ori.use('event store emitter storage', () => {
             row.appendChild(cell1)
             let cell2 = row.insertCell(1)
             cell2.innerHTML = proxy.ip
-            let cell3 = document.createElement('td')
+            let cell3 = row.insertCell(2)
+            cell3.innerHTML = proxy.protocol
+            let cell4 = document.createElement('td')
             if (proxy.ip != 'Default IP') {
-                cell3.setAttribute('class', 'x_remove')
-                cell3.setAttribute('click-emit', `remove_proxy:${proxy.ip}`)
-                cell3.innerHTML = '<p>x</p>'
+                cell4.setAttribute('class', 'x_remove')
+                cell4.setAttribute('click-emit', `remove_proxy:${proxy.ip}`)
+                cell4.innerHTML = '<p>x</p>'
             }
-            row.appendChild(cell3)
+            row.appendChild(cell4)
         })
     })
 
