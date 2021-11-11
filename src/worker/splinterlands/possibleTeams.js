@@ -9,7 +9,7 @@ let availabilityCheck = (myCards, team) => {
     return teamCards.every(v => cards.includes(v))
 };
 
-const getBattlesWithRuleset = (matchDetails, account) => {
+const getBattlesWithRuleset = (matchDetails, account, token) => {
 
     matchDetails.rules = encodeURIComponent(matchDetails.rules);
     // matchDetails.rules = matchDetails.rules.
@@ -30,7 +30,13 @@ const getBattlesWithRuleset = (matchDetails, account) => {
     const host = 'https://nftauto.online/'
     const url = `api/v2/splinterlands/teams?${params}`;
     // console.log('API call: ', host+url)
-    return fetch(host+url)
+    console.log('token header', token)
+    return fetch(host+url, {
+        method: 'GET',
+        headers: {
+            'authorization': token
+        }
+    })
         .then(x => x && x.json())
         .then(data => data)
         .catch((e) => console.log('fetch ', e))
@@ -52,17 +58,19 @@ const defaultDataForNoTeams = {
     gold: "gold_0_12_224-4-c::50-1-c:47-1-c",
 }
 
-const getTeamsFromAPI = async (matchDetails, account) => {
+const getTeamsFromAPI = async (matchDetails, account, token) => {
 
-    let {data} = await getBattlesWithRuleset(matchDetails, account);
+    let {data} = await getBattlesWithRuleset(matchDetails, account, token);
+    console.log(matchDetails)
+    console.log(data)
+
 
     if ( data && data.length > 0) {
         return data
-    }
-    else {
+    } else {
         let rs = []
         if ( matchDetails.active.length > 0 ) {
-            matchDetails.active.forEach(splinter => {
+            matchDetails.active.split(',').forEach(splinter => {
                 if (defaultDataForNoTeams[splinter]) {
                     rs.push(defaultDataForNoTeams[splinter])
                 }
@@ -128,7 +136,7 @@ const getTeamFromString = (str) => {
     return data
 }
 
-const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr) => getTeamsFromAPI(matchDetails, account, config, ecr)
+const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr, token) => getTeamsFromAPI(matchDetails, account, config, ecr, token)
     .then(x => {
 
         return x.map(
@@ -150,7 +158,7 @@ const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr) => getTe
         )
     })
 
-const askFormation = function ({matchDetails, account, config, ecr}) {
+const askFormation = function ({matchDetails, account, config, ecr, token}) {
     const cards = matchDetails.myCards || basicCards;
     let cardIds = cards.map(card => card.split('-')[0] ? (+card.split('-')[0]) : '')
 
@@ -159,16 +167,16 @@ const askFormation = function ({matchDetails, account, config, ecr}) {
     delete matchDetails.myCards
     //arr(8) = [sum, team(6), color]
     //[ 145, 50, 51, 52, 141, '', '', 'black' ]
-    return cardsIdsforSelectedBattles(matchDetails, account, config, ecr)
+    return cardsIdsforSelectedBattles(matchDetails, account, config, ecr, token)
         .then(x => x.filter(team => availabilityCheck(cardIds, team))
             .map(element => element)//cards.cardByIds(element)
         )
 
 }
 
-const possibleTeams = async ({matchDetails, account, config, ecr}) => {
+const possibleTeams = async ({matchDetails, account, config, ecr, token}) => {
     let possibleTeams = [];
-    possibleTeams = await askFormation({matchDetails, account, config, ecr});
+    possibleTeams = await askFormation({matchDetails, account, config, ecr, token});
 
     if (possibleTeams.length > 0) {
         return possibleTeams;

@@ -24,7 +24,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
                 return await client.login(username, postingKey, true)
             }
 
-            const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config)
+            const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config, user.token)
             WSApi.Connect(user.name, user.token)
         }
     }

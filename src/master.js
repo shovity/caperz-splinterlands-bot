@@ -101,7 +101,7 @@ master.handleAddAccount = async (account) => {
     ) {
         account_list[accountIndex].proxy = app_setting.proxies[proxyIndex].ip
         account_list[accountIndex].status = ACCOUNT_STATUS.RUNNING
-        const proxy = account.proxy === 'Default IP' ? null : account.proxy
+        const proxy = account.proxy === 'Default IP' ? null : `${app_setting.proxies[proxyIndex].protocol}://${account.proxy}`
 
         master.add({
             worker: {
@@ -286,14 +286,14 @@ master.dequeue = async () => {
     const ecr = app_setting.ecr
     let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-    while (calculateECR(accountFront.lastRewardTime, accountFront.ecr) > ecr && proxyFree >= 0) {
+    while (calculateECR(accountFront?.lastRewardTime, accountFront?.ecr) > ecr && proxyFree >= 0) {
         master.priorityQueue.dequeue()
         await master.handleAddAccount(accountFront)
         
         let app_setting = await settings.get('app_setting')
         proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-        accountFront = master.priorityQueue.front().element
+        accountFront = master.priorityQueue.front()?.element
     }
 }
 

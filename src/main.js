@@ -136,7 +136,7 @@ ipc.on('save_setting', async (event, data) => {
         } else {
             return {
                 ip: p.ip,
-                count: 2,
+                count: 0,
                 status: 'active',
             }
         }
@@ -192,7 +192,7 @@ ipc.on('add_account', async (event, data) => {
         token: res.token,
         ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
         dec: res.balances.find((b) => b.token == 'DEC').balance,
-        status: 'NONE',
+        status: 'PENDING',
     })
 
     await master.dequeue()

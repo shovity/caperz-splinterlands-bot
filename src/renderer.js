@@ -30,23 +30,6 @@ ori.use('event store emitter storage', () => {
 
     store.g_username = user?.userData?.username || 'Unknow'
 
-    // window.btn_add.addEventListener('click', () => {
-    //     // add and run wotker instance
-    //     ipc.send('worker.add', {
-    //         worker: {
-    //             name: 'splinterlands',
-    //             // other worker param
-    //         },
-    //         account: 'lanlanpham',
-    //         username: 'lanlanpham',
-    //         password: '5Jhr6ChzQs4nwbhrtgc8NyLYNgtTYcoSabjdUuFTvTdcZyLFEh2',
-    //     })
-    // })
-
-    // window.btn_remove_all.addEventListener('click', () => {
-    //     ipc.send('worker.remove_all')
-    // })
-
     const tabs = [...document.querySelectorAll('[tab]')]
     const navs = [...document.querySelectorAll('.nav-item a')]
 
@@ -119,10 +102,10 @@ ori.use('event store emitter storage', () => {
         if (vl) {
             const reg =
                 /^.+\:.+\@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
-            if (!reg.test(vl)) {
-                showNotice('Invalid proxy format')
-                return
-            }
+            // if (!reg.test(vl)) {
+            //     showNotice('Invalid proxy format')
+            //     return
+            // }
             let rowLength = proxy_table.rows.length
             for (i = 1; i < rowLength; i++) {
                 let cells = proxy_table.rows.item(i).cells
