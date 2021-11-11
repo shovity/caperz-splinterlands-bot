@@ -123,11 +123,6 @@ ipc.on('worker.remove_all', (event, arg) => {
 })
 
 ipc.on('save_setting', async (event, data) => {
-<<<<<<< HEAD
-    const res = await settings.set('app_setting', data)
-    master.stopECR = data.ecr || 50
-    await master.dequeue()
-=======
     const oldSetting = await settings.get('app_setting')
     let newSetting = {
         ...oldSetting,
@@ -148,7 +143,6 @@ ipc.on('save_setting', async (event, data) => {
     })
     const res = await settings.set('app_setting', newSetting)
     master.dequeue()
->>>>>>> 27fa2dc1eaac848a0133464389da5974fcae7ead
 })
 
 ipc.on('add_account', async (event, data) => {
@@ -189,7 +183,7 @@ ipc.on('add_account', async (event, data) => {
         email: res.email || '',
     })
 
-    master.priorityQueue.enq({
+    master.priorityQueue.enqueue({
         username: res.name,
         email: res.email || '',
         power: res.collection_power,

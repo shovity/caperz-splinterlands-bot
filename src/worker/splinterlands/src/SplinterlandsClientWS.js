@@ -97,12 +97,11 @@ class WSSplinterlandsClient {
     if (!this.session_id)
       this.session_id = generatePassword(10);
     // console.log(Config.ws_url);
-    const config =  {
+    const config = {
       origin: 'https://splinterlands.com',
     }
-
     if (this.proxy) {
-      config.agent = new HttpsProxyAgent(`http://${this.proxy}`)
+      config.agent = new HttpsProxyAgent(`https://${this.proxy}`)
     }
     this.ws = new WebSocket(Config.ws_url, config);
     // console.log("Opening socket connection...");

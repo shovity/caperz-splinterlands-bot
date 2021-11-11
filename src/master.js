@@ -4,7 +4,7 @@
 const { Worker } = require('worker_threads')
 const path = require('path')
 const settings = require('electron-settings')
-const PriorityQueue = require('priorityqueuejs')
+const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
 
 const MESSAGE_STATUS = {
     INFO_UPDATE: "INFO_UPDATE",
@@ -35,7 +35,7 @@ const PRIORITY_POINT = {
 const master = {
     workers: [],
     state: null,
-    priorityQueue: new PriorityQueue((a, b) =>  {calculatePriority(a) - calculatePriority(b)}),
+    priorityQueue: new MaxPriorityQueue({ priority: (a) =>  calculatePriority(a) }),
     dailyIntervalId: null,
     hourlyDeqIntervalId: null,
     stopECR: 50,
@@ -118,7 +118,7 @@ master.handleAddAccount = async (account) => {
     } else {
         account_list[accountIndex].status = ACCOUNT_STATUS.PENDING
 
-        master.priorityQueue.enq(account)
+        master.priorityQueue.enqueue(account)
     }
 
     await master.change('account_list', { account_list })
@@ -138,6 +138,7 @@ master.add = async (workerData) => {
     worker.status = 'running'
 
     worker.instance.on('message', async (m) => {
+        console.log(m)
         const account_list = await settings.get('account_list')
         const app_setting = await settings.get('app_setting')
 
@@ -190,7 +191,7 @@ master.removeAll = async () => {
     }
 
     master.workers = []
-    master.priorityQueue = new PriorityQueue((a, b) => calculatePriority(a) - calculatePriority(b))
+    master.priorityQueue = new MaxPriorityQueue((a, b) => calculatePriority(a) - calculatePriority(b))
 
     clearInterval(master.dailyIntervalId)
     clearInterval(master.hourlyDeqIntervalId)
@@ -232,7 +233,7 @@ master.enqAccounts = async () => {
     let account_list = await settings.get('account_list')
 
     for (let i = 0; i < account_list.length; i++) {
-        await master.priorityQueue.enq(account_list[i])
+        await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i]))
     }
 
     await master.dequeue()
@@ -263,7 +264,7 @@ master.setIntervals = async () => {
             if ([ACCOUNT_STATUS.PENDING, ACCOUNT_STATUS.RUNNING].includes(account_list[i].status)) {
                 account_list[i].status = NONE
             }
-            await master.priorityQueue.enq(account_list[i])
+            await master.priorityQueue.enqueue(account_list[i])
         }
 
         await master.dequeue()
@@ -280,20 +281,19 @@ master.dequeue = async () => {
         return
     }
 
-    let accountPeek = master.priorityQueue.peek()
+    let accountFront = master.priorityQueue.front().element
     let app_setting = await settings.get('app_setting')
     const ecr = app_setting.ecr
     let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-    while (calculateECR(accountPeek.lastRewardTime, accountPeek.ecr) > ecr && proxyFree >= 0) {
-        master.priorityQueue.deq()
-
-        await master.handleAddAccount(accountPeek)
+    while (calculateECR(accountFront.lastRewardTime, accountFront.ecr) > ecr && proxyFree >= 0) {
+        master.priorityQueue.dequeue()
+        await master.handleAddAccount(accountFront)
         
         let app_setting = await settings.get('app_setting')
         proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
-        accountPeek = master.priorityQueue.peek()
+        accountFront = master.priorityQueue.front().element
     }
 }
 

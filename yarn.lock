@@ -9,6 +9,18 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@datastructures-js/heap@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@datastructures-js/heap/-/heap-3.2.0.tgz#d8fcdbf58c462c8a3f0fdfd9c6a57ca11505321e"
+  integrity sha512-FcU5ZAyb+VIOZz1HABsJUsbJi2ZyUDO7aoe97hq4d3tK3z8nMgwdxf5bO0gafR0ExFi18YTspntqHLzt4XOgnA==
+
+"@datastructures-js/priority-queue@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@datastructures-js/priority-queue/-/priority-queue-5.3.0.tgz#89afce79a19a3226c12cc6e9288f94ff60af26cf"
+  integrity sha512-0Dl0UooE9Uzz85qBP46HTjQHS5GN7NMNluN5/nMfxQAndG/1eNBJpBntLGT5QJarvMO3poLNBJzA3S4GPajp+w==
+  dependencies:
+    "@datastructures-js/heap" "^3.2.0"
+
 "@electron-forge/async-ora@6.0.0-beta.61":
   version "6.0.0-beta.61"
   resolved "https://registry.yarnpkg.com/@electron-forge/async-ora/-/async-ora-6.0.0-beta.61.tgz#155ad97d52d245893c91138cb53fffb76eec2202"
@@ -2198,6 +2210,11 @@ homedir-polyfill@^1.0.1:
   dependencies:
     parse-passwd "^1.0.0"
 
+hookapi@0.x:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/hookapi/-/hookapi-0.1.0.tgz#63e8f7b42bf2e2db012a6967384d5168dfe5d815"
+  integrity sha1-Y+j3tCvy4tsBKmlnOE1RaN/l2BU=
+
 hosted-git-info@^2.1.4:
   version "2.8.9"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
@@ -2216,6 +2233,13 @@ http-proxy-agent@^4.0.1:
     "@tootallnate/once" "1"
     agent-base "6"
     debug "4"
+
+http-proxy-client@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/http-proxy-client/-/http-proxy-client-0.1.0.tgz#ec2e4ec46cc231d3b007aa38bbaa88c11b23228c"
+  integrity sha1-7C5OxGzCMdOwB6o4u6qIwRsjIow=
+  dependencies:
+    hookapi "0.x"
 
 http-signature@~1.2.0:
   version "1.2.0"

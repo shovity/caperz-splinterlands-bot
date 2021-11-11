@@ -5,6 +5,7 @@ const { parentPort } = require('worker_threads')
 const qs = require("qs");
 var md5 = require("md5");
 const HttpsProxyAgent = require("https-proxy-agent");
+const HttpProxyAgent = require("http-proxy-agent");
 const Config = {
   api_url: "https://api2.splinterlands.com",
   ws_url: "wss://ws.splinterlands.com",
@@ -793,7 +794,7 @@ class SplinterLandsClient {
       if ( this.proxy ) {
         objectAxios.proxy = true
         objectAxios.httpsAgent = new HttpsProxyAgent(
-          `http://${this.proxy}`
+          `https://${this.proxy}`
         )
       }
 
