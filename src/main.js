@@ -24,7 +24,6 @@ const loadConfigData = async () => {
     account_list = account_list || []
     win.webContents.send('load_account', account_list)
     await settings.set('account_list', account_list)
-    const userData = await settings.get('user')
 }
 const createWindow = () => {
     // Create the browser window.
