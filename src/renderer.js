@@ -8,7 +8,7 @@ ori.use('event store emitter storage', () => {
     const user = storage.user
 
     const statusMapping = (status) => {
-        switch (status.toUpperCase()) {
+        switch (status ? status.toUpperCase() : 'NONE') {
             case 'PENDING':
                 return "<span class='status_pending'>Pending</span>"
             case 'RUNNING':
@@ -19,6 +19,18 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_done'>Done</span>"
             case 'STOPPED':
                 return "<span class='status_stopped'>Stopped</span>"
+            default:
+                return "<span class='status_none'>None</span>"
+        }
+    }
+    const matchStatusMapping = (status) => {
+        switch (status ? status.toUpperCase() : 'NONE') {
+            case 'MATCHING':
+                return "<span class='status_pending'>Matching</span>"
+            case 'MATCHED':
+                return "<span class='status_running'>Matched</span>"
+            case 'SUBMITTING_TEAM':
+                return "<span class='status_paused'>Submitting</span>"
             default:
                 return "<span class='status_none'>None</span>"
         }
@@ -83,7 +95,7 @@ ori.use('event store emitter storage', () => {
 
     event.listen('logout', () => {
         storage.user = null
-        ipc.send('setUser',null)
+        ipc.send('setUser', null)
         location.href = './sign-in.html'
     })
 
@@ -293,15 +305,28 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec || '--',
                 power: d.power || '--',
                 status: statusMapping(d.status),
+                matchStatus: matchStatusMapping(d.matchStatus),
             }
         })
         playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             responsive: true,
-            columns: [{ data: 'username' }, { data: 'ecr' }, { data: 'dec' }, { data: 'power' }, { data: 'status' }],
+            columns: [
+                { data: 'username' },
+                { data: 'ecr' },
+                { data: 'dec' },
+                { data: 'power' },
+                { data: 'status' },
+                { data: 'matchStatus' },
+            ],
             columnDefs: [{ orderable: false, targets: 0 }],
-            columnDefs: [{ width: '110px', targets: 4 }],
-            fixedColumns: true,
+            columnDefs: [
+                { width: '110px', targets: 1 },
+                { width: '110px', targets: 2 },
+                { width: '110px', targets: 3 },
+                { width: '110px', targets: 4 },
+                { width: '110px', targets: 5 },
+            ],
             order: [[1, 'desc']],
         })
         data.forEach((account) => {
@@ -331,6 +356,7 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec,
                 power: d.power || '--',
                 status: statusMapping(d.status),
+                matchStatus: matchStatusMapping(d.matchStatus),
             }
         })
         playerMonitoringTable.clear().draw()
