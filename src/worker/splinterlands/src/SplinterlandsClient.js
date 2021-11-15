@@ -29,7 +29,7 @@ const Config = {
   ],
 };
 
-const log = false
+const log = true
 
 steem.api.setOptions({
   transport: "http",
