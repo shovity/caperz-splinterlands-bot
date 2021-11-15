@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "package-win": "electron-packager . --overwrite --out='dist' --asar",
+    "package-win": "rm -rf dist installer && electron-packager . --overwrite --out='dist' --asar --icon=./src/assets/img/icon.ico",
+    "create-installer-win": "node build_installer.js",
     "package-mac": "electron-packager . --overwrite --asar --platform=darwin --arch=x64 --out=dist",
     "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite"
   },
