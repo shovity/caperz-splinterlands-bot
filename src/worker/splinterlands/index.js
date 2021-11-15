@@ -50,7 +50,7 @@ async function main() {
           return await api.login(username, password, true);
         }
 
-        const WSApi = new WSSplinterlandsClient(api, proxy, getUserQuestNew);
+        const WSApi = new WSSplinterlandsClient(api, proxy, getUserQuestNew, user.token);
         WSApi.Connect(user.name, user.token);
 
       }

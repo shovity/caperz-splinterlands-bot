@@ -30,7 +30,7 @@ const getBattlesWithRuleset = (matchDetails, account, token) => {
     const host = 'https://nftauto.online/'
     const url = `api/v2/splinterlands/teams?${params}`;
     // console.log('API call: ', host+url)
-    console.log('token header', token)
+    log && console.log('token header', token)
     return fetch(host+url, {
         method: 'GET',
         headers: {
@@ -58,7 +58,7 @@ const defaultDataForNoTeams = {
     gold: "gold_0_12_224-4-c::50-1-c:47-1-c",
 }
 
-const getTeamsFromAPI = async (matchDetails, account, token) => {
+const getTeamsFromAPI = async (matchDetails, account, config, ecr, token) => {
 
     let {data} = await getBattlesWithRuleset(matchDetails, account, token);
     console.log(matchDetails)
