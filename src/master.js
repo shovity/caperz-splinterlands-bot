@@ -102,8 +102,10 @@ master.handleAddAccount = async (account) => {
     ) {
         account_list[accountIndex].proxy = app_setting.proxies[proxyIndex].ip
         account_list[accountIndex].status = ACCOUNT_STATUS.RUNNING
-        const proxy = account.proxy === 'Default IP' ? null : `${app_setting.proxies[proxyIndex].protocol}://${account.proxy}`
-
+        const proxy = account_list[accountIndex].proxy  === 'Default IP' ? 
+            null : 
+            `${app_setting.proxies[proxyIndex].protocol}://${account_list[accountIndex].proxy}`
+            
         master.add({
             worker: {
                 name: 'splinterlands',
