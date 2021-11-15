@@ -29,7 +29,7 @@ const Config = {
   ],
 };
 
-const log = true
+const log = false
 
 steem.api.setOptions({
   transport: "http",
@@ -47,6 +47,13 @@ const STATUS = {
   RUNNING: "RUNNING",
   DONE: "DONE",
 }
+
+const MATCH_STATUS = {
+  MATCHING: 'MATCHING',
+  MATCHED: 'MATCHED',
+  SUBMITTING: 'SUBMITTING',
+}
+
 const TYPE = {
   INFO_UPDATE: "INFO_UPDATE",
   STATUS_UPDATE: "STATUS_UPDATE",
@@ -117,6 +124,7 @@ class SplinterLandsClient {
       rating: this.getRating(),
       dec: this.getBalance("DEC"),
       lastRewardTime: this.getLastRewardTime(),
+      matchStatus: MATCH_STATUS.MATCHING
     })
   }
 

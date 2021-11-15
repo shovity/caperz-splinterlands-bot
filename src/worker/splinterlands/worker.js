@@ -6,7 +6,7 @@ const defaultConfig = {
     questECR: 60,
 }
 
-async function main({ username, password, account, emailPass, proxy, config = null, postingKey }) {
+async function main({ username, password, account, emailPass, proxy, config = null, postingKey, spsToken }) {
 
     config = config || defaultConfig
     const client = new SplinterLandsClient(proxy, config)
@@ -19,13 +19,16 @@ async function main({ username, password, account, emailPass, proxy, config = nu
 
         await client.updateSettings()
 
+        let getUserQuestNew
+
         if (client.user.starter_pack_purchase) {
-            const getUserQuestNew = async () => {
+            getUserQuestNew = async () => {
                 return await client.login(username, postingKey, true)
             }
-            const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config, user.token)
-            WSApi.Connect(user.name, user.token)
         }
+
+        const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config, spsToken)
+        WSApi.Connect(user.name, user.token)
     }
 }
 

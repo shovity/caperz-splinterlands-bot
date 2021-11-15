@@ -88,6 +88,7 @@ master.handleAddAccount = async (account) => {
     let account_list = await settings.get('account_list')
     const accountIndex = account_list.findIndex(a => a.username === account.username)
     const app_setting = await settings.get('app_setting')
+    const user = await settings.get('user')
 
     const config = {
         ecr:  app_setting.ecr
@@ -112,6 +113,7 @@ master.handleAddAccount = async (account) => {
             token: account.token,
             proxy,
             config,
+            spsToken: user.token
         })
 
         app_setting.proxies[proxyIndex].count++
@@ -147,6 +149,7 @@ master.add = async (workerData) => {
             account_list[accountIndex].rating = m.rating
             account_list[accountIndex].dec = m.dec
             account_list[accountIndex].lastRewardTime = m.lastRewardTime
+            account_list[accountIndex].matchStatus = m.matchStatus || 'NONE'
 
             settings.set('account_list', account_list)
 

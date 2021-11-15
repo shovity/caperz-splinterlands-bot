@@ -1,6 +1,13 @@
 const WebSocket = require('ws');
 const ask = require('../possibleTeams');
 const HttpsProxyAgent = require("https-proxy-agent");
+const { parentPort } = require('worker_threads')
+
+const MATCH_STATUS = {
+  MATCHING: 'MATCHING',
+  MATCHED: 'MATCHED',
+  SUBMITTING: 'SUBMITTING'
+}
 
 const Config = {
   api_url: 'https://api2.splinterlands.com',
@@ -16,7 +23,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = true
+const log = false
 
 const activeObj = {
   gold: 'dragon',
@@ -73,7 +80,7 @@ function generatePassword(length, rng) {
 
 class WSSplinterlandsClient {
 
-  constructor(client, proxy, getUserQuestNew, config, userToken) {
+  constructor(client, proxy, getUserQuestNew, config, spsToken) {
     this.ws = null;
     this.ping_interval = null;
     this.session_id = null;
@@ -85,7 +92,7 @@ class WSSplinterlandsClient {
     this.getUserQuestNew = getUserQuestNew
     this.config = config || {};
     this.startQuest = false
-    this.userToken = userToken
+    this.spsToken = spsToken
   }
 
   Connect(player, token, new_account) {
@@ -219,7 +226,7 @@ class WSSplinterlandsClient {
       }
     }
 
-    if (quest.splinter === 'sneak') {
+    if (quest?.splinter === 'sneak') {
       this.client.RefreshDailyQuest(async (data) => {
         // await this.getUserQuestNew()
         await NeWQuest()
@@ -227,10 +234,11 @@ class WSSplinterlandsClient {
       })
     }
 
-    if (quest) {
+    
+    if (quest || ECR > this.config.ecr) {
       //ecr: 70, // stop auto when ecr = 70%
       //     questECR: 75,
-      if ( !(quest.completed === quest.total) && ECR <= this.config.questECR) {
+      if ( !(quest?.completed === quest?.total) && ECR <= this.config.questECR) {
         // start Quest
         this.startQuest = true
       }
@@ -238,9 +246,10 @@ class WSSplinterlandsClient {
         this.startQuest = false
       }
 
-      if (!(quest.completed === quest.total) || ECR > this.config.ecr) {
-        // log && console.log("Start ranked match, ECR=", ECR)
+      if (!(quest?.completed === quest?.total) || ECR > this.config.ecr) {
+        // p && console.log("Start ranked match, ECR=", ECR)
         this.client.updatePlayerInfo()
+
         this.client.findMatch('Ranked');
       }
       else {
@@ -356,6 +365,17 @@ class WSSplinterlandsClient {
 
 
   async match_found(data) {
+    parentPort.postMessage({
+      type: "INFO_UPDATE",
+      status: this.client.status,
+      player: this.client.user.name,
+      ecr: this.client.getEcr(),
+      rating: this.client.getRating(),
+      dec: this.client.getBalance("DEC"),
+      lastRewardTime: this.client.getLastRewardTime(),
+      matchStatus: MATCH_STATUS.MATCHED,
+    })
+
     if (this.client.in_battle && data.status !== 6) {
       this.client._currentBattle = data;
       this.client.GetDetailEnemyFound(data);
@@ -415,7 +435,7 @@ class WSSplinterlandsClient {
         account: this.client.user.name,
         config: this.client.config,
         ecr,
-        token: this.userToken,
+        spsToken: this.spsToken,
       });
 
       if (possibleTeams && possibleTeams.length) {
@@ -444,8 +464,18 @@ class WSSplinterlandsClient {
         // let uidStarter = `starter-${card_details.id}-${generatePassword(5)}`
 
         log && console.log('current ECR', this.client.getEcr());
-
+        //TODO Submit Team
         this.client.SubmitTeam(idMatch, null, summoner, monsters, 'Ranked');
+        parentPort.postMessage({
+          type: "INFO_UPDATE",
+          status: this.client.status,
+          player: this.client.user.name,
+          ecr: this.client.getEcr(),
+          rating: this.client.getRating(),
+          dec: this.client.getBalance("DEC"),
+          lastRewardTime: this.client.getLastRewardTime(),
+          matchStatus: MATCH_STATUS.SUBMITTING,
+        })
       }
       else {
         log && console.log('Empty teams to play:', matchDetails)

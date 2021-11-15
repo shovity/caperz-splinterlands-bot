@@ -29,7 +29,7 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_pending'>Matching</span>"
             case 'MATCHED':
                 return "<span class='status_running'>Matched</span>"
-            case 'SUBMITTING_TEAM':
+            case 'SUBMITTING':
                 return "<span class='status_paused'>Submitting</span>"
             default:
                 return "<span class='status_none'>None</span>"
