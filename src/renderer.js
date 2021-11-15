@@ -83,6 +83,7 @@ ori.use('event store emitter storage', () => {
 
     event.listen('logout', () => {
         storage.user = null
+        ipc.send('setUser',null)
         location.href = './sign-in.html'
     })
 

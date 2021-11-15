@@ -24,6 +24,7 @@ const loadConfigData = async () => {
     account_list = account_list || []
     win.webContents.send('load_account', account_list)
     await settings.set('account_list', account_list)
+    const userData = await settings.get('user')
 }
 const createWindow = () => {
     // Create the browser window.
@@ -252,5 +253,8 @@ master.change = async (name, param) => {
     }
 }
 
+ipc.on('setUser', (event, data) => {
+    settings.set('user', data)
+})
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

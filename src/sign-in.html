@@ -102,7 +102,10 @@
             token: data.token,
             userData: data.user
           }
-
+          ipc.send('setUser', {
+            token: data.token,
+            userData: data.user
+          })
           location.href = './index.html'
         })
         .catch(function (error) {
