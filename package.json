@@ -9,7 +9,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "package-win": "rm -rf dist installer && electron-packager . --overwrite --out='dist' --asar --icon=./src/assets/img/icon.ico",
+    "package-win": "rm -rf dist installer && electron-packager . --overwrite --out='dist' --icon=./src/assets/img/icon.ico",
     "create-installer-win": "node build_installer.js",
     "package-mac": "electron-packager . --overwrite --asar --platform=darwin --arch=x64 --out=dist",
     "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite"
@@ -53,7 +53,6 @@
     "electron-squirrel-startup": "^1.0.0",
     "eosjs-ecc": "^4.0.7",
     "form-data": "^4.0.0",
-    "http-proxy-client": "^0.1.0",
     "https-proxy-agent": "^5.0.0",
     "md5": "^2.3.0",
     "node-fetch": "^1.7.3",
