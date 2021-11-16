@@ -1,7 +1,7 @@
 const { MSICreator } = require('electron-wix-msi')
 const path = require('path')
 // Step 1: Instantiate the MSICreator
-const APP_DIR = path.resolve(__dirname, './dist/NFTauto Desktop-win32-x64')
+const APP_DIR = path.resolve(__dirname, './dist/NFTauto Desktop v2.0.1-win32-x64')
 const OUT_DIR = path.resolve(__dirname, './installer')
 const msiCreator = new MSICreator({
     appDirectory: APP_DIR,
@@ -9,7 +9,7 @@ const msiCreator = new MSICreator({
     exe: 'NFTauto Desktop v2.0.1',
     name: 'SPS NFTAuto Desktop v2.0.1',
     manufacturer: 'Caper Team',
-    version: '1.0.0',
+    version: '2.0.1',
     outputDirectory: OUT_DIR,
     ui: {
         chooseDirectory: true,

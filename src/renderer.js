@@ -383,4 +383,7 @@ ori.use('event store emitter storage', () => {
             startButton.removeClass('d-none')
         }
     })
+    ipc.on('log', (event, data) => {
+        console.log(data)
+    })
 })
