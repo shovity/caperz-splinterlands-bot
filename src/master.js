@@ -105,8 +105,8 @@ master.handleAddAccount = async (account) => {
         const proxy = account_list[accountIndex].proxy  === 'Default IP' ? 
             null : 
             `${app_setting.proxies[proxyIndex].protocol}://${account_list[accountIndex].proxy}`
-            
-        master.add({
+
+        await master.change('log', {
             worker: {
                 name: 'splinterlands',
             },
@@ -117,6 +117,21 @@ master.handleAddAccount = async (account) => {
             config,
             spsToken: user.token
         })
+        try {
+            await master.add({
+                worker: {
+                    name: 'splinterlands',
+                },
+                username: account.username,
+                postingKey: account.postingKey,
+                token: account.token,
+                proxy,
+                config,
+                spsToken: user.token
+            })
+        } catch (e) {
+            await master.change('log', e)
+        }
 
         app_setting.proxies[proxyIndex].count++
     } else {
@@ -135,9 +150,11 @@ master.add = async (workerData) => {
         return
     }
 
+    await master.change('log', 'add worker')
+
     const worker = {}
 
-    worker.instance = new Worker(path.join(__dirname, 'worker/index.js'), { workerData })
+    worker.instance = new Worker(path.join(__dirname + '/worker/index.js'), { workerData })
 
     worker.status = 'running'
 
@@ -172,6 +189,8 @@ master.add = async (workerData) => {
 
                 worker.instance.terminate()
             }
+        } else if (m.type === 'MESSAGE') {
+            await master.change('log', m.data)
         }
     })
 

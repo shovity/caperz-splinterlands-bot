@@ -249,6 +249,9 @@ master.change = async (name, param) => {
         case 'master_state':
             win.webContents.send('modify', { state: param.state })
             break
+        case 'log':
+            logToDevtool(param)
+            break
     }
 }
 
