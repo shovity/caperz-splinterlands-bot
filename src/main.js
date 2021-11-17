@@ -19,10 +19,10 @@ const loadConfigData = async () => {
         proxies: [{ ip: 'Default IP', count: 0, protocol: 'https', status: 'active' }],
     }
     await settings.set('app_setting', app_setting)
-    win.webContents.send('load_setting', app_setting)
+    win.webContents.send('setting.load', app_setting)
     let account_list = await settings.get('account_list')
     account_list = account_list || []
-    win.webContents.send('load_account', account_list)
+    win.webContents.send('account.load', account_list)
     await settings.set('account_list', account_list)
 }
 const createWindow = () => {
@@ -56,11 +56,11 @@ const createWindow = () => {
 
 const onChangeAccountList = async () => {
     const account_list = await settings.get('account_list')
-    win.webContents.send('redraw_player_table', account_list)
+    win.webContents.send('player_table.redraw', account_list)
 }
 const onChangeProxyList = async () => {
     const app_setting = await settings.get('app_setting')
-    win.webContents.send('redraw_proxy_table', app_setting)
+    win.webContents.send('proxy_table.redraw', app_setting)
 }
 
 // This method will be called when Electron has finished
@@ -122,7 +122,7 @@ ipc.on('worker.remove_all', (event, arg) => {
     master.removeAll()
 })
 
-ipc.on('save_setting', async (event, data) => {
+ipc.on('setting.save', async (event, data) => {
     const oldSetting = await settings.get('app_setting')
     let newSetting = {
         ...oldSetting,
@@ -146,7 +146,7 @@ ipc.on('save_setting', async (event, data) => {
     master.dequeue()
 })
 
-ipc.on('add_account', async (event, data) => {
+ipc.on('account.add', async (event, data) => {
     let res
     const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
     try {
@@ -156,7 +156,7 @@ ipc.on('add_account', async (event, data) => {
             res = await utils.login(data.username, data.password)
         }
     } catch (error) {
-        win.webContents.send('add_account_failed', {
+        win.webContents.send('account.add_failed', {
             byEmail: emailRegex.test(data.username),
             player: data.username,
             email: data.username || '',
@@ -165,7 +165,6 @@ ipc.on('add_account', async (event, data) => {
     }
     let list = await settings.get('account_list')
     let newList = list || []
-    console.log(res)
     newList.push({
         username: res.name,
         email: res.email || '',
@@ -179,7 +178,7 @@ ipc.on('add_account', async (event, data) => {
         status: 'NONE',
     })
     await settings.set('account_list', newList)
-    win.webContents.send('add_account_success', {
+    win.webContents.send('account.add_success', {
         byEmail: emailRegex.test(data.username),
         player: res.name,
         email: res.email || '',
@@ -205,16 +204,27 @@ ipc.on('add_account', async (event, data) => {
     }
 })
 
-ipc.on('delete_account', async (event, data) => {
+ipc.on('delete.account', async (event, data) => {
     let list = await settings.get('account_list')
     let newList = list.filter((account) => account.username != data && account.email != data)
     await settings.set('account_list', newList)
 })
 
-ipc.on('redraw_player_table', () => {
+ipc.on('player_table.redraw', () => {
     onChangeAccountList()
 })
-ipc.on('redraw_proxy_table', () => {
+
+ipc.on('player_table.reorder', async (event, data) => {
+    const account_list = await settings.get('account_list')
+    const newList = []
+    data.forEach((username) => {
+        const acc = account_list.find((a) => username == a.username)
+        newList.push(acc)
+    })
+    await settings.set('account_list', newList)
+})
+
+ipc.on('proxy_table.redraw', () => {
     onChangeProxyList()
 })
 
@@ -261,5 +271,5 @@ ipc.on('setUser', (event, data) => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 const logToDevtool = (data) => {
-    win.webContents.send('log',data)
+    win.webContents.send('log', data)
 }

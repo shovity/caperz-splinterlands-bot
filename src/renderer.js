@@ -61,16 +61,16 @@ ori.use('event store emitter storage', () => {
         enterKeypress(e, () => password.focus())
     })
     password.addEventListener('keypress', (e) => {
-        enterKeypress(e, () => event.emit('add_account'))
+        enterKeypress(e, () => event.emit('account.add'))
     })
     add_proxy_input.addEventListener('keypress', (e) => {
-        enterKeypress(e, () => event.emit('add_proxy'))
+        enterKeypress(e, () => event.emit('proxy.add'))
     })
 
     event.listen('select_tab', (name) => {
         if (name == 'monitoring') {
-            ipc.send('redraw_player_table')
-            ipc.send('redraw_proxy_table')
+            ipc.send('player_table.redraw')
+            ipc.send('proxy_table.redraw')
         }
         for (const nav of navs) {
             nav.removeClass('active')
@@ -99,7 +99,7 @@ ori.use('event store emitter storage', () => {
         location.href = './sign-in.html'
     })
 
-    event.listen('remove_proxy', (proxy) => {
+    event.listen('proxy.remove', (proxy) => {
         let rowLength = proxy_table.rows.length
         for (i = 1; i < rowLength; i++) {
             let cells = proxy_table.rows.item(i).cells
@@ -109,8 +109,14 @@ ori.use('event store emitter storage', () => {
             }
         }
     })
+    event.listen('account.start', (account) => {
+        ipc.send('account.start', account)
+    })
+    event.listen('account.stop', (account) => {
+        ipc.send('account.stop', account)
+    })
 
-    event.listen('add_proxy', () => {
+    event.listen('proxy.add', () => {
         let vl = add_proxy_input.value
         if (vl) {
             if (vl.includes('http://')) {
@@ -145,14 +151,14 @@ ori.use('event store emitter storage', () => {
             cell3.innerHTML = protocol.value
             let cell4 = document.createElement('td')
             cell4.setAttribute('class', 'x_remove')
-            cell4.setAttribute('click-emit', `remove_proxy:${vl}`)
+            cell4.setAttribute('click-emit', `proxy.remove:${vl}`)
             cell4.innerHTML = '<p>x</p>'
             row.appendChild(cell4)
             add_proxy_input.value = ''
         }
     })
 
-    event.listen('save_setting', () => {
+    event.listen('setting.save', () => {
         let ecr = document.getElementById('ecr')
         let startQuestEcr = document.getElementById('start_quest_ecr')
         let botPerIp = document.getElementById('bot_per_ip')
@@ -166,7 +172,7 @@ ori.use('event store emitter storage', () => {
                 protocol: cells[2].innerHTML,
             })
         }
-        ipc.send('save_setting', {
+        ipc.send('setting.save', {
             ecr: ecr.value,
             startQuestEcr: startQuestEcr.value,
             botPerIp: botPerIp.value,
@@ -175,7 +181,7 @@ ori.use('event store emitter storage', () => {
         showNotice('saved')
     })
 
-    ipc.on('load_setting', (event, data) => {
+    ipc.on('setting.load', (event, data) => {
         if (!data) {
             return
         }
@@ -205,14 +211,14 @@ ori.use('event store emitter storage', () => {
             let cell4 = document.createElement('td')
             if (proxy.ip != 'Default IP') {
                 cell4.setAttribute('class', 'x_remove')
-                cell4.setAttribute('click-emit', `remove_proxy:${proxy.ip}`)
+                cell4.setAttribute('click-emit', `proxy.remove:${proxy.ip}`)
                 cell4.innerHTML = '<p>x</p>'
             }
             row.appendChild(cell4)
         })
     })
 
-    event.listen('add_account', () => {
+    event.listen('account.add', () => {
         if (username.value && password.value) {
             const name = username.value.trim().toLowerCase()
             let rowLength = account_table.rows.length
@@ -225,7 +231,7 @@ ori.use('event store emitter storage', () => {
                     return
                 }
             }
-            ipc.send('add_account', {
+            ipc.send('account.add', {
                 username: name,
                 password: password.value,
             })
@@ -250,7 +256,7 @@ ori.use('event store emitter storage', () => {
             }
             let cell4 = document.createElement('td')
             cell4.setAttribute('class', 'x_remove')
-            cell4.setAttribute('click-emit', `remove_account:${name}`)
+            cell4.setAttribute('click-emit', `account.remove:${name}`)
             cell4.innerHTML = '<p>x</p>'
             row.appendChild(cell4)
             showNotice(name + ' is added to verifying!')
@@ -259,7 +265,7 @@ ori.use('event store emitter storage', () => {
         }
     })
 
-    ipc.on('add_account_success', (event, data) => {
+    ipc.on('account.add_success', (event, data) => {
         let row = document.getElementById(data.byEmail ? data.email : data.player)
         row.removeClass('verify_pending')
         if (data.byEmail) {
@@ -268,32 +274,32 @@ ori.use('event store emitter storage', () => {
             row.children[2].innerHTML = data.email || '--'
         }
     })
-    ipc.on('add_account_failed', (event, data) => {
+    ipc.on('account.add_failed', (event, data) => {
         let row = document.getElementById(data.byEmail ? data.email : data.player)
         row.removeClass('verify_pending')
         row.addClass('verify_failed')
         showNotice('Cannot verify ' + data.byEmail ? data.email : data.player + '.Please try again!')
     })
 
-    event.listen('remove_account', (account) => {
+    event.listen('account.remove', (account) => {
         let row = document.getElementById(account)
-        ipc.send('delete_account', account)
+        ipc.send('delete.account', account)
         row.remove()
     })
 
-    event.listen('start', () => {
+    event.listen('account.start_all', () => {
         startButton.addClass('d-none')
         stopButton.removeClass('d-none')
         ipc.send('worker.start')
     })
 
-    event.listen('stop', () => {
+    event.listen('account.stop_all', () => {
         startButton.removeClass('d-none')
         stopButton.addClass('d-none')
         ipc.send('worker.stop')
     })
 
-    ipc.on('load_account', (event, data) => {
+    ipc.on('account.load', (event, data) => {
         if (!data) {
             return
         }
@@ -304,7 +310,9 @@ ori.use('event store emitter storage', () => {
                 ecr: d.ecr || '--',
                 dec: d.dec || '--',
                 power: d.power || '--',
+                rating: d.rating || '--',
                 status: statusMapping(d.status),
+                stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
             }
         })
@@ -316,18 +324,43 @@ ori.use('event store emitter storage', () => {
                 { data: 'ecr' },
                 { data: 'dec' },
                 { data: 'power' },
+                { data: 'rating' },
                 { data: 'status' },
                 { data: 'matchStatus' },
+                { data: 'stt' },
             ],
-            columnDefs: [{ orderable: false, targets: 0 }],
+
             columnDefs: [
-                { width: '110px', targets: 1 },
-                { width: '110px', targets: 2 },
-                { width: '110px', targets: 3 },
-                { width: '110px', targets: 4 },
+                { orderable: false, targets: 0 },
+                { width: '80px', targets: 1 },
+                { width: '80px', targets: 2 },
+                { width: '80px', targets: 3 },
+                { width: '90px', targets: 4 },
                 { width: '110px', targets: 5 },
+                { width: '110px', targets: 6 },
+                {
+                    width: '70px',
+                    targets: 7,
+                    render: function (data, type, row) {
+                        console.log(data)
+                        if (data.status == 'RUNNING' || data.status == 'PENDING') {
+                            return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
+                            <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
+                        </button>`
+                        } else {
+                            return `<button class="btn btn-primary active" click-emit="account.start:${data.username}">
+                            <img src="./assets/img/play.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
+                        </button>`
+                        }
+                    },
+                },
             ],
-            order: [[1, 'desc']],
+            order: [],
+        })
+        $('#player_monitoring_table').on('order.dt', function () {
+            const dataTable = playerMonitoringTable.rows().data().toArray()
+            const newList = dataTable.map((d) => d.username)
+            ipc.send('player_table.reorder', newList)
         })
         data.forEach((account) => {
             let row = account_table.insertRow(1)
@@ -342,20 +375,22 @@ ori.use('event store emitter storage', () => {
             cell3.innerHTML = account.email || '--'
             let cell4 = document.createElement('td')
             cell4.setAttribute('class', 'x_remove')
-            cell4.setAttribute('click-emit', `remove_account:${account.username}`)
+            cell4.setAttribute('click-emit', `account.remove:${account.username}`)
             cell4.innerHTML = '<p>x</p>'
             row.appendChild(cell4)
         })
     })
 
-    ipc.on('redraw_player_table', (event, data) => {
+    ipc.on('player_table.redraw', (event, data) => {
         const tableData = data.map((d) => {
             return {
                 username: d.username,
                 ecr: d.ecr,
                 dec: d.dec,
                 power: d.power || '--',
+                rating: d.rating || '--',
                 status: statusMapping(d.status),
+                stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
             }
         })
@@ -363,7 +398,7 @@ ori.use('event store emitter storage', () => {
         playerMonitoringTable.rows.add(tableData) // Add new data
         playerMonitoringTable.columns.adjust().draw()
     })
-    ipc.on('redraw_proxy_table', (event, data) => {
+    ipc.on('proxy_table.redraw', (event, data) => {
         const tableData = data.proxies.map((d) => {
             return {
                 ip: d.ip,

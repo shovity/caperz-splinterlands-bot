@@ -44,16 +44,16 @@
             <div class="container tab-header">
                 <div class="d-flex justify-content-between">
                     <h3>Dashboard</h3>
-                    <button id="startButton" class="btn btn-primary active" click-emit="start">
+                    <button id="startButton" class="btn btn-primary active" click-emit="account.start_all">
                         <div class="d-flex align-items-center">
                             <img src="./assets/img/play.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
-                            <span>Start</span>
+                            <span>Start All</span>
                         </div>
                     </button>
-                    <button id="stopButton" class="btn btn-primary active d-none" click-emit="stop">
+                    <button id="stopButton" class="btn btn-primary active d-none" click-emit="account.stop_all">
                         <div class="d-flex align-items-center">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
-                            <span>Running</span>
+                            <span>Pause All</span>
                         </div>
                     </button>
                 </div>
@@ -69,8 +69,10 @@
                             <th class="th-sm">ECR (%)</th>
                             <th class="th-sm">DEC</th>
                             <th class="th-sm">Power</th>
+                            <th class="th-sm">Rating</th>
                             <th class="th-sm">Status</th>
                             <th class="th-sm">Match status</th>
+                            <th class="th-sm">Actions</th>
                           </tr>
                         </thead>
                         <tbody>      
@@ -110,7 +112,7 @@
                         <input type="password" class="form-control" id="password">
                     </div>
                     <div class="col-md-3 mb-3 d-flex align-items-end">
-                        <button class="btn btn-primary active" style="min-width: 94px;" click-emit="add_account" id='add_player_button'>Add player</button>
+                        <button class="btn btn-primary active" style="min-width: 94px;" click-emit="account.add" id='add_player_button'>Add player</button>
                         
                     </div>
                 </div>
@@ -139,7 +141,7 @@
             <div class="container tab-header">
                 <div class="d-flex justify-content-between">
                     <h3>Settings</h3>
-                    <button class="btn btn-primary active" click-emit="save_setting">Save settings</button>
+                    <button class="btn btn-primary active" click-emit="setting.save">Save settings</button>
                 </div>
             </div>
             <div class="container mt-3">
@@ -187,7 +189,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 mb-3 d-flex align-items-end">
-                        <button class="btn btn-primary active" click-emit="add_proxy">Add Proxy</button>
+                        <button class="btn btn-primary active" click-emit="proxy.add">Add Proxy</button>
                     </div>
                 </div>
                 <HR>
