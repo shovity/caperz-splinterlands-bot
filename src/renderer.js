@@ -300,6 +300,7 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('account.load', (event, data) => {
+        console.log(data)
         if (!data) {
             return
         }
@@ -311,6 +312,7 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec || '--',
                 power: d.power || '--',
                 rating: d.rating || '--',
+                quest: d.quest ? `${d.quest}/5`:'--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
@@ -325,6 +327,7 @@ ori.use('event store emitter storage', () => {
                 { data: 'dec' },
                 { data: 'power' },
                 { data: 'rating' },
+                { data: 'quest' },
                 { data: 'status' },
                 { data: 'matchStatus' },
                 { data: 'stt' },
@@ -336,11 +339,12 @@ ori.use('event store emitter storage', () => {
                 { width: '80px', targets: 2 },
                 { width: '80px', targets: 3 },
                 { width: '90px', targets: 4 },
-                { width: '110px', targets: 5 },
+                { width: '90px', targets: 5 },
                 { width: '110px', targets: 6 },
+                { width: '110px', targets: 7 },
                 {
                     width: '70px',
-                    targets: 7,
+                    targets: 8,
                     render: function (data, type, row) {
                         console.log(data)
                         if (data.status == 'RUNNING' || data.status == 'PENDING') {
@@ -389,6 +393,7 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec,
                 power: d.power || '--',
                 rating: d.rating || '--',
+                quest: d.quest ? `${d.quest}/5`:'--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
