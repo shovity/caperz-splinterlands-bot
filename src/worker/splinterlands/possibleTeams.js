@@ -60,26 +60,35 @@ const defaultDataForNoTeams = {
     gold: "gold_0_12_224-4-c::50-1-c:47-1-c",
 }
 
+const getTeamDefault = (matchDetails) => {
+    let rs = []
+    if ( matchDetails.active.length > 0 ) {
+        matchDetails.active.split(',').forEach(splinter => {
+            if (defaultDataForNoTeams[splinter]) {
+                rs.push(defaultDataForNoTeams[splinter])
+            }
+        })
+    }
+    return rs
+}
+
 const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken) => {
 
-    let {data} = await getBattlesWithRuleset(matchDetails, account, spsToken);
-    log && console.log('matchDetails', matchDetails)
-    log && console.log('data', data)
+    try {
+        let {data} = await getBattlesWithRuleset(matchDetails, account, spsToken);
+        log && console.log('matchDetails', matchDetails)
+        log && console.log('data', data)
 
-
-    if ( data && data.length > 0) {
-        return data
-    } else {
-        let rs = []
-        if ( matchDetails.active.length > 0 ) {
-            matchDetails.active.split(',').forEach(splinter => {
-                if (defaultDataForNoTeams[splinter]) {
-                    rs.push(defaultDataForNoTeams[splinter])
-                }
-            })
+        if ( data && data.length > 0) {
+            return data
+        } else {
+            return getTeamDefault(matchDetails)
         }
-        return rs
     }
+    catch (e) {
+        return getTeamDefault(matchDetails)
+    }
+
 }
 
 //27-1-c
