@@ -21,7 +21,7 @@ const loadConfigData = async () => {
     await settings.set('app_setting', app_setting)
     win.webContents.send('setting.load', app_setting)
     let account_list = await settings.get('account_list')
-    account_list = account_list || []
+    account_list = account_list ? account_list.filter(e => e) || []
     win.webContents.send('account.load', account_list)
     await settings.set('account_list', account_list)
 }
