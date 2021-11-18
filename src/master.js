@@ -43,11 +43,11 @@ const master = {
     change: () => {},
 }
 
-const calculatePriority = (account) => {
+const calculatePriority = (account, accountIndex = 0) => {
     let priority = 0
-    const ecrNow = calculateECR(account.lastRewardTime, account.ecr)
+    // const ecrNow = calculateECR(account.lastRewardTime, account.ecr)
 
-    priority += ecrNow
+    // priority += ecrNow
 
     switch (account.status) {
         case ACCOUNT_STATUS.PAUSED: 
@@ -58,9 +58,11 @@ const calculatePriority = (account) => {
             break
     }
 
-    if (ecrNow > master.stopECR) {
-        priority += PRIORITY_POINT.GREATER_STOP_ECR
-    }
+    // if (ecrNow > master.stopECR) {
+    //     priority += PRIORITY_POINT.GREATER_STOP_ECR
+    // }
+
+    priority -= accountIndex
 
     return priority
 }
@@ -118,7 +120,7 @@ master.handleAddAccount = async (account) => {
             spsToken: user.token
         })
         try {
-            await master.add({
+            const worker = await master.add({
                 worker: {
                     name: 'splinterlands',
                 },
@@ -129,6 +131,8 @@ master.handleAddAccount = async (account) => {
                 config,
                 spsToken: user.token
             })
+
+            account_list[accountIndex].workerId = worker.threadId
         } catch (e) {
             await master.change('log', e)
         }
@@ -164,11 +168,29 @@ master.add = async (workerData) => {
 
         if (m.type === MESSAGE_STATUS.INFO_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
-            account_list[accountIndex].ecr = m.ecr
-            account_list[accountIndex].rating = m.rating
-            account_list[accountIndex].dec = m.dec
-            account_list[accountIndex].lastRewardTime = m.lastRewardTime
-            account_list[accountIndex].matchStatus = m.matchStatus || 'NONE'
+            if (m.ecr) {
+                account_list[accountIndex].ecr = m.ecr
+            }
+
+            if (m.rating) {
+                account_list[accountIndex].rating = m.rating
+            }
+
+            if (m.dec) {
+                account_list[accountIndex].dec = m.dec
+            }
+
+            if (m.lastRewardTime) {
+                account_list[accountIndex].lastRewardTime = m.lastRewardTime
+            }
+
+            if (m.matchStatus) {
+                account_list[accountIndex].matchStatus = m.matchStatus || 'NONE'
+            }
+
+            if (m.quest) {
+                account_list[accountIndex].quest = m.quest
+            }
 
             settings.set('account_list', account_list)
 
@@ -201,10 +223,22 @@ master.add = async (workerData) => {
     worker.instance.postMessage('im master')
 
     master.workers.push(worker)
+
+    return worker.instance
 }
 
-master.remove = async () => {
+master.remove = async (account) => {
+    const account_list = await settings.get('account_list')
+    const accountIndex = account_list.findIndex(a => a.username === account)
 
+    for (const worker of master.workers) {
+        if (worker.instance.threadId === account_list[accountIndex].workerId) {
+            worker.instance.terminate()
+            account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED 
+
+            await master.change('account_list', {account_list})
+        }
+    }
 }
 
 master.removeAll = async () => {
@@ -256,7 +290,7 @@ master.enqAccounts = async () => {
     let account_list = await settings.get('account_list')
 
     for (let i = 0; i < account_list.length; i++) {
-        await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i]))
+        await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i], index))
     }
 
     await master.dequeue()
@@ -300,7 +334,7 @@ master.setIntervals = async () => {
 }
 
 master.dequeue = async () => {
-    if (master.priorityQueue.isEmpty() || master.state !== MASTER_STATE.RUNNING) {
+    if (master.priorityQueue.isEmpty()) {
         return
     }
 

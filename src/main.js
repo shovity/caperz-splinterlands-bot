@@ -198,7 +198,9 @@ ipc.on('account.add', async (event, data) => {
             status: 'PENDING',
         }
 
-        master.priorityQueue.enqueue(account, master.calculatePriority(account))
+        const now = Date.now()
+
+        master.priorityQueue.enqueue(account, master.calculatePriority(account, now))
 
         await master.dequeue()
     }
@@ -234,6 +236,20 @@ ipc.on('worker.start', async (e) => {
 
 ipc.on('worker.stop', async (e) => {
     master.pauseWorkers()
+})
+
+ipc.on('account.start', async (event, account) => {
+
+    const account_list = await settings.get('account_list')
+
+    const accountIndex = account_list.findIndex(a => a.username == account)
+    master.priorityQueue.enqueue(account_list[accountIndex], master.calculatePriority(account_list[accountIndex], accountIndex))
+
+    await master.dequeue()
+})
+
+ipc.on('account.stop', async (event, account) => {
+    await master.remove(account)
 })
 
 master.change = async (name, param) => {

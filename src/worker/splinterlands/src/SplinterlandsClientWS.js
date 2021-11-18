@@ -246,8 +246,14 @@ class WSSplinterlandsClient {
         this.startQuest = false
       }
 
-      if (!(quest?.completed === quest?.total) || ECR > this.config.ecr) {
+      // if (!(quest?.completed === quest?.total) || ECR > this.config.ecr) {
+      if (ECR > this.config.ecr) {
         // p && console.log("Start ranked match, ECR=", ECR)
+        parentPort.postMessage({
+          type: "INFO_UPDATE",
+          player: this.client.user.name,
+          quest: quest?.completed
+        })
         this.client.updatePlayerInfo()
 
         this.client.findMatch('Ranked');
