@@ -290,7 +290,7 @@ master.enqAccounts = async () => {
     let account_list = await settings.get('account_list')
 
     for (let i = 0; i < account_list.length; i++) {
-        await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i], index))
+        await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i], i))
     }
 
     await master.dequeue()
