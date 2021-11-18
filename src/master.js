@@ -192,8 +192,6 @@ master.add = async (workerData) => {
                 account_list[accountIndex].quest = m.quest
             }
 
-            settings.set('account_list', account_list)
-
             master.change('account_list', { account_list })
         } else if (m.type === MESSAGE_STATUS.STATUS_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
@@ -229,12 +227,26 @@ master.add = async (workerData) => {
 
 master.remove = async (account) => {
     const account_list = await settings.get('account_list')
+    const app_setting = await settings.get('app_setting')
+
     const accountIndex = account_list.findIndex(a => a.username === account)
 
     for (const worker of master.workers) {
         if (worker.instance.threadId === account_list[accountIndex].workerId) {
             worker.instance.terminate()
-            account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED 
+            account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
+            let proxy = account_list[accountIndex].proxy
+            if (proxy === null) {
+                proxy = 'Default IP'
+            }
+
+            const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
+
+            if (proxyIndex >= 0) {
+                // console.log('remove', app_setting.proxies[proxyIndex].count)
+                app_setting.proxies[proxyIndex].count--
+                await master.change('app_setting', {app_setting})
+            }
 
             await master.change('account_list', {account_list})
         }

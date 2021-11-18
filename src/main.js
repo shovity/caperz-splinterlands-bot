@@ -142,8 +142,9 @@ ipc.on('setting.save', async (event, data) => {
             }
         }
     })
+
     const res = await settings.set('app_setting', newSetting)
-    master.dequeue()
+    await master.dequeue()
 })
 
 ipc.on('account.add', async (event, data) => {
@@ -269,7 +270,6 @@ master.change = async (name, param) => {
             break
         case 'app_setting':
             await settings.set('app_setting', param.app_setting)
-            master.stopECR = param.app_setting.ecr || 50
             onChangeProxyList()
             break
         case 'master_state':
