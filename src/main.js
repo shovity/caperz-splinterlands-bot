@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain: ipc, nativeTheme } = require('electron')
 const path = require('path')
 
 const master = require('./master')
-const settings = require('electron-settings')
+const settings = require('./settings')
 const utils = require('./utils')
 let win
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -56,6 +56,7 @@ const createWindow = () => {
 
 const onChangeAccountList = async () => {
     const account_list = await settings.get('account_list')
+    console.log('onChange', account_list)
     win.webContents.send('player_table.redraw', account_list)
 }
 const onChangeProxyList = async () => {
@@ -240,7 +241,6 @@ ipc.on('worker.stop', async (e) => {
 })
 
 ipc.on('account.start', async (event, account) => {
-
     const account_list = await settings.get('account_list')
 
     const accountIndex = account_list.findIndex(a => a.username == account)
@@ -249,7 +249,7 @@ ipc.on('account.start', async (event, account) => {
     await master.dequeue()
 })
 
-ipc.on('account.stop', async (event, account) => {
+ipc.on('account.stop', async (event, account) => {    
     await master.remove(account)
 })
 
@@ -270,6 +270,8 @@ master.change = async (name, param) => {
             break
         case 'app_setting':
             await settings.set('app_setting', param.app_setting)
+            const appSetting = await settings.get('app_setting', param.app_setting)
+            count = appSetting.proxies[0].count
             onChangeProxyList()
             break
         case 'master_state':

@@ -51,6 +51,7 @@
     "axios": "^0.21.1",
     "electron-settings": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.0.1",
     "eosjs-ecc": "^4.0.7",
     "form-data": "^4.0.0",
     "https-proxy-agent": "^5.0.0",

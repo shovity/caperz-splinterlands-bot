@@ -3,7 +3,7 @@
 
 const { Worker } = require('worker_threads')
 const path = require('path')
-const settings = require('electron-settings')
+const settings = require('./settings')
 const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
 
 const MESSAGE_STATUS = {
@@ -200,14 +200,7 @@ master.add = async (workerData) => {
             await master.change('account_list', { account_list })
 
             if (m.status === 'DONE') {
-                const proxyIndex = app_setting.proxies.findIndex(p => p.ip === account_list[accountIndex].proxy)
-                app_setting.proxies[proxyIndex].count--
-
-                await master.change('app_setting', { app_setting })
-
-                await master.dequeue()
-
-                worker.instance.terminate()
+                await master.remove(account_list[accountIndex].username)
             }
         } else if (m.type === 'MESSAGE') {
             await master.change('log', m.data)
@@ -233,12 +226,8 @@ master.remove = async (account) => {
 
     for (const worker of master.workers) {
         if (worker.instance.threadId === account_list[accountIndex].workerId) {
-            worker.instance.terminate()
             account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
             let proxy = account_list[accountIndex].proxy
-            if (proxy === null) {
-                proxy = 'Default IP'
-            }
 
             const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
 
@@ -248,9 +237,11 @@ master.remove = async (account) => {
                 await master.change('app_setting', {app_setting})
             }
 
-            await master.change('account_list', {account_list})
+            worker.instance.terminate()
         }
     }
+
+    await master.change('account_list', {account_list})
 }
 
 master.removeAll = async () => {
