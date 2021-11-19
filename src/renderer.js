@@ -361,7 +361,7 @@ ori.use('event store emitter storage', () => {
             ],
             order: [],
         })
-        $('#player_monitoring_table').on('order.dt', function () {
+        $("th.sorting[aria-controls='player_monitoring_table']").on('click', function () {
             const dataTable = playerMonitoringTable.rows().data().toArray()
             const newList = dataTable.map((d) => d.username)
             ipc.send('player_table.reorder', newList)

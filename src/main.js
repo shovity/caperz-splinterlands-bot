@@ -218,13 +218,14 @@ ipc.on('player_table.redraw', () => {
 })
 
 ipc.on('player_table.reorder', async (event, data) => {
-    // const account_list = await settings.get('account_list')
-    // const newList = []
-    // data.forEach((username) => {
-    //     const acc = account_list.find((a) => username == a.username)
-    //     newList.push(acc)
-    // })
-    // await settings.set('account_list', newList)
+    console.count('a')
+    const account_list = await settings.get('account_list')
+    const newList = []
+    data.forEach((username) => {
+        const acc = account_list.find((a) => username == a.username)
+        newList.push(acc)
+    })
+    await settings.set('account_list', newList)
 })
 
 ipc.on('proxy_table.redraw', () => {
