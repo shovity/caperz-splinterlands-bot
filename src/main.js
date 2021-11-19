@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain: ipc, nativeTheme } = require('electron')
 const path = require('path')
 
 const master = require('./master')
-const settings = require('./settings')
+const settings = require('electron-settings')
 const utils = require('./utils')
 let win
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -21,7 +21,7 @@ const loadConfigData = async () => {
     await settings.set('app_setting', app_setting)
     win.webContents.send('setting.load', app_setting)
     let account_list = await settings.get('account_list')
-    account_list = account_list ? account_list.filter(e => e) || []
+    account_list = account_list ? account_list.filter(e => e) : []
     win.webContents.send('account.load', account_list)
     await settings.set('account_list', account_list)
 }
@@ -56,7 +56,6 @@ const createWindow = () => {
 
 const onChangeAccountList = async () => {
     const account_list = await settings.get('account_list')
-    console.log('onChange', account_list)
     win.webContents.send('player_table.redraw', account_list)
 }
 const onChangeProxyList = async () => {
@@ -219,13 +218,13 @@ ipc.on('player_table.redraw', () => {
 })
 
 ipc.on('player_table.reorder', async (event, data) => {
-    const account_list = await settings.get('account_list')
-    const newList = []
-    data.forEach((username) => {
-        const acc = account_list.find((a) => username == a.username)
-        newList.push(acc)
-    })
-    await settings.set('account_list', newList)
+    // const account_list = await settings.get('account_list')
+    // const newList = []
+    // data.forEach((username) => {
+    //     const acc = account_list.find((a) => username == a.username)
+    //     newList.push(acc)
+    // })
+    // await settings.set('account_list', newList)
 })
 
 ipc.on('proxy_table.redraw', () => {

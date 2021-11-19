@@ -3,7 +3,7 @@
 
 const { Worker } = require('worker_threads')
 const path = require('path')
-const settings = require('./settings')
+const settings = require('electron-settings')
 const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
 
 const MESSAGE_STATUS = {
