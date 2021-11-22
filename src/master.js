@@ -83,10 +83,6 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
 master.change('master_state', {state: master.state})
 
 master.handleAddAccount = async (account) => {
-    if (master.state === MASTER_STATE.PAUSED) {
-        return
-    }
-
     let account_list = await settings.get('account_list')
     const accountIndex = account_list.findIndex(a => a.username === account.username)
     const app_setting = await settings.get('app_setting')
@@ -149,10 +145,6 @@ master.handleAddAccount = async (account) => {
 }
 
 master.add = async (workerData) => {
-    if (master.state === MASTER_STATE.PAUSED) {
-        master.change('master_state', {state: master.state})
-        return
-    }
 
     await master.change('log', 'add worker')
 
@@ -234,13 +226,12 @@ master.remove = async (account) => {
             if (proxyIndex >= 0) {
                 // console.log('remove', app_setting.proxies[proxyIndex].count)
                 app_setting.proxies[proxyIndex].count--
-                await master.change('app_setting', {app_setting})
+                await master.change('app_setting', { app_setting })
             }
 
             worker.instance.terminate()
         }
     }
-
     await master.change('account_list', {account_list})
 }
 
@@ -255,6 +246,16 @@ master.removeAll = async () => {
 
     clearInterval(master.dailyIntervalId)
     clearInterval(master.hourlyDeqIntervalId)
+
+    let account_list = await settings.get('account_list')
+
+    account_list.map(a => {
+        delete a.workerId
+
+        return a
+    })
+
+    await master.change('account_list', {account_list})
 }
 
 master.pauseWorkers = async () => {

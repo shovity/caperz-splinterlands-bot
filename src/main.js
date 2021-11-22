@@ -218,7 +218,6 @@ ipc.on('player_table.redraw', () => {
 })
 
 ipc.on('player_table.reorder', async (event, data) => {
-    console.count('a')
     const account_list = await settings.get('account_list')
     const newList = []
     data.forEach((username) => {
