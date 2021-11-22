@@ -385,7 +385,6 @@ class SplinterLandsClient {
     //     data.monsters = team.monsters;
     //     data.secret = team.secret
     // }
-
     data.summoner = team.summoner;
     data.monsters = team.monsters;
     data.secret = team.secret;
@@ -412,7 +411,6 @@ class SplinterLandsClient {
         }
       }
     );
-
   }
 
   getRuleset(ruleset) {

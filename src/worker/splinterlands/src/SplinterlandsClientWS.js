@@ -412,9 +412,12 @@ class WSSplinterlandsClient {
       let active = []
       'gold,blue,red,white,green,black'.split(',').forEach(color => {
         let splinter = activeObj[color]
-        if (inactive.indexOf(splinter) === -1) {
-          active.push(splinter)
+
+        if (inactive.includes(color)) {
+          return
         }
+
+        active.push(splinter)
       })
       const matchDetails = {
         mana: mana_cap,

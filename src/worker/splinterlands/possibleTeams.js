@@ -75,7 +75,7 @@ const getTeamDefault = (matchDetails) => {
 const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken) => {
 
     try {
-        let {data} = await getBattlesWithRuleset(matchDetails, account, spsToken);
+        let {data} = await getBattlesWithRuleset(matchDetails, account, spsToken)
         log && console.log('matchDetails', matchDetails)
         log && console.log('data', data)
 

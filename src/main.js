@@ -166,6 +166,13 @@ ipc.on('account.add', async (event, data) => {
     }
     let list = await settings.get('account_list')
     let newList = list || []
+    let ecr = res.balances.find((b) => b.token == 'ECR').balance
+
+    if (ecr === null) {
+        ecr = 10000
+    }
+
+
     newList.push({
         username: res.name,
         email: res.email || '',
@@ -174,7 +181,7 @@ ipc.on('account.add', async (event, data) => {
         updatedAt: Date.now(),
         lastRewardTime: new Date(res.last_reward_time).getTime(),
         token: res.token,
-        ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
+        ecr: ecr / 100,
         dec: res.balances.find((b) => b.token == 'DEC') ? res.balances.find((b) => b.token == 'DEC').balance : null,
         status: 'NONE',
     })
@@ -194,7 +201,7 @@ ipc.on('account.add', async (event, data) => {
             updatedAt: Date.now(),
             lastRewardTime: new Date(res.last_reward_time).getTime(),
             token: res.token,
-            ecr: res.balances.find((b) => b.token == 'ECR').balance / 100,
+            ecr: ecr / 100,
             dec: res.balances.find((b) => b.token == 'DEC').balance,
             status: 'PENDING',
         }
