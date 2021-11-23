@@ -319,7 +319,7 @@ master.change = async (name, param) => {
             logToDevtool(param)
             break
         case 'process_loading':
-            console.log(param)
+            win.webContents.send('process', param.processPercent)
             break
     }
 }

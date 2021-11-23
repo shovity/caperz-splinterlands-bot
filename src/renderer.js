@@ -197,7 +197,6 @@ ori.use('event store emitter storage', () => {
         showNotice('saved')
     })
 
-
     ipc.on('setting.load', (event, data) => {
         if (!data) {
             return
@@ -329,7 +328,7 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec || '--',
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: d.quest ? `${d.quest}/5`:'--',
+                quest: d.quest ? `${d.quest}/5` : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
@@ -410,7 +409,7 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec,
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: d.quest ? `${d.quest}/5`:'--',
+                quest: d.quest ? `${d.quest}/5` : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
@@ -442,5 +441,18 @@ ori.use('event store emitter storage', () => {
     })
     ipc.on('log', (event, data) => {
         console.log(data)
+    })
+    ipc.on('process', (event, data) => {
+        var width = barPercent.innerHTML * 1
+        var id = setInterval(frame, 10)
+        function frame() {
+            if (width >= data) {
+                clearInterval(id)
+            } else {
+                width++
+                myBar.style.width = width + '%'
+                barPercent.innerHTML = width * 1 
+            }
+        }
     })
 })

@@ -38,6 +38,9 @@ a {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+  #player_monitoring_table, #proxy_monitoring_table {
+      width: 100%!important;
+  }
 #splashScreen {
     animation: fadeIn 3s;
     -webkit-animation: fadeIn 3s;
