@@ -1,4 +1,3 @@
-const electronLocalshortcut = require('electron-localshortcut')
 const { app, BrowserWindow, ipcMain: ipc, nativeTheme, globalShortcut } = require('electron')
 const path = require('path')
 
@@ -78,20 +77,20 @@ const onChangeProxyList = async () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
 
-app.whenReady().then(() => {
-    // Register a 'CommandOrControl+X' shortcut listener.
-    const ret = globalShortcut.register('CommandOrControl+R', () => {
-        console.log('CommandOrControl+R is pressed')
-    })
+// app.whenReady().then(() => {
+//     // Register a 'CommandOrControl+X' shortcut listener.
+//     const ret = globalShortcut.register('CommandOrControl+R', () => {
+//         console.log('CommandOrControl+R is pressed')
+//     })
   
-    if (!ret) {
-      console.log('registration failed')
-    }
-})
+//     if (!ret) {
+//       console.log('registration failed')
+//     }
+// })
 
-app.on('will-quit', () => {
-    globalShortcut.unregisterAll()
-})
+// app.on('will-quit', () => {
+//     globalShortcut.unregisterAll()
+// })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
