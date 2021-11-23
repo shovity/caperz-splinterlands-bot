@@ -1,5 +1,3 @@
-const { app } = require("electron")
-
 ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
@@ -42,7 +40,11 @@ ori.use('event store emitter storage', () => {
         location.href = './sign-in.html'
     }
 
-    ipc.on('app.loading_sucess', () => {
+    ipc.on('splash.on', () => {
+        splashScreen.removeClass('d-none')
+        app.addClass('d-none')
+    })
+    ipc.on('splash.off', () => {
         splashScreen.addClass('d-none')
         app.removeClass('d-none')
     })
