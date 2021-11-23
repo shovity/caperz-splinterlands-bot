@@ -358,7 +358,7 @@ ori.use('event store emitter storage', () => {
                     targets: 8,
                     render: function (data, type, row) {
                         console.log(data)
-                        if (data.status == 'RUNNING' || data.status == 'PENDING') {
+                        if (data.status == 'RUNNING' || data.status == 'PENDING' || data.status == 'DONE') {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
                         </button>`

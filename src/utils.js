@@ -132,4 +132,33 @@ utils.statusMapping = (status) => {
             return "<span class='status_none'>None</span>"
     }
 }
+
+utils.getBalances = async (username) => {
+    const params =  {
+        username,
+    }
+
+    return await sendRequest('players/balances', params)
+}
+
+utils.getDetails = async (username) => {
+    const params = {
+        name: username,
+    }
+
+    return await sendRequest('players/details', params)
+}
+
+utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {
+    for (let i = 0; i < array.length; i++) {
+        for (let key in array[i]) {
+            console.log(`key: ${name}[${i}].${key}`)
+            await settings.set(`${name}[${i}].${key}`, array[i][key])
+        }
+
+        await settings.set(`${name}[${i}].updatedAt`, updatedAt)
+    }
+}
+
+
 module.exports = utils
