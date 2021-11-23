@@ -1,3 +1,5 @@
+const { app } = require("electron")
+
 ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
@@ -40,6 +42,11 @@ ori.use('event store emitter storage', () => {
         location.href = './sign-in.html'
     }
 
+    ipc.on('app.loading_sucess', () => {
+        splashScreen.addClass('d-none')
+        app.removeClass('d-none')
+    })
+
     store.g_username = user?.userData?.username || 'Unknow'
 
     const tabs = [...document.querySelectorAll('[tab]')]
@@ -61,7 +68,10 @@ ori.use('event store emitter storage', () => {
         enterKeypress(e, () => password.focus())
     })
     password.addEventListener('keypress', (e) => {
-        enterKeypress(e, () => event.emit('account.add'))
+        enterKeypress(e, () => {
+            username.focus()
+            event.emit('account.add')
+        })
     })
     add_proxy_input.addEventListener('keypress', (e) => {
         enterKeypress(e, () => event.emit('proxy.add'))
@@ -180,6 +190,7 @@ ori.use('event store emitter storage', () => {
         })
         showNotice('saved')
     })
+
 
     ipc.on('setting.load', (event, data) => {
         if (!data) {

@@ -1,8 +1,8 @@
 {
   "name": "nftauto-desktop",
-  "productName": "NFTauto Desktop v2.0.1",
+  "productName": "NFTauto Desktop v.2.1.0",
   "version": "1.0.0",
-  "description": "NFTauto Desktop v2.0.1",
+  "description": "NFTauto Desktop v.2.1.0",
   "main": "src/main.js",
   "scripts": {
     "start": "electron-forge start",
