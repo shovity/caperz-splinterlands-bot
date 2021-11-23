@@ -5,6 +5,8 @@ const { Worker } = require('worker_threads')
 const path = require('path')
 const settings = require('electron-settings')
 const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
+const utils = require('./utils')
+const { resolve } = require('path')
 
 const MESSAGE_STATUS = {
     INFO_UPDATE: "INFO_UPDATE",
@@ -68,16 +70,17 @@ const calculatePriority = (account, accountIndex = 0) => {
 }
 
 const calculateECR = (lastRewardTime = 0, ecr) => {
-    const ONE_HOUR = 60 * 60 * 1000
+    const ONE_MINUTE = 60 * 1000
+    const ONE_HOUR = 60 * ONE_MINUTE
     
     const now = Date.now()
     let recoverECR = 0
 
     if (lastRewardTime) {
-        recoverECR = Math.floor((now - lastRewardTime) / ONE_HOUR)
+        recoverECR = +(((now - lastRewardTime) / ONE_HOUR).toFixed(2))
     }
 
-    return recoverECR + ecr
+    return +(recoverECR + ecr).toFixed(2)
 }
 
 master.change('master_state', {state: master.state})
@@ -161,7 +164,7 @@ master.add = async (workerData) => {
         if (m.type === MESSAGE_STATUS.INFO_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
             if (m.ecr) {
-                account_list[accountIndex].ecr = m.ecr
+                account_list[accountIndex].ecr = calculateECR(m.lastRewardTime, m.ecr)
             }
 
             if (m.rating) {
@@ -346,8 +349,9 @@ master.dequeue = async () => {
     let app_setting = await settings.get('app_setting')
     const ecr = app_setting.ecr
     let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
+    console.log(calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr)
 
-    while (calculateECR(accountFront?.lastRewardTime, accountFront?.ecr) > ecr && proxyFree >= 0) {
+    while (calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr && proxyFree >= 0) {
         master.priorityQueue.dequeue()
         await master.handleAddAccount(accountFront)
         
@@ -355,10 +359,66 @@ master.dequeue = async () => {
         proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
         accountFront = master.priorityQueue.front()?.element
+        console.log(calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr)
     }
 }
 
+master.delay = (time) => {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(), time)
+    })
+}
+
+master.updateOpeningPlayerInfo = async () => {
+    let account_list = await settings.get('account_list')
+    const updateList = []
+    const now = Date.now()
+
+    for (let i = 0; i < account_list.length; i++) {
+
+        const newAccount = {}
+
+        let accountBalances
+        let accountDetails
+
+        try {
+            accountBalances = await utils.getBalances(account_list[i].username)
+
+            accountDetails = await utils.getDetails(account_list[i].username)
+        } catch (error) {
+            console.error('updateOpeningPlayerInfo get balances error', error)
+            continue
+        }
+
+        if (accountBalances) {
+            let ecr = accountBalances.find((b) => b.token == 'ECR').balance
+            const lastRewardTime = new Date(accountBalances.find((b) => b.token == 'ECR').last_reward_time).getTime()
+
+            if (ecr === null) {
+                ecr = 10000
+            }
+
+            newAccount.ecr = calculateECR(lastRewardTime, ecr / 100)
+            newAccount.dec = accountBalances.find((b) => b.token == 'DEC').balance
+        }
+
+        if (accountDetails) {
+            newAccount.rating = accountDetails.rating
+            newAccount.power = accountDetails.collection_power
+        }
+
+        updateList.push(newAccount)
+
+        await master.delay(100)
+    }
+
+    console.log(updateList)
+
+    await master.changePath('account_list', updateList)
+}
+
 master.calculatePriority = calculatePriority
+master.calculateECR = calculateECR
 
 
 module.exports = master

@@ -128,6 +128,7 @@ ipc.on('setting.save', async (event, data) => {
         ...oldSetting,
         ecr: data.ecr,
         startQuestEcr: data.startQuestEcr,
+        botPerIp: data.botPerIp
     }
     newSetting.proxies = data.proxies.map((p) => {
         const oldProxy = oldSetting.proxies.find((pr) => p.ip == pr.ip)
@@ -181,7 +182,7 @@ ipc.on('account.add', async (event, data) => {
         updatedAt: Date.now(),
         lastRewardTime: new Date(res.last_reward_time).getTime(),
         token: res.token,
-        ecr: ecr / 100,
+        ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
         dec: res.balances.find((b) => b.token == 'DEC') ? res.balances.find((b) => b.token == 'DEC').balance : null,
         status: 'NONE',
     })
@@ -201,7 +202,7 @@ ipc.on('account.add', async (event, data) => {
             updatedAt: Date.now(),
             lastRewardTime: new Date(res.last_reward_time).getTime(),
             token: res.token,
-            ecr: ecr / 100,
+            ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
             dec: res.balances.find((b) => b.token == 'DEC').balance,
             status: 'PENDING',
         }
@@ -288,6 +289,19 @@ master.change = async (name, param) => {
             break
     }
 }
+
+master.changePath = async (name, array) => {
+    const now = Date.now()
+
+    await utils.updatePathArraySetting({
+        name,
+        array,
+        settings,
+        updatedAt: now,
+    })
+}
+
+master.updateOpeningPlayerInfo()
 
 ipc.on('setUser', (event, data) => {
     settings.set('user', data)
