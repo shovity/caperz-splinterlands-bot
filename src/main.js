@@ -1,9 +1,12 @@
-const { app, BrowserWindow, ipcMain: ipc, nativeTheme } = require('electron')
+const electronLocalshortcut = require('electron-localshortcut')
+const { app, BrowserWindow, ipcMain: ipc, nativeTheme, globalShortcut } = require('electron')
 const path = require('path')
 
 const master = require('./master')
 const settings = require('electron-settings')
 const utils = require('./utils')
+
+let isStarted = false
 let win
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -19,6 +22,7 @@ const loadConfigData = async () => {
         proxies: [{ ip: 'Default IP', count: 0, protocol: 'https', status: 'active' }],
     }
     await settings.set('app_setting', app_setting)
+    master.stopECR = app_setting.ecr
     win.webContents.send('setting.load', app_setting)
     let account_list = await settings.get('account_list')
     account_list = account_list ? account_list.filter(e => e) : []
@@ -47,10 +51,16 @@ const createWindow = () => {
         console.log(arg)
     })
 
-    win.webContents.on('did-finish-load', () => {
+    win.webContents.on('did-finish-load', async () => {
         loadConfigData()
+        
         win.webContents.send('run', 'im main proc')
         win.webContents.send('modify', { state: master.state })
+
+        if (!isStarted) {
+            await handleSplashScreen()
+            isStarted = true
+        }
     })
 }
 
@@ -67,6 +77,21 @@ const onChangeProxyList = async () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
+
+app.whenReady().then(() => {
+    // Register a 'CommandOrControl+X' shortcut listener.
+    const ret = globalShortcut.register('CommandOrControl+R', () => {
+        console.log('CommandOrControl+R is pressed')
+    })
+  
+    if (!ret) {
+      console.log('registration failed')
+    }
+})
+
+app.on('will-quit', () => {
+    globalShortcut.unregisterAll()
+})
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -145,7 +170,7 @@ ipc.on('setting.save', async (event, data) => {
     })
 
     const res = await settings.set('app_setting', newSetting)
-    await master.dequeue()
+    await master.enqAccounts()
 })
 
 ipc.on('account.add', async (event, data) => {
@@ -257,6 +282,13 @@ ipc.on('account.start', async (event, account) => {
 })
 
 ipc.on('account.stop', async (event, account) => {    
+    const account_list = await settings.get('account_list')
+    const accountIndex = account_list.findIndex(a => a.username === account)
+    if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
+        await settings.set(`account_list[${accountIndex}].status`, 'PAUSED')
+        onChangeAccountList()
+        return
+    }
     await master.remove(account)
 })
 
@@ -287,6 +319,9 @@ master.change = async (name, param) => {
         case 'log':
             logToDevtool(param)
             break
+        case 'process_loading':
+            console.log(param)
+            break
     }
 }
 
@@ -299,12 +334,25 @@ master.changePath = async (name, array) => {
         settings,
         updatedAt: now,
     })
+
+    if (name === 'account_list') {
+        onChangeAccountList()
+    }
 }
 
-master.updateOpeningPlayerInfo()
+const handleSplashScreen = async () => {
+    const user = await settings.get('user')
 
-ipc.on('setUser', (event, data) => {
-    settings.set('user', data)
+    if (user?.token) {
+        win.webContents.send('splash.on')
+        await master.updateOpeningPlayerInfo()
+        win.webContents.send('splash.off')
+    }
+}
+
+ipc.on('setUser', async (event, data) => {
+    await settings.set('user', data)
+    await handleSplashScreen()
 })
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

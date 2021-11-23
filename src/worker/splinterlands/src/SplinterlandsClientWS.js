@@ -247,6 +247,8 @@ class WSSplinterlandsClient {
       }
 
       // if (!(quest?.completed === quest?.total) || ECR > this.config.ecr) {
+      // console.log('ECR', ECR)
+      // console.log(this.config.ecr)
       if (ECR > this.config.ecr) {
         // p && console.log("Start ranked match, ECR=", ECR)
         parentPort.postMessage({

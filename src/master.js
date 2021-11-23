@@ -47,9 +47,7 @@ const master = {
 
 const calculatePriority = (account, accountIndex = 0) => {
     let priority = 0
-    // const ecrNow = calculateECR(account.lastRewardTime, account.ecr)
-
-    // priority += ecrNow
+    const ecrNow = calculateECR(account.updatedAt, account.ecr)
 
     switch (account.status) {
         case ACCOUNT_STATUS.PAUSED: 
@@ -60,9 +58,9 @@ const calculatePriority = (account, accountIndex = 0) => {
             break
     }
 
-    // if (ecrNow > master.stopECR) {
-    //     priority += PRIORITY_POINT.GREATER_STOP_ECR
-    // }
+    if (ecrNow > master.stopECR) {
+        priority += PRIORITY_POINT.GREATER_STOP_ECR
+    }
 
     priority -= accountIndex
 
@@ -92,7 +90,7 @@ master.handleAddAccount = async (account) => {
     const user = await settings.get('user')
 
     const config = {
-        ecr:  app_setting.ecr
+        ecr: app_setting.ecr
     }
 
     const proxyIndex = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
@@ -163,6 +161,11 @@ master.add = async (workerData) => {
 
         if (m.type === MESSAGE_STATUS.INFO_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
+
+            if (accountIndex === -1) {
+                return worker.instance.terminate()
+            }
+
             if (m.ecr) {
                 account_list[accountIndex].ecr = calculateECR(m.lastRewardTime, m.ecr)
             }
@@ -187,15 +190,30 @@ master.add = async (workerData) => {
                 account_list[accountIndex].quest = m.quest
             }
 
-            master.change('account_list', { account_list })
+            await master.change('account_list', { account_list })
         } else if (m.type === MESSAGE_STATUS.STATUS_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
+
+            if (accountIndex === -1) {
+                return worker.instance.terminate()
+            }
+
             account_list[accountIndex].status = m.status
 
             await master.change('account_list', { account_list })
 
             if (m.status === 'DONE') {
-                await master.remove(account_list[accountIndex].username)
+                let proxy = account_list[accountIndex].proxy
+    
+                const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
+                if (proxyIndex >= 0) {
+                    // console.log('remove', app_setting.proxies[proxyIndex].count)
+                    app_setting.proxies[proxyIndex].count--
+                    await master.change('app_setting', { app_setting })
+                }
+
+                await master.dequeue()
+                worker.instance.terminate()                
             }
         } else if (m.type === 'MESSAGE') {
             await master.change('log', m.data)
@@ -225,9 +243,7 @@ master.remove = async (account) => {
             let proxy = account_list[accountIndex].proxy
 
             const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
-
             if (proxyIndex >= 0) {
-                // console.log('remove', app_setting.proxies[proxyIndex].count)
                 app_setting.proxies[proxyIndex].count--
                 await master.change('app_setting', { app_setting })
             }
@@ -297,6 +313,9 @@ master.enqAccounts = async () => {
     let account_list = await settings.get('account_list')
 
     for (let i = 0; i < account_list.length; i++) {
+        if ([ACCOUNT_STATUS.PENDING, ACCOUNT_STATUS.RUNNING].includes(account_list[i].status)) {
+            continue
+        }
         await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i], i))
     }
 
@@ -349,7 +368,6 @@ master.dequeue = async () => {
     let app_setting = await settings.get('app_setting')
     const ecr = app_setting.ecr
     let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
-    console.log(calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr)
 
     while (calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr && proxyFree >= 0) {
         master.priorityQueue.dequeue()
@@ -359,7 +377,6 @@ master.dequeue = async () => {
         proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
         accountFront = master.priorityQueue.front()?.element
-        console.log(calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr)
     }
 }
 
@@ -372,9 +389,8 @@ master.delay = (time) => {
 master.updateOpeningPlayerInfo = async () => {
     let account_list = await settings.get('account_list')
     const updateList = []
-    const now = Date.now()
 
-    for (let i = 0; i < account_list.length; i++) {
+    for (let i = 0; i < account_list?.length || 0; i++) {
 
         const newAccount = {}
 
@@ -383,7 +399,6 @@ master.updateOpeningPlayerInfo = async () => {
 
         try {
             accountBalances = await utils.getBalances(account_list[i].username)
-
             accountDetails = await utils.getDetails(account_list[i].username)
         } catch (error) {
             console.error('updateOpeningPlayerInfo get balances error', error)
@@ -400,6 +415,7 @@ master.updateOpeningPlayerInfo = async () => {
 
             newAccount.ecr = calculateECR(lastRewardTime, ecr / 100)
             newAccount.dec = accountBalances.find((b) => b.token == 'DEC').balance
+            newAccount.lastRewardTime = lastRewardTime
         }
 
         if (accountDetails) {
@@ -409,12 +425,18 @@ master.updateOpeningPlayerInfo = async () => {
 
         updateList.push(newAccount)
 
-        await master.delay(100)
+        const processPercent = Math.ceil(updateList.length * 100 / account_list.length)
+        
+        await master.change('process_loading', {
+            processPercent: processPercent >= 1 ? processPercent - 1 : 0
+        })
+
+        await master.delay(500)
     }
 
-    console.log(updateList)
-
-    await master.changePath('account_list', updateList)
+    if (updateList.length) {
+        await master.changePath('account_list', updateList)
+    }
 }
 
 master.calculatePriority = calculatePriority

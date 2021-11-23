@@ -127,6 +127,20 @@ class SplinterLandsClient {
     })
   }
 
+  calculateECR(lastRewardTime = 0, ecr){
+    const ONE_MINUTE = 60 * 1000
+    const ONE_HOUR = 60 * ONE_MINUTE
+    
+    const now = Date.now()
+    let recoverECR = 0
+
+    if (lastRewardTime) {
+        recoverECR = +(((now - lastRewardTime) / ONE_HOUR).toFixed(2))
+    }
+
+    return +(recoverECR + ecr).toFixed(2)
+  }
+
   processDone = () => {
     if (!this.user ) return;
     let player = this.user.name.toLowerCase() || ''
@@ -823,59 +837,50 @@ class SplinterLandsClient {
 
   async sendRequest(url, params, method = "get") {
     try {
-      let objectAxios = {
-        method: method,
-        url: "https://api2.splinterlands.com/" + url,
-        proxy: false,
-        timeout: 10000,
-        headers: {
-          authority: "api2.splinterlands.com",
-          method: method.toUpperCase(),
-          path: url,
-          scheme: "https",
-          accept:
-            method === "post"
-              ? "*/*"
-              : "application/json, text/javascript, */*; q=0.01",
-          "accept-encoding": "gzip, deflate, br",
-          "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-          "content-type":
-            method === "post" ? "application/x-www-form-urlencoded" : "",
-          origin: "https://splinterlands.com",
-          referer: "https://splinterlands.com",
-          "sec-ch-ua":
-            '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin",
-          "user-agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-        },
-      };
+        let objectAxios = {
+            method: method,
+            url: 'https://api2.splinterlands.com/' + url,
+            proxy: false,
+            // httpsAgent: new HttpsProxyAgent(
+            //   `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
+            // ),
+            timeout: 10000,
+            headers: {
+                authority: 'api2.splinterlands.com',
+                method: method.toUpperCase(),
+                path: url,
+                scheme: 'https',
+                accept: method === 'post' ? '*/*' : 'application/json, text/javascript, */*; q=0.01',
+                'accept-encoding': 'gzip, deflate, br',
+                'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                'content-type': method === 'post' ? 'application/x-www-form-urlencoded' : '',
+                origin: 'https://splinterlands.com',
+                referer: 'https://splinterlands.com',
+                'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-origin',
+                'user-agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
+            },
+        }
 
-      if (method === "get") {
-        params.v = new Date().getTime();
-        objectAxios.params = params;
-      } else {
-        objectAxios.data = qs.stringify(params);
-      }
+        if (method === 'get') {
+            params.v = new Date().getTime()
+            objectAxios.params = params
+        } else {
+            objectAxios.data = qs.stringify(params)
+        }
 
-      if (this.proxy) {
-        objectAxios.proxy = true
-        objectAxios.httpsAgent = new HttpsProxyAgent(
-          `${this.proxy}`
-        )
-      }
+        let res = await axios(objectAxios)
 
-      let res = await axios(objectAxios);
-
-      return res.data;
+        return res.data
     } catch (e) {
-      log && console.log(e);
-      return null;
+        console.log(e)
+        return null
     }
-  }
+}
 
   async findMatch(match_type, opponent, settings) {
     this.in_battle = true;
@@ -1005,7 +1010,10 @@ class SplinterLandsClient {
   getEcr() {
     if (!this.user) return 0;
 
-    return this.getBalance("ECR") / 100;
+    const ecr = this.getBalance("ECR") / 100
+    const lastRewardTime = new Date(this.user.balances.find((b) => b.token == 'ECR').last_reward_time).getTime()
+
+    return this.calculateECR(lastRewardTime, ecr)
   }
 
   getRating() {

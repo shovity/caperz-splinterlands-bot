@@ -20,7 +20,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
     parentPort.postMessage({
         type: "MESSAGE",
         data: 'login success'
-      })
+    })
 
     const resAuth = await client.auth(user.name, user.token)
 
