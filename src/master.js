@@ -41,6 +41,7 @@ const master = {
     dailyIntervalId: null,
     hourlyDeqIntervalId: null,
     stopECR: 50,
+    splashStatus: 'off',
 
     change: () => {},
 }
@@ -387,6 +388,9 @@ master.delay = (time) => {
 }
 
 master.updateOpeningPlayerInfo = async () => {
+    const LOADING_TIME = 1000
+    const startTime = Date.now()
+
     let account_list = await settings.get('account_list')
     const updateList = []
 
@@ -423,6 +427,8 @@ master.updateOpeningPlayerInfo = async () => {
             newAccount.power = accountDetails.collection_power
         }
 
+        newAccount.index = i
+
         updateList.push(newAccount)
 
         const processPercent = Math.ceil(updateList.length * 100 / account_list.length)
@@ -432,6 +438,15 @@ master.updateOpeningPlayerInfo = async () => {
         })
 
         await master.delay(500)
+
+        const now = Date.now()
+
+        if (master.splashStatus === 'on' && now - startTime >= LOADING_TIME) {
+            await master.change('process_loading', {
+                processPercent: 99,
+                splashStatus: 'off',
+            })
+        }
     }
 
     if (updateList.length) {

@@ -320,6 +320,12 @@ master.change = async (name, param) => {
             break
         case 'process_loading':
             win.webContents.send('process', param.processPercent)
+            if (param.splashStatus === 'off') {
+                await master.delay(500)
+
+                master.splashStatus = 'off'
+                win.webContents.send('splash.off')
+            }
             break
     }
 }
@@ -343,8 +349,12 @@ const handleSplashScreen = async () => {
     const user = await settings.get('user')
 
     if (user?.token) {
+        master.splashStatus = 'on'
         win.webContents.send('splash.on')
+
         await master.updateOpeningPlayerInfo()
+
+        master.splashStatus = 'off'
         win.webContents.send('splash.off')
     }
 }

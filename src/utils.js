@@ -152,7 +152,10 @@ utils.getDetails = async (username) => {
 utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {
     for (let i = 0; i < array.length; i++) {
         for (let key in array[i]) {
-            await settings.set(`${name}[${i}].${key}`, array[i][key])
+            if (key === 'index') {
+                continue
+            }
+            await settings.set(`${name}[${array[i].index}].${key}`, array[i][key])
         }
 
         await settings.set(`${name}[${i}].updatedAt`, updatedAt)
