@@ -155,10 +155,10 @@ utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {
             if (key === 'index') {
                 continue
             }
-            await settings.set(`${name}[${array[i].index}].${key}`, array[i][key])
+            await settings.setSync(`${name}[${array[i].index}].${key}`, array[i][key])
         }
 
-        await settings.set(`${name}[${i}].updatedAt`, updatedAt)
+        await settings.setSync(`${name}[${i}].updatedAt`, updatedAt)
     }
 }
 

@@ -998,7 +998,11 @@ class SplinterLandsClient {
     }
   }
 
-  getBalance(token) {
+    getBalance(token) {
+        if (!this.user.balances) {
+            console.log(this.user)
+            return 0;
+        }
     for (let i = 0; i < this.user.balances.length; i++) {
       if (this.user.balances[i].token === token) {
         return this.user.balances[i].balance;

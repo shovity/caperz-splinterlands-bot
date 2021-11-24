@@ -277,8 +277,8 @@ ori.use('event store emitter storage', () => {
             cell4.innerHTML = '<p>x</p>'
             row.appendChild(cell4)
             showNotice(name + ' is added to verifying!')
-            username.value = ''
-            password.value = ''
+            // username.value = ''
+            // password.value = ''
         }
     })
 
@@ -329,7 +329,7 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec || '--',
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: d.quest ? `${d.quest}/5` : '--',
+                quest: typeof(d.quest) != 'undefined' && typeof(d.maxQuest) != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
@@ -410,15 +410,13 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec,
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: d.quest ? `${d.quest}/5` : '--',
+                quest: typeof(d.quest) != 'undefined' && typeof(d.maxQuest) != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
             }
         })
-        playerMonitoringTable.clear().draw()
-        playerMonitoringTable.rows.add(tableData) // Add new data
-        playerMonitoringTable.columns.adjust().draw()
+        playerMonitoringTable.clear().rows.add(tableData).draw();
     })
     ipc.on('proxy_table.redraw', (event, data) => {
         const tableData = data.proxies.map((d) => {
@@ -427,9 +425,8 @@ ori.use('event store emitter storage', () => {
                 botUsage: d.count + '/' + data.botPerIp,
             }
         })
-        proxyMonitoringTable.clear().draw()
-        proxyMonitoringTable.rows.add(tableData) // Add new data
-        proxyMonitoringTable.columns.adjust().draw()
+        
+        proxyMonitoringTable.clear().rows.add(tableData).draw();
     })
     ipc.on('modify', (event, data) => {
         if (data.state === 'RUNNING') {

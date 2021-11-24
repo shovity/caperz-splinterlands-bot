@@ -13,20 +13,20 @@ if (require('electron-squirrel-startup')) {
 }
 
 const loadConfigData = async () => {
-    let app_setting = await settings.get('app_setting')
+    let app_setting = await settings.getSync('app_setting')
     app_setting = app_setting || {
         ecr: 50,
         startQuestEcr: 60,
         botPerIp: 5,
         proxies: [{ ip: 'Default IP', count: 0, protocol: 'https', status: 'active' }],
     }
-    await settings.set('app_setting', app_setting)
+    await settings.setSync('app_setting', app_setting)
     master.stopECR = app_setting.ecr
     win.webContents.send('setting.load', app_setting)
-    let account_list = await settings.get('account_list')
+    let account_list = await settings.getSync('account_list')
     account_list = account_list ? account_list.filter((e) => e) : []
     win.webContents.send('account.load', account_list)
-    await settings.set('account_list', account_list)
+    await settings.setSync('account_list', account_list)
 }
 const createWindow = () => {
     // Create the browser window.
@@ -59,11 +59,11 @@ const createWindow = () => {
 }
 
 const onChangeAccountList = async () => {
-    const account_list = await settings.get('account_list')
+    const account_list = await settings.getSync('account_list')
     win.webContents.send('player_table.redraw', account_list)
 }
 const onChangeProxyList = async () => {
-    const app_setting = await settings.get('app_setting')
+    const app_setting = await settings.getSync('app_setting')
     win.webContents.send('proxy_table.redraw', app_setting)
 }
 
@@ -101,8 +101,8 @@ let asyncOperationDone = false
 app.on('before-quit', async (e) => {
     if (!asyncOperationDone) {
         e.preventDefault()
-        const account_list = await settings.get('account_list')
-        const app_setting = await settings.get('app_setting')
+        const account_list = await settings.getSync('account_list')
+        const app_setting = await settings.getSync('app_setting')
 
         const newList = account_list.map((account) => {
             if (account.status === 'RUNNING') {
@@ -117,8 +117,8 @@ app.on('before-quit', async (e) => {
             app_setting.proxies[i].count = 0
         }
 
-        await settings.set('account_list', newList)
-        await settings.set('app_setting', app_setting)
+        await settings.setSync('account_list', newList)
+        await settings.setSync('app_setting', app_setting)
 
         asyncOperationDone = true
         app.quit()
@@ -142,7 +142,7 @@ ipc.on('worker.remove_all', (event, arg) => {
 })
 
 ipc.on('setting.save', async (event, data) => {
-    const oldSetting = await settings.get('app_setting')
+    const oldSetting = await settings.getSync('app_setting')
     let newSetting = {
         ...oldSetting,
         ecr: data.ecr,
@@ -163,7 +163,7 @@ ipc.on('setting.save', async (event, data) => {
         }
     })
 
-    const res = await settings.set('app_setting', newSetting)
+    const res = await settings.setSync('app_setting', newSetting)
     await master.enqAccounts()
 })
 
@@ -184,7 +184,7 @@ ipc.on('account.add', async (event, data) => {
         })
         return
     }
-    let list = await settings.get('account_list')
+    let list = await settings.getSync('account_list')
     let newList = list || []
     let ecr = res.balances.find((b) => b.token == 'ECR').balance
 
@@ -204,7 +204,7 @@ ipc.on('account.add', async (event, data) => {
         dec: res.balances.find((b) => b.token == 'DEC') ? res.balances.find((b) => b.token == 'DEC').balance : null,
         status: 'NONE',
     })
-    await settings.set('account_list', newList)
+    await settings.setSync('account_list', newList)
     win.webContents.send('account.add_success', {
         byEmail: emailRegex.test(data.username),
         player: res.name,
@@ -234,9 +234,9 @@ ipc.on('account.add', async (event, data) => {
 })
 
 ipc.on('delete.account', async (event, data) => {
-    let list = await settings.get('account_list')
+    let list = await settings.getSync('account_list')
     let newList = list.filter((account) => account.username != data && account.email != data)
-    await settings.set('account_list', newList)
+    await settings.setSync('account_list', newList)
 })
 
 ipc.on('player_table.redraw', () => {
@@ -244,13 +244,13 @@ ipc.on('player_table.redraw', () => {
 })
 
 ipc.on('player_table.reorder', async (event, data) => {
-    const account_list = await settings.get('account_list')
+    const account_list = await settings.getSync('account_list')
     const newList = []
     data.forEach((username) => {
         const acc = account_list.find((a) => username == a.username)
         newList.push(acc)
     })
-    await settings.set('account_list', newList)
+    await settings.setSync('account_list', newList)
 })
 
 ipc.on('proxy_table.redraw', () => {
@@ -266,7 +266,7 @@ ipc.on('worker.stop', async (e) => {
 })
 
 ipc.on('account.start', async (event, account) => {
-    const account_list = await settings.get('account_list')
+    const account_list = await settings.getSync('account_list')
 
     const accountIndex = account_list.findIndex((a) => a.username == account)
     master.priorityQueue.enqueue(
@@ -274,7 +274,7 @@ ipc.on('account.start', async (event, account) => {
         master.calculatePriority(account_list[accountIndex], accountIndex)
     )
 
-    await settings.set(`account_list[${accountIndex}].status`, 'PENDING')
+    await settings.setSync(`account_list[${accountIndex}].status`, 'PENDING')
 
     onChangeAccountList()
 
@@ -282,10 +282,10 @@ ipc.on('account.start', async (event, account) => {
 })
 
 ipc.on('account.stop', async (event, account) => {
-    const account_list = await settings.get('account_list')
+    const account_list = await settings.getSync('account_list')
     const accountIndex = account_list.findIndex((a) => a.username === account)
     if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
-        await settings.set(`account_list[${accountIndex}].status`, 'PAUSED')
+        await settings.setSync(`account_list[${accountIndex}].status`, 'PAUSED')
         onChangeAccountList()
         return
     }
@@ -296,7 +296,7 @@ master.change = async (name, param) => {
     const now = Date.now()
     switch (name) {
         case 'account_list':
-            await settings.set(
+            await settings.setSync(
                 'account_list',
                 param.account_list.map((a) => {
                     return {
@@ -308,8 +308,8 @@ master.change = async (name, param) => {
             onChangeAccountList()
             break
         case 'app_setting':
-            await settings.set('app_setting', param.app_setting)
-            const appSetting = await settings.get('app_setting', param.app_setting)
+            await settings.setSync('app_setting', param.app_setting)
+            const appSetting = await settings.getSync('app_setting', param.app_setting)
             count = appSetting.proxies[0].count
             onChangeProxyList()
             break
@@ -349,7 +349,7 @@ master.changePath = async (name, array) => {
 }
 
 const handleSplashScreen = async () => {
-    const user = await settings.get('user')
+    const user = await settings.getSync('user')
 
     if (user?.token) {
         master.splashStatus = 'on'
@@ -362,7 +362,7 @@ const handleSplashScreen = async () => {
 }
 
 ipc.on('setUser', async (event, data) => {
-    await settings.set('user', data)
+    await settings.setSync('user', data)
 })
 ipc.on('user.enter_app', async (event, data) => {
     await handleSplashScreen()
