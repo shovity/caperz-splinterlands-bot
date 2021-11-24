@@ -200,7 +200,7 @@ master.add = async (workerData) => {
                 account_list[accountIndex].quest = m.quest
             }
 
-            if (m.totalQuest) {
+            if (m.maxQuest) {
                 account_list[accountIndex].maxQuest = m.maxQuest
             }
 
