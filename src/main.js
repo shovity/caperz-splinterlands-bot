@@ -24,7 +24,7 @@ const loadConfigData = async () => {
     master.stopECR = app_setting.ecr
     win.webContents.send('setting.load', app_setting)
     let account_list = await settings.get('account_list')
-    account_list = account_list ? account_list.filter(e => e) : []
+    account_list = account_list ? account_list.filter((e) => e) : []
     win.webContents.send('account.load', account_list)
     await settings.set('account_list', account_list)
 }
@@ -52,14 +52,9 @@ const createWindow = () => {
 
     win.webContents.on('did-finish-load', async () => {
         loadConfigData()
-        
+
         win.webContents.send('run', 'im main proc')
         win.webContents.send('modify', { state: master.state })
-
-        if (!isStarted) {
-            await handleSplashScreen()
-            isStarted = true
-        }
     })
 }
 
@@ -82,7 +77,7 @@ app.on('ready', createWindow)
 //     const ret = globalShortcut.register('CommandOrControl+R', () => {
 //         console.log('CommandOrControl+R is pressed')
 //     })
-  
+
 //     if (!ret) {
 //       console.log('registration failed')
 //     }
@@ -152,7 +147,7 @@ ipc.on('setting.save', async (event, data) => {
         ...oldSetting,
         ecr: data.ecr,
         startQuestEcr: data.startQuestEcr,
-        botPerIp: data.botPerIp
+        botPerIp: data.botPerIp,
     }
     newSetting.proxies = data.proxies.map((p) => {
         const oldProxy = oldSetting.proxies.find((pr) => p.ip == pr.ip)
@@ -196,7 +191,6 @@ ipc.on('account.add', async (event, data) => {
     if (ecr === null) {
         ecr = 10000
     }
-
 
     newList.push({
         username: res.name,
@@ -274,15 +268,18 @@ ipc.on('worker.stop', async (e) => {
 ipc.on('account.start', async (event, account) => {
     const account_list = await settings.get('account_list')
 
-    const accountIndex = account_list.findIndex(a => a.username == account)
-    master.priorityQueue.enqueue(account_list[accountIndex], master.calculatePriority(account_list[accountIndex], accountIndex))
+    const accountIndex = account_list.findIndex((a) => a.username == account)
+    master.priorityQueue.enqueue(
+        account_list[accountIndex],
+        master.calculatePriority(account_list[accountIndex], accountIndex)
+    )
 
     await master.dequeue()
 })
 
-ipc.on('account.stop', async (event, account) => {    
+ipc.on('account.stop', async (event, account) => {
     const account_list = await settings.get('account_list')
-    const accountIndex = account_list.findIndex(a => a.username === account)
+    const accountIndex = account_list.findIndex((a) => a.username === account)
     if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
         await settings.set(`account_list[${accountIndex}].status`, 'PAUSED')
         onChangeAccountList()
@@ -351,6 +348,8 @@ const handleSplashScreen = async () => {
 
 ipc.on('setUser', async (event, data) => {
     await settings.set('user', data)
+})
+ipc.on('user.enter_app', async (event, data) => {
     await handleSplashScreen()
 })
 // In this file you can include the rest of your app's specific main process
