@@ -7,6 +7,7 @@ const settings = require('electron-settings')
 const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
 const utils = require('./utils')
 const { resolve } = require('path')
+const { mas } = require('process')
 
 const MESSAGE_STATUS = {
     INFO_UPDATE: "INFO_UPDATE",
@@ -42,6 +43,7 @@ const master = {
     hourlyDeqIntervalId: null,
     stopECR: 50,
     splashStatus: 'off',
+    playerUpdaterStatus: 'stopped',
 
     change: () => {},
 }
@@ -79,7 +81,13 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
         recoverECR = +(((now - lastRewardTime) / ONE_HOUR).toFixed(2))
     }
 
-    return +(recoverECR + ecr).toFixed(2)
+    ecr = +(recoverECR + ecr).toFixed(2)
+
+    if (ecr > 100) {
+        ecr = 100
+    }
+
+    return ecr
 }
 
 master.change('master_state', {state: master.state})
@@ -168,7 +176,8 @@ master.add = async (workerData) => {
             }
 
             if (m.ecr) {
-                account_list[accountIndex].ecr = calculateECR(m.lastRewardTime, m.ecr)
+                const now = Date.now()
+                account_list[accountIndex].ecr = calculateECR(now, m.ecr)
             }
 
             if (m.rating) {
@@ -208,7 +217,6 @@ master.add = async (workerData) => {
     
                 const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
                 if (proxyIndex >= 0) {
-                    // console.log('remove', app_setting.proxies[proxyIndex].count)
                     app_setting.proxies[proxyIndex].count--
                     await master.change('app_setting', { app_setting })
                 }
@@ -388,14 +396,20 @@ master.delay = (time) => {
 }
 
 master.updateOpeningPlayerInfo = async () => {
-    const LOADING_TIME = 1000
+    const LOADING_TIME = 2 * 1000
     const startTime = Date.now()
 
+    if (master.playerUpdaterStatus === 'running') {
+        return
+    }
+
+    master.playerUpdaterStatus = 'running'
+
     let account_list = await settings.get('account_list')
-    const updateList = []
+    let updatedList = []
+    let updateList = []
 
     for (let i = 0; i < account_list?.length || 0; i++) {
-
         const newAccount = {}
 
         let accountBalances
@@ -411,14 +425,17 @@ master.updateOpeningPlayerInfo = async () => {
 
         if (accountBalances) {
             let ecr = accountBalances.find((b) => b.token == 'ECR').balance
-            const lastRewardTime = new Date(accountBalances.find((b) => b.token == 'ECR').last_reward_time).getTime()
 
             if (ecr === null) {
                 ecr = 10000
             }
 
+            const lastRewardTime = new Date(accountBalances.find((b) => b.token == 'ECR').last_reward_time).getTime()
+
+            const dec = accountBalances.find((b) => b.token == 'DEC')?.balance || 0
+
             newAccount.ecr = calculateECR(lastRewardTime, ecr / 100)
-            newAccount.dec = accountBalances.find((b) => b.token == 'DEC').balance
+            newAccount.dec = dec
             newAccount.lastRewardTime = lastRewardTime
         }
 
@@ -431,13 +448,22 @@ master.updateOpeningPlayerInfo = async () => {
 
         updateList.push(newAccount)
 
-        const processPercent = Math.ceil(updateList.length * 100 / account_list.length)
+        const processPercent = Math.ceil((updatedList.length + updateList.length) * 100 / account_list.length)
         
         await master.change('process_loading', {
             processPercent: processPercent >= 1 ? processPercent - 1 : 0
         })
 
         await master.delay(500)
+
+        if (account_list?.length - i <= 3 || updateList.length === 3) {
+            await master.changePath('account_list', updateList)
+            updatedList = [
+                ...updatedList,
+                ...updateList
+            ]
+            updateList = []
+        }
 
         const now = Date.now()
 
@@ -446,12 +472,13 @@ master.updateOpeningPlayerInfo = async () => {
                 processPercent: 99,
                 splashStatus: 'off',
             })
+
+            master.splashStatus = 'off'
         }
     }
 
-    if (updateList.length) {
-        await master.changePath('account_list', updateList)
-    }
+    master.playerUpdaterStatus = 'stopped'
+    master.splashStatus = 'off'
 }
 
 master.calculatePriority = calculatePriority

@@ -274,6 +274,10 @@ ipc.on('account.start', async (event, account) => {
         master.calculatePriority(account_list[accountIndex], accountIndex)
     )
 
+    await settings.set(`account_list[${accountIndex}].status`, 'PENDING')
+
+    onChangeAccountList()
+
     await master.dequeue()
 })
 
@@ -316,11 +320,13 @@ master.change = async (name, param) => {
             logToDevtool(param)
             break
         case 'process_loading':
-            win.webContents.send('process', param.processPercent)
+            if (master.splashStatus === 'on') {
+                win.webContents.send('process', param.processPercent)
+            }
+
             if (param.splashStatus === 'off') {
                 await master.delay(500)
 
-                master.splashStatus = 'off'
                 win.webContents.send('splash.off')
             }
             break
@@ -350,9 +356,8 @@ const handleSplashScreen = async () => {
         win.webContents.send('splash.on')
 
         await master.updateOpeningPlayerInfo()
-
-        master.splashStatus = 'off'
-        win.webContents.send('splash.off')
+    
+        win.webContents.send('splash.off')   
     }
 }
 
