@@ -254,7 +254,8 @@ class WSSplinterlandsClient {
         parentPort.postMessage({
           type: "INFO_UPDATE",
           player: this.client.user.name,
-          quest: quest?.completed
+          quest: quest?.completed,
+          maxQuest: quest?.total,
         })
         this.client.updatePlayerInfo()
 

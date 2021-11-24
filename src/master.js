@@ -200,6 +200,10 @@ master.add = async (workerData) => {
                 account_list[accountIndex].quest = m.quest
             }
 
+            if (m.totalQuest) {
+                account_list[accountIndex].maxQuest = m.maxQuest
+            }
+
             await master.change('account_list', { account_list })
         } else if (m.type === MESSAGE_STATUS.STATUS_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
