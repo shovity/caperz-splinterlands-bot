@@ -319,6 +319,11 @@ master.startWorkers = async () => {
 }
 
 master.enqAccounts = async () => {
+
+    if (master.state !== MASTER_STATE.RUNNING) {
+        return
+    }
+
     let account_list = await settings.get('account_list')
 
     for (let i = 0; i < account_list.length; i++) {
