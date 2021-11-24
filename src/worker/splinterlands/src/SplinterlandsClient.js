@@ -26,6 +26,10 @@ const Config = {
     "https://hived.splinterlands.com",
     "https://api.openhive.network",
   ],
+  splinterHosts: [
+    'https://steemmonsters.com/',
+    'https://api2.splinterlands.com/'
+  ]
 };
 
 const log = false
@@ -836,10 +840,11 @@ class SplinterLandsClient {
   }
 
   async sendRequest(url, params, method = "get") {
+    const host = Config.splinterHosts[Math.floor(Math.random() * 2)]
     try {
         let objectAxios = {
             method: method,
-            url: 'https://api2.splinterlands.com/' + url,
+            url: host + url,
             proxy: false,
             // httpsAgent: new HttpsProxyAgent(
             //   `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
