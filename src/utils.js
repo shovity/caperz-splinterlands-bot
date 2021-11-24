@@ -4,11 +4,19 @@ const axios = require('axios').default
 const qs = require('qs')
 
 const utils = {}
+
+const splinterHosts = [
+    'https://steemmonsters.com/',
+    'https://api2.splinterlands.com/'
+]
+
 const sendRequest = async (url, params, method = 'get') => {
+    const host = splinterHosts[Math.floor(Math.random() * 2)]
+
     try {
         let objectAxios = {
             method: method,
-            url: 'https://api2.splinterlands.com/' + url,
+            url: host + url,
             proxy: false,
             // httpsAgent: new HttpsProxyAgent(
             //   `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
