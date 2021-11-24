@@ -840,7 +840,11 @@ class SplinterLandsClient {
   }
 
   async sendRequest(url, params, method = "get") {
-    const host = Config.splinterHosts[Math.floor(Math.random() * 2)]
+    let host = 'https://api2.splinterlands.com/'
+
+    if (host === 'players/details') {
+      host = Config.splinterHosts[Math.floor(Math.random() * 2)]
+    }
     try {
         let objectAxios = {
             method: method,

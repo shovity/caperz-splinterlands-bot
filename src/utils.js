@@ -11,7 +11,11 @@ const splinterHosts = [
 ]
 
 const sendRequest = async (url, params, method = 'get') => {
-    const host = splinterHosts[Math.floor(Math.random() * 2)]
+    let host = 'https://api2.splinterlands.com/'
+
+    if (url === 'players/balances') {
+        host = splinterHosts[Math.floor(Math.random() * 2)]
+    }
 
     try {
         let objectAxios = {
