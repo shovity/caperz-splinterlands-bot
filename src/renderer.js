@@ -39,16 +39,17 @@ ori.use('event store emitter storage', () => {
     if (!user) {
         location.href = './sign-in.html'
     } else {
-        splashScreen.removeClass('d-none')
-        app.addClass('d-none')
+        ipc.send('user.enter_app')
     }
 
-    // ipc.on('splash.on', () => {
-    //     splashScreen.removeClass('d-none')
-    //     app.addClass('d-none')
-    // })
+    ipc.on('splash.on', () => {
+        console.log('on')
+        splashScreen.removeClass('d-none')
+        app.addClass('d-none')
+    })
 
     ipc.on('splash.off', () => {
+        console.log('off')
         splashScreen.addClass('d-none')
         app.removeClass('d-none')
     })
