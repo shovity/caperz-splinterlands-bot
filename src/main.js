@@ -142,6 +142,7 @@ ipc.on('worker.remove_all', (event, arg) => {
 })
 
 ipc.on('setting.save', async (event, data) => {
+    master.stopECR = data.ecr
     const oldSetting = await settings.getSync('app_setting')
     let newSetting = {
         ...oldSetting,
