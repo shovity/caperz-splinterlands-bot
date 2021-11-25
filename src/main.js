@@ -2,8 +2,9 @@ const { app, BrowserWindow, ipcMain: ipc, nativeTheme, globalShortcut } = requir
 const path = require('path')
 
 const master = require('./master')
-const settings = require('electron-settings')
 const utils = require('./utils')
+const listener = require('./listener')
+const settings = require('electron-settings')
 
 let isStarted = false
 let win
@@ -56,36 +57,37 @@ const createWindow = () => {
         win.webContents.send('run', 'im main proc')
         win.webContents.send('modify', { state: master.state })
     })
-}
 
-const onChangeAccountList = async () => {
-    const account_list = await settings.get('account_list')
-    win.webContents.send('player_table.redraw', account_list)
-}
-const onChangeProxyList = async () => {
-    const app_setting = await settings.get('app_setting')
-    win.webContents.send('proxy_table.redraw', app_setting)
+    win.onChangeAccountList = async () => {
+        const account_list = await settings.get('account_list')
+        win.webContents.send('player_table.redraw', account_list)
+    }
+
+    win.onChangeProxyList = async () => {
+        const app_setting = await settings.get('app_setting')
+        win.webContents.send('proxy_table.redraw', app_setting)
+    }
+
+    win.handleSplashScreen = async () => {
+        const user = await settings.get('user')
+    
+        if (user?.token) {
+            master.splashStatus = 'on'
+            win.webContents.send('splash.on')
+    
+            await master.updateOpeningPlayerInfo()
+        
+            win.webContents.send('splash.off')   
+        }
+    }
+
+    listener({ win, ipc, settings })
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
-
-// app.whenReady().then(() => {
-//     // Register a 'CommandOrControl+X' shortcut listener.
-//     const ret = globalShortcut.register('CommandOrControl+R', () => {
-//         console.log('CommandOrControl+R is pressed')
-//     })
-
-//     if (!ret) {
-//       console.log('registration failed')
-//     }
-// })
-
-// app.on('will-quit', () => {
-//     globalShortcut.unregisterAll()
-// })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -133,165 +135,6 @@ app.on('activate', () => {
     }
 })
 
-ipc.on('worker.add', async (event, data) => {
-    master.add(data)
-})
-
-ipc.on('worker.remove_all', (event, arg) => {
-    master.removeAll()
-})
-
-ipc.on('setting.save', async (event, data) => {
-    const oldSetting = await settings.get('app_setting')
-    let newSetting = {
-        ...oldSetting,
-        ecr: data.ecr,
-        startQuestEcr: data.startQuestEcr,
-        botPerIp: data.botPerIp,
-    }
-    newSetting.proxies = data.proxies.map((p) => {
-        const oldProxy = oldSetting.proxies.find((pr) => p.ip == pr.ip)
-        if (oldProxy) {
-            return oldProxy
-        } else {
-            return {
-                ip: p.ip,
-                protocol: p.protocol,
-                count: 0,
-                status: 'active',
-            }
-        }
-    })
-
-    const res = await settings.set('app_setting', newSetting)
-    await master.enqAccounts()
-})
-
-ipc.on('account.add', async (event, data) => {
-    let res
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-    try {
-        if (emailRegex.test(data.username)) {
-            res = await utils.loginEmail(data.username, data.password)
-        } else {
-            res = await utils.login(data.username, data.password)
-        }
-    } catch (error) {
-        win.webContents.send('account.add_failed', {
-            byEmail: emailRegex.test(data.username),
-            player: data.username,
-            email: data.username || '',
-        })
-        return
-    }
-    let list = await settings.get('account_list')
-    let newList = list || []
-    let ecr = res.balances.find((b) => b.token == 'ECR').balance
-
-    if (ecr === null) {
-        ecr = 10000
-    }
-
-    newList.push({
-        username: res.name,
-        email: res.email || '',
-        power: res.collection_power,
-        postingKey: res.posting_key,
-        updatedAt: Date.now(),
-        lastRewardTime: new Date(res.last_reward_time).getTime(),
-        token: res.token,
-        ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
-        dec: res.balances.find((b) => b.token == 'DEC') ? res.balances.find((b) => b.token == 'DEC').balance : null,
-        status: 'NONE',
-    })
-    await settings.set('account_list', newList)
-    win.webContents.send('account.add_success', {
-        byEmail: emailRegex.test(data.username),
-        player: res.name,
-        email: res.email || '',
-    })
-
-    if (master.state === 'RUNNING') {
-        const account = {
-            username: res.name,
-            email: res.email || '',
-            power: res.collection_power,
-            postingKey: res.posting_key,
-            updatedAt: Date.now(),
-            lastRewardTime: new Date(res.last_reward_time).getTime(),
-            token: res.token,
-            ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
-            dec: res.balances.find((b) => b.token == 'DEC').balance,
-            status: 'PENDING',
-        }
-
-        const now = Date.now()
-
-        master.priorityQueue.enqueue(account, master.calculatePriority(account, now))
-
-        await master.dequeue()
-    }
-})
-
-ipc.on('delete.account', async (event, data) => {
-    let list = await settings.get('account_list')
-    let newList = list.filter((account) => account.username != data && account.email != data)
-    await settings.set('account_list', newList)
-})
-
-ipc.on('player_table.redraw', () => {
-    onChangeAccountList()
-})
-
-ipc.on('player_table.reorder', async (event, data) => {
-    const account_list = await settings.get('account_list')
-    const newList = []
-    data.forEach((username) => {
-        const acc = account_list.find((a) => username == a.username)
-        newList.push(acc)
-    })
-    await settings.set('account_list', newList)
-})
-
-ipc.on('proxy_table.redraw', () => {
-    onChangeProxyList()
-})
-
-ipc.on('worker.start', async (e) => {
-    master.startWorkers()
-})
-
-ipc.on('worker.stop', async (e) => {
-    master.pauseWorkers()
-})
-
-ipc.on('account.start', async (event, account) => {
-    const account_list = await settings.get('account_list')
-
-    const accountIndex = account_list.findIndex((a) => a.username == account)
-    master.priorityQueue.enqueue(
-        account_list[accountIndex],
-        master.calculatePriority(account_list[accountIndex], accountIndex)
-    )
-
-    await settings.set(`account_list[${accountIndex}].status`, 'PENDING')
-
-    onChangeAccountList()
-
-    await master.dequeue()
-})
-
-ipc.on('account.stop', async (event, account) => {
-    const account_list = await settings.get('account_list')
-    const accountIndex = account_list.findIndex((a) => a.username === account)
-    if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
-        await settings.set(`account_list[${accountIndex}].status`, 'PAUSED')
-        onChangeAccountList()
-        return
-    }
-    await master.remove(account)
-})
-
 master.change = async (name, param) => {
     const now = Date.now()
     switch (name) {
@@ -305,13 +148,13 @@ master.change = async (name, param) => {
                     }
                 })
             )
-            onChangeAccountList()
+            win.onChangeAccountList()
             break
         case 'app_setting':
             await settings.set('app_setting', param.app_setting)
             const appSetting = await settings.get('app_setting', param.app_setting)
             count = appSetting.proxies[0].count
-            onChangeProxyList()
+            win.onChangeProxyList()
             break
         case 'master_state':
             win.webContents.send('modify', { state: param.state })
@@ -344,29 +187,10 @@ master.changePath = async (name, array) => {
     })
 
     if (name === 'account_list') {
-        onChangeAccountList()
+        win.onChangeAccountList()
     }
 }
 
-const handleSplashScreen = async () => {
-    const user = await settings.get('user')
-
-    if (user?.token) {
-        master.splashStatus = 'on'
-        win.webContents.send('splash.on')
-
-        await master.updateOpeningPlayerInfo()
-    
-        win.webContents.send('splash.off')   
-    }
-}
-
-ipc.on('setUser', async (event, data) => {
-    await settings.set('user', data)
-})
-ipc.on('user.enter_app', async (event, data) => {
-    await handleSplashScreen()
-})
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 const logToDevtool = (data) => {

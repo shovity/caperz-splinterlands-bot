@@ -300,7 +300,7 @@ ori.use('event store emitter storage', () => {
 
     event.listen('account.remove', (account) => {
         let row = document.getElementById(account)
-        ipc.send('delete.account', account)
+        ipc.send('account.delete', account)
         row.remove()
     })
 
