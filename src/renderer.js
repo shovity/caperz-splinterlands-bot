@@ -329,7 +329,10 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec || '--',
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: typeof(d.quest) != 'undefined' && typeof(d.maxQuest) != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+                quest:
+                    typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                        ? `${d.quest}/${d.maxQuest}`
+                        : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
@@ -338,6 +341,7 @@ ori.use('event store emitter storage', () => {
         playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             responsive: true,
+            rowId: 'username',
             columns: [
                 { data: 'username' },
                 { data: 'ecr' },
@@ -378,9 +382,10 @@ ori.use('event store emitter storage', () => {
             order: [],
         })
         $("th.sorting[aria-controls='player_monitoring_table']").on('click', function () {
-            const dataTable = playerMonitoringTable.rows().data().toArray()
-            const newList = dataTable.map((d) => d.username)
-            ipc.send('player_table.reorder', newList)
+            
+            // const dataTable = playerMonitoringTable.rows().data().toArray()
+            // const newList = dataTable.map((d) => d.username)
+            // ipc.send('player_table.reorder', newList)
         })
         data.forEach((account) => {
             let row = account_table.insertRow(1)
@@ -403,21 +408,41 @@ ori.use('event store emitter storage', () => {
 
     ipc.on('player_table.redraw', (event, data) => {
         const tableData = data.map((d) => {
-            console.log(d)
             return {
                 username: d.username,
                 ecr: d.ecr,
                 dec: d.dec,
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: typeof(d.quest) != 'undefined' && typeof(d.maxQuest) != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+                quest:
+                    typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                        ? `${d.quest}/${d.maxQuest}`
+                        : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
             }
         })
-        playerMonitoringTable.clear().rows.add(tableData).draw();
+        playerMonitoringTable.clear().rows.add(tableData).draw()
     })
+
+    ipc.on('player_table.player.redraw', (event, d) => {
+        const newData = {
+            username: d.username,
+            ecr: d.ecr|| '--',
+            dec: d.dec || '--',
+            power: d.power || '--',
+            rating: d.rating || '--',
+            quest:
+                typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+            status: statusMapping(d.status),
+            stt: { status: d.status, username: d.username },
+            matchStatus: matchStatusMapping(d.matchStatus),
+        }
+
+        playerMonitoringTable.row( $(`#player_monitoring_table tr#${d.username}`)[0] ).data(newData).draw()
+    })
+
     ipc.on('proxy_table.redraw', (event, data) => {
         const tableData = data.proxies.map((d) => {
             return {
@@ -425,8 +450,8 @@ ori.use('event store emitter storage', () => {
                 botUsage: d.count + '/' + data.botPerIp,
             }
         })
-        
-        proxyMonitoringTable.clear().rows.add(tableData).draw();
+
+        proxyMonitoringTable.clear().rows.add(tableData).draw()
     })
     ipc.on('modify', (event, data) => {
         if (data.state === 'RUNNING') {
@@ -449,7 +474,7 @@ ori.use('event store emitter storage', () => {
             } else {
                 width++
                 myBar.style.width = width + '%'
-                barPercent.innerHTML = width * 1 
+                barPercent.innerHTML = width * 1
             }
         }
     })
