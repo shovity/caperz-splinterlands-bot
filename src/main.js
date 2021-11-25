@@ -6,7 +6,6 @@ const utils = require('./utils')
 const listener = require('./listener')
 const settings = require('electron-settings')
 
-let isStarted = false
 let win
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -14,20 +13,20 @@ if (require('electron-squirrel-startup')) {
 }
 
 const loadConfigData = async () => {
-    let app_setting = await settings.get('app_setting')
+    let app_setting = await settings.getSync('app_setting')
     app_setting = app_setting || {
         ecr: 50,
         startQuestEcr: 60,
         botPerIp: 5,
         proxies: [{ ip: 'Default IP', count: 0, protocol: 'https', status: 'active' }],
     }
-    await settings.set('app_setting', app_setting)
+    await settings.setSync('app_setting', app_setting)
     master.stopECR = app_setting.ecr
     win.webContents.send('setting.load', app_setting)
-    let account_list = await settings.get('account_list')
+    let account_list = await settings.getSync('account_list')
     account_list = account_list ? account_list.filter((e) => e) : []
     win.webContents.send('account.load', account_list)
-    await settings.set('account_list', account_list)
+    await settings.setSync('account_list', account_list)
 }
 const createWindow = () => {
     // Create the browser window.
@@ -59,12 +58,12 @@ const createWindow = () => {
     })
 
     win.onChangeAccountList = async () => {
-        const account_list = await settings.get('account_list')
+        const account_list = await settings.getSync('account_list')
         win.webContents.send('player_table.redraw', account_list)
     }
 
     win.onChangeProxyList = async () => {
-        const app_setting = await settings.get('app_setting')
+        const app_setting = await settings.getSync('app_setting')
         win.webContents.send('proxy_table.redraw', app_setting)
     }
 
@@ -103,8 +102,8 @@ let asyncOperationDone = false
 app.on('before-quit', async (e) => {
     if (!asyncOperationDone) {
         e.preventDefault()
-        const account_list = await settings.get('account_list')
-        const app_setting = await settings.get('app_setting')
+        const account_list = await settings.getSync('account_list')
+        const app_setting = await settings.getSync('app_setting')
 
         const newList = account_list.map((account) => {
             if (account.status === 'RUNNING') {
@@ -119,8 +118,8 @@ app.on('before-quit', async (e) => {
             app_setting.proxies[i].count = 0
         }
 
-        await settings.set('account_list', newList)
-        await settings.set('app_setting', app_setting)
+        await settings.setSync('account_list', newList)
+        await settings.setSync('app_setting', app_setting)
 
         asyncOperationDone = true
         app.quit()

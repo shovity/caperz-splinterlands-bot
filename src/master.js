@@ -93,10 +93,10 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
 master.change('master_state', {state: master.state})
 
 master.handleAddAccount = async (account) => {
-    let account_list = await settings.get('account_list')
+    let account_list = await settings.getSync('account_list')
     const accountIndex = account_list.findIndex(a => a.username === account.username)
-    const app_setting = await settings.get('app_setting')
-    const user = await settings.get('user')
+    const app_setting = await settings.getSync('app_setting')
+    const user = await settings.getSync('user')
 
     const config = {
         ecr: app_setting.ecr
@@ -165,8 +165,8 @@ master.add = async (workerData) => {
     worker.status = 'running'
 
     worker.instance.on('message', async (m) => {
-        const account_list = await settings.get('account_list')
-        const app_setting = await settings.get('app_setting')
+        const account_list = await settings.getSync('account_list')
+        const app_setting = await settings.getSync('app_setting')
 
         if (m.type === MESSAGE_STATUS.INFO_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
@@ -245,8 +245,8 @@ master.add = async (workerData) => {
 }
 
 master.remove = async (account) => {
-    const account_list = await settings.get('account_list')
-    const app_setting = await settings.get('app_setting')
+    const account_list = await settings.getSync('account_list')
+    const app_setting = await settings.getSync('app_setting')
 
     const accountIndex = account_list.findIndex(a => a.username === account)
 
@@ -279,7 +279,7 @@ master.removeAll = async () => {
     clearInterval(master.dailyIntervalId)
     clearInterval(master.hourlyDeqIntervalId)
 
-    let account_list = await settings.get('account_list')
+    let account_list = await settings.getSync('account_list')
 
     account_list.map(a => {
         delete a.workerId
@@ -293,8 +293,8 @@ master.removeAll = async () => {
 master.pauseWorkers = async () => {
     master.removeAll()
 
-    const app_setting = await settings.get('app_setting')
-    const account_list = await settings.get('account_list')
+    const app_setting = await settings.getSync('app_setting')
+    const account_list = await settings.getSync('account_list')
 
     for (let i = 0; i < app_setting.proxies.length; i++) {
         app_setting.proxies[i].count = 0
@@ -328,7 +328,7 @@ master.enqAccounts = async () => {
         return
     }
 
-    let account_list = await settings.get('account_list')
+    let account_list = await settings.getSync('account_list')
 
     for (let i = 0; i < account_list.length; i++) {
         if ([ACCOUNT_STATUS.PENDING, ACCOUNT_STATUS.RUNNING].includes(account_list[i].status)) {
@@ -339,7 +339,7 @@ master.enqAccounts = async () => {
 
     await master.dequeue()
 
-    account_list = await settings.get('account_list')
+    account_list = await settings.getSync('account_list')
 
     account_list = account_list.map(a => {
         if ([ACCOUNT_STATUS.NONE, ACCOUNT_STATUS.PAUSED, ACCOUNT_STATUS.DONE, ACCOUNT_STATUS.STOPPED].includes(a.status)) {
@@ -357,7 +357,7 @@ master.setIntervals = async () => {
     const ONE_DAY_TIME = 24 * ONE_HOUR_TIME
 
     master.dailyIntervalId = setInterval(async () => {
-        let account_list = await settings.get('account_list')
+        let account_list = await settings.getSync('account_list')
 
         await master.dequeue()
 
@@ -383,7 +383,7 @@ master.dequeue = async () => {
     }
 
     let accountFront = master.priorityQueue.front().element
-    let app_setting = await settings.get('app_setting')
+    let app_setting = await settings.getSync('app_setting')
     const ecr = app_setting.ecr
     let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
@@ -391,7 +391,7 @@ master.dequeue = async () => {
         master.priorityQueue.dequeue()
         await master.handleAddAccount(accountFront)
         
-        let app_setting = await settings.get('app_setting')
+        let app_setting = await settings.getSync('app_setting')
         proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
 
         accountFront = master.priorityQueue.front()?.element
@@ -414,7 +414,7 @@ master.updateOpeningPlayerInfo = async () => {
 
     master.playerUpdaterStatus = 'running'
 
-    let account_list = await settings.get('account_list')
+    let account_list = await settings.getSync('account_list')
     let updatedList = []
     let updateList = []
 

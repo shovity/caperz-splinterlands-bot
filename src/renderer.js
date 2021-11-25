@@ -277,8 +277,8 @@ ori.use('event store emitter storage', () => {
             cell4.innerHTML = '<p>x</p>'
             row.appendChild(cell4)
             showNotice(name + ' is added to verifying!')
-            username.value = ''
-            password.value = ''
+            // username.value = ''
+            // password.value = ''
         }
     })
 
@@ -329,7 +329,10 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec || '--',
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: d.quest ? `${d.quest}/5` : '--',
+                quest:
+                    typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                        ? `${d.quest}/${d.maxQuest}`
+                        : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
@@ -338,6 +341,7 @@ ori.use('event store emitter storage', () => {
         playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             responsive: true,
+            rowId: 'username',
             columns: [
                 { data: 'username' },
                 { data: 'ecr' },
@@ -363,7 +367,6 @@ ori.use('event store emitter storage', () => {
                     width: '70px',
                     targets: 8,
                     render: function (data, type, row) {
-                        console.log(data)
                         if (data.status == 'RUNNING' || data.status == 'PENDING' || data.status == 'DONE') {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
@@ -379,9 +382,10 @@ ori.use('event store emitter storage', () => {
             order: [],
         })
         $("th.sorting[aria-controls='player_monitoring_table']").on('click', function () {
-            const dataTable = playerMonitoringTable.rows().data().toArray()
-            const newList = dataTable.map((d) => d.username)
-            ipc.send('player_table.reorder', newList)
+            
+            // const dataTable = playerMonitoringTable.rows().data().toArray()
+            // const newList = dataTable.map((d) => d.username)
+            // ipc.send('player_table.reorder', newList)
         })
         data.forEach((account) => {
             let row = account_table.insertRow(1)
@@ -410,16 +414,35 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec,
                 power: d.power || '--',
                 rating: d.rating || '--',
-                quest: d.quest ? `${d.quest}/5` : '--',
+                quest:
+                    typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                        ? `${d.quest}/${d.maxQuest}`
+                        : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.matchStatus),
             }
         })
-        playerMonitoringTable.clear().draw()
-        playerMonitoringTable.rows.add(tableData) // Add new data
-        playerMonitoringTable.columns.adjust().draw()
+        playerMonitoringTable.clear().rows.add(tableData).draw()
     })
+
+    ipc.on('player_table.player.redraw', (event, d) => {
+        const newData = {
+            username: d.username,
+            ecr: d.ecr|| '--',
+            dec: d.dec || '--',
+            power: d.power || '--',
+            rating: d.rating || '--',
+            quest:
+                typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+            status: statusMapping(d.status),
+            stt: { status: d.status, username: d.username },
+            matchStatus: matchStatusMapping(d.matchStatus),
+        }
+
+        playerMonitoringTable.row( $(`#player_monitoring_table tr#${d.username}`)[0] ).data(newData).draw()
+    })
+
     ipc.on('proxy_table.redraw', (event, data) => {
         const tableData = data.proxies.map((d) => {
             return {
@@ -427,9 +450,8 @@ ori.use('event store emitter storage', () => {
                 botUsage: d.count + '/' + data.botPerIp,
             }
         })
-        proxyMonitoringTable.clear().draw()
-        proxyMonitoringTable.rows.add(tableData) // Add new data
-        proxyMonitoringTable.columns.adjust().draw()
+
+        proxyMonitoringTable.clear().rows.add(tableData).draw()
     })
     ipc.on('modify', (event, data) => {
         if (data.state === 'RUNNING') {
@@ -452,7 +474,7 @@ ori.use('event store emitter storage', () => {
             } else {
                 width++
                 myBar.style.width = width + '%'
-                barPercent.innerHTML = width * 1 
+                barPercent.innerHTML = width * 1
             }
         }
     })
