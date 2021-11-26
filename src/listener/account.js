@@ -1,0 +1,107 @@
+const master = require('../master')
+const utils = require('../utils')
+
+const account = ({ win, ipc, settings }) => {
+
+    ipc.on('account.delete', async (event, data) => {
+        let list = await settings.getSync('account_list')
+        let newList = list.filter((account) => account.username != data && account.email != data)
+        await settings.setSync(`account_list[${accountIndex}].status`, 'PENDING')
+    })
+    
+    ipc.on('account.start', async (event, account) => {
+        const account_list = await settings.getSync('account_list')
+
+        const accountIndex = account_list.findIndex((a) => a.username == account)
+        master.priorityQueue.enqueue(
+            account_list[accountIndex],
+            master.calculatePriority(account_list[accountIndex], accountIndex)
+        )
+
+        await settings.setSync(`account_list[${accountIndex}].status`, 'PENDING')
+
+        win.onChangeAccountList()
+
+        await master.dequeue()
+    })
+
+    ipc.on('account.stop', async (event, account) => {
+        const account_list = await settings.getSync('account_list')
+        const accountIndex = account_list.findIndex((a) => a.username === account)
+        if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
+            await settings.setSync(`account_list[${accountIndex}].status`, 'PAUSED')
+            win.onChangeAccountList()
+            return
+        }
+        await master.remove(account)
+    })
+
+    ipc.on('account.add', async (event, data) => {
+        let res
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+        try {
+            if (emailRegex.test(data.username)) {
+                res = await utils.loginEmail(data.username, data.password)
+            } else {
+                res = await utils.login(data.username, data.password)
+            }
+        } catch (error) {
+            win.webContents.send('account.add_failed', {
+                byEmail: emailRegex.test(data.username),
+                player: data.username,
+                email: data.username || '',
+            })
+            return
+        }
+        let list = await settings.getSync('account_list')
+        let newList = list || []
+        let ecr = res.balances.find((b) => b.token == 'ECR').balance
+    
+        if (ecr === null) {
+            ecr = 10000
+        }
+    
+        newList.push({
+            username: res.name,
+            email: res.email || '',
+            power: res.collection_power,
+            postingKey: res.posting_key,
+            updatedAt: Date.now(),
+            lastRewardTime: new Date(res.last_reward_time).getTime(),
+            token: res.token,
+            ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
+            dec: res.balances.find((b) => b.token == 'DEC') ? res.balances.find((b) => b.token == 'DEC').balance : null,
+            status: 'NONE',
+        })
+        await settings.setSync('account_list', newList)
+        win.webContents.send('account.add_success', {
+            byEmail: emailRegex.test(data.username),
+            player: res.name,
+            email: res.email || '',
+        })
+    
+        if (master.state === 'RUNNING') {
+            const account = {
+                username: res.name,
+                email: res.email || '',
+                power: res.collection_power,
+                postingKey: res.posting_key,
+                updatedAt: Date.now(),
+                lastRewardTime: new Date(res.last_reward_time).getTime(),
+                token: res.token,
+                ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
+                dec: res.balances.find((b) => b.token == 'DEC').balance,
+                status: 'PENDING',
+            }
+    
+            const now = Date.now()
+    
+            master.priorityQueue.enqueue(account, master.calculatePriority(account, now))
+    
+            await master.dequeue()
+        }
+    })
+}
+
+
+module.exports = account

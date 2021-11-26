@@ -150,7 +150,7 @@ master.handleAddAccount = async (account) => {
         master.priorityQueue.enqueue(account)
     }
 
-    await master.change('account_list', { account_list })
+    await master.changePath('account_list', [ {...account_list[accountIndex], index: accountIndex} ])
     await master.change('app_setting', { app_setting })
 }
 
@@ -204,7 +204,7 @@ master.add = async (workerData) => {
                 account_list[accountIndex].maxQuest = m.maxQuest
             }
 
-            await master.change('account_list', { account_list })
+            await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
         } else if (m.type === MESSAGE_STATUS.STATUS_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
 
@@ -214,7 +214,7 @@ master.add = async (workerData) => {
 
             account_list[accountIndex].status = m.status
 
-            await master.change('account_list', { account_list })
+            await master.change('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
 
             if (m.status === 'DONE') {
                 let proxy = account_list[accountIndex].proxy
@@ -264,7 +264,7 @@ master.remove = async (account) => {
             worker.instance.terminate()
         }
     }
-    await master.change('account_list', {account_list})
+    await master.change('account_list', { account_list })
 }
 
 master.removeAll = async () => {

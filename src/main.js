@@ -80,6 +80,10 @@ const createWindow = () => {
         }
     }
 
+    win.onChangeAccount = async (account) => {
+        win.webContents.send('player_table.player.redraw', account)
+    }
+
     listener({ win, ipc, settings })
 }
 
@@ -186,7 +190,12 @@ master.changePath = async (name, array) => {
     })
 
     if (name === 'account_list') {
-        win.onChangeAccountList()
+        array.forEach((a) => {
+            if (!a.username) {
+                return
+            }
+            win.onChangeAccount(a)
+        })
     }
 }
 
