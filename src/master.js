@@ -214,7 +214,7 @@ master.add = async (workerData) => {
 
             account_list[accountIndex].status = m.status
 
-            await master.change('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
+            await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
 
             if (m.status === 'DONE') {
                 let proxy = account_list[accountIndex].proxy
@@ -256,7 +256,7 @@ master.remove = async (account) => {
             let proxy = account_list[accountIndex].proxy
 
             const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
-            if (proxyIndex >= 0) {
+            if (proxyIndex >= 0 && account_list[accountIndex].status !== ACCOUNT_STATUS.DONE) {
                 app_setting.proxies[proxyIndex].count--
                 await master.change('app_setting', { app_setting })
             }
@@ -419,7 +419,7 @@ master.updateOpeningPlayerInfo = async () => {
     let updateList = []
 
     for (let i = 0; i < account_list?.length || 0; i++) {
-        const newAccount = {}
+        const newAccount = account_list[i]
 
         let accountBalances
         let accountDetails

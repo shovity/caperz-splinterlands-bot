@@ -192,7 +192,20 @@ class SplinterLandsClient {
       { username: this.user.name, token: this.token }
     );
     if (result) {
-      return result.cards;
+      return result.cards.filter(c => {
+        if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+          return false
+        }
+
+        if (
+          c.unlock_date &&
+          new Date(c.unlock_date) >= Date.now()
+        ) {
+          return false
+        }
+
+        return true
+      });
     } else {
       return [];
     }
@@ -223,9 +236,24 @@ class SplinterLandsClient {
     );
 
     if (result) {
-      result.cards.map((item) => {
-        advancedCards.push(this.getCardId(item));
-      });
+      result.cards
+        .filter(c => {
+          if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+            return false
+          }
+
+          if (
+            c.unlock_date &&
+            new Date(c.unlock_date) >= Date.now()
+          ) {
+            return false
+          }
+
+          return true
+        })
+        .map((item) => {
+          advancedCards.push(this.getCardId(item));
+        });
       return advancedCards;
     } else {
       return [];
