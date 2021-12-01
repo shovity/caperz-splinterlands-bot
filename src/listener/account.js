@@ -6,7 +6,8 @@ const account = ({ win, ipc, settings }) => {
     ipc.on('account.delete', async (event, data) => {
         let list = await settings.getSync('account_list')
         let newList = list.filter((account) => account.username != data && account.email != data)
-        await settings.setSync(`account_list[${accountIndex}].status`, 'PENDING')
+        
+        master.change('account_list', { account_list: newList})
     })
     
     ipc.on('account.start', async (event, account) => {

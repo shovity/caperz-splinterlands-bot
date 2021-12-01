@@ -46,6 +46,7 @@ const master = {
     playerUpdaterStatus: 'stopped',
 
     change: () => {},
+    changePath: () => {},
 }
 
 const calculatePriority = (account, accountIndex = 0) => {
@@ -291,7 +292,7 @@ master.removeAll = async () => {
 }
 
 master.pauseWorkers = async () => {
-    master.removeAll()
+    await master.removeAll()
 
     const app_setting = await settings.getSync('app_setting')
     const account_list = await settings.getSync('account_list')
