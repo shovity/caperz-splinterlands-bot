@@ -382,10 +382,9 @@ ori.use('event store emitter storage', () => {
             order: [],
         })
         $("th.sorting[aria-controls='player_monitoring_table']").on('click', function () {
-            
-            // const dataTable = playerMonitoringTable.rows().data().toArray()
-            // const newList = dataTable.map((d) => d.username)
-            // ipc.send('player_table.reorder', newList)
+            const dataTable = playerMonitoringTable.rows().data().toArray()
+            const newList = dataTable.map((d) => d.username)
+            ipc.send('player_table.reorder', newList)
         })
         data.forEach((account) => {
             let row = account_table.insertRow(1)
@@ -407,6 +406,7 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('player_table.redraw', (event, data) => {
+        console.log('table rerender')
         const tableData = data.map((d) => {
             return {
                 username: d.username,
@@ -427,9 +427,10 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('player_table.player.redraw', (event, d) => {
+        console.log('player' + d.username + 'rerender')
         const newData = {
             username: d.username,
-            ecr: d.ecr|| '--',
+            ecr: d.ecr || '--',
             dec: d.dec || '--',
             power: d.power || '--',
             rating: d.rating || '--',
@@ -439,8 +440,12 @@ ori.use('event store emitter storage', () => {
             stt: { status: d.status, username: d.username },
             matchStatus: matchStatusMapping(d.matchStatus),
         }
-
-        playerMonitoringTable.row( $(`#player_monitoring_table tr#${d.username}`)[0] ).data(newData).draw()
+        if ($(`#player_monitoring_table tr#${d.username}`)[0]) {
+            playerMonitoringTable
+                .row($(`#player_monitoring_table tr#${d.username}`)[0])
+                .data(newData)
+                .draw(false)
+        }
     })
 
     ipc.on('proxy_table.redraw', (event, data) => {
