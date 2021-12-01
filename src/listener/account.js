@@ -19,8 +19,9 @@ const account = ({ win, ipc, settings }) => {
         )
 
         await settings.setSync(`account_list[${accountIndex}].status`, 'PENDING')
+        account_list[accountIndex].status = 'PENDING'
 
-        win.onChangeAccountList()
+        win.onChangeAccount(account_list[accountIndex])
 
         await master.dequeue()
     })
@@ -30,9 +31,14 @@ const account = ({ win, ipc, settings }) => {
         const accountIndex = account_list.findIndex((a) => a.username === account)
         if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
             await settings.setSync(`account_list[${accountIndex}].status`, 'PAUSED')
-            win.onChangeAccountList()
+
+            account_list[accountIndex].status = 'PAUSED'
+
+            win.onChangeAccount(account_list[accountIndex])
+
             return
         }
+
         await master.remove(account)
     })
 

@@ -150,7 +150,7 @@ master.handleAddAccount = async (account) => {
         master.priorityQueue.enqueue(account)
     }
 
-    await master.changePath('account_list', [ {...account_list[accountIndex], index: accountIndex} ])
+    await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
     await master.change('app_setting', { app_setting })
 }
 
@@ -264,7 +264,7 @@ master.remove = async (account) => {
             worker.instance.terminate()
         }
     }
-    await master.change('account_list', { account_list })
+    await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
 }
 
 master.removeAll = async () => {
