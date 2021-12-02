@@ -4,22 +4,22 @@ const utils = require('../utils')
 const account = ({ win, ipc, settings }) => {
 
     ipc.on('account.delete', async (event, data) => {
-        let list = await settings.getSync('account_list')
+        let list = settings.data.account_list
         let newList = list.filter((account) => account.username != data && account.email != data)
         
         master.change('account_list', { account_list: newList})
     })
     
     ipc.on('account.start', async (event, account) => {
-        const account_list = await settings.getSync('account_list')
+        const account_list = settings.data.account_list
 
         const accountIndex = account_list.findIndex((a) => a.username == account)
         master.priorityQueue.enqueue(
             account_list[accountIndex],
             master.calculatePriority(account_list[accountIndex], accountIndex)
         )
-
-        await settings.setSync(`account_list[${accountIndex}].status`, 'PENDING')
+        
+        settings.data.account_list[accountIndex].status = 'PENDING'
         account_list[accountIndex].status = 'PENDING'
 
         win.onChangeAccount(account_list[accountIndex])
@@ -28,10 +28,10 @@ const account = ({ win, ipc, settings }) => {
     })
 
     ipc.on('account.stop', async (event, account) => {
-        const account_list = await settings.getSync('account_list')
+        const account_list = settings.data.account_list
         const accountIndex = account_list.findIndex((a) => a.username === account)
         if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
-            await settings.setSync(`account_list[${accountIndex}].status`, 'PAUSED')
+            settings.data.account_list[accountIndex].status = 'PAUSED'
 
             account_list[accountIndex].status = 'PAUSED'
 
@@ -60,7 +60,7 @@ const account = ({ win, ipc, settings }) => {
             })
             return
         }
-        let list = await settings.getSync('account_list')
+        let list = settings.data.account_list
         let newList = list || []
         let ecr = res.balances.find((b) => b.token == 'ECR').balance
     
@@ -80,7 +80,7 @@ const account = ({ win, ipc, settings }) => {
             dec: res.balances.find((b) => b.token == 'DEC') ? res.balances.find((b) => b.token == 'DEC').balance : null,
             status: 'NONE',
         })
-        await settings.setSync('account_list', newList)
+        settings.data.account_list = newList
         win.webContents.send('account.add_success', {
             byEmail: emailRegex.test(data.username),
             player: res.name,
