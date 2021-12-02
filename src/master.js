@@ -246,7 +246,6 @@ master.add = async (workerData) => {
 }
 
 master.remove = async (account) => {
-    console.count('deleting')
     const account_list = await settings.getSync('account_list')
     const app_setting = await settings.getSync('app_setting')
 
@@ -263,7 +262,6 @@ master.remove = async (account) => {
 
     for (const worker of master.workers) {
         if (worker.instance.threadId === account_list[accountIndex].workerId) {
-            console.count('deleted')
             await worker.instance.terminate()
         }
     }
