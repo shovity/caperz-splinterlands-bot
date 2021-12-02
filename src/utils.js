@@ -25,7 +25,7 @@ const sendRequest = async (url, params, method = 'get') => {
             // httpsAgent: new HttpsProxyAgent(
             //   `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
             // ),
-            timeout: 10000,
+            timeout: 15000,
             headers: {
                 authority: 'api2.splinterlands.com',
                 method: method.toUpperCase(),
