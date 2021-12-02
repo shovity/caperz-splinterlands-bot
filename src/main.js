@@ -15,7 +15,7 @@ if (require('electron-squirrel-startup')) {
 
 const loadConfigData = async () => {
     let app_setting = settings.data.app_setting
-    app_setting = app_setting.length || {
+    app_setting = app_setting || {
         ecr: 50,
         startQuestEcr: 60,
         botPerIp: 5,
