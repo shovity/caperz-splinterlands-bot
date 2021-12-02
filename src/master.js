@@ -246,26 +246,27 @@ master.add = async (workerData) => {
 }
 
 master.remove = async (account) => {
+    console.count('deleting')
     const account_list = await settings.getSync('account_list')
     const app_setting = await settings.getSync('app_setting')
 
     const accountIndex = account_list.findIndex(a => a.username === account)
+    let proxy = account_list[accountIndex].proxy
+
+    const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
+    if (proxyIndex >= 0 && account_list[accountIndex].status !== ACCOUNT_STATUS.DONE) {
+        app_setting.proxies[proxyIndex].count--
+        await master.change('app_setting', { app_setting })
+    }
+    account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
+    await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
 
     for (const worker of master.workers) {
         if (worker.instance.threadId === account_list[accountIndex].workerId) {
-            account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
-            let proxy = account_list[accountIndex].proxy
-
-            const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
-            if (proxyIndex >= 0 && account_list[accountIndex].status !== ACCOUNT_STATUS.DONE) {
-                app_setting.proxies[proxyIndex].count--
-                await master.change('app_setting', { app_setting })
-            }
-
-            worker.instance.terminate()
+            console.count('deleted')
+            await worker.instance.terminate()
         }
     }
-    await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
 }
 
 master.removeAll = async () => {
