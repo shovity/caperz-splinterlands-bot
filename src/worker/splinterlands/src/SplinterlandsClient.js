@@ -451,7 +451,6 @@ class SplinterLandsClient {
       "Steem Monsters Submit Team",
       data,
       (result) => {
-        console.log(result)
         if (
           result &&
           !result.error &&
