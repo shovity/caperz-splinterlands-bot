@@ -192,17 +192,23 @@ class SplinterLandsClient {
       { username: this.user.name, token: this.token }
     );
     if (result) {
-      return result.cards.filter(c => {
-        if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
-          return false
-        }
+        return result.cards.filter(c => {
+        // if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+        //   return false
+        // }
 
         if (
           c.unlock_date &&
           new Date(c.unlock_date) >= Date.now()
         ) {
           return false
-        }
+            }
+            
+            if (c.last_used_date && ((Date.now() - new Date(c.last_used_date)) < 1000*60*60*24 )) {
+                if (c.last_transferred_date && ((Date.now() - new Date(c.last_used_date)) > (Date.now() - new Date(c.last_transferred_date)))) {
+                    return false
+                }
+            }
 
         return true
       });
@@ -238,9 +244,9 @@ class SplinterLandsClient {
     if (result) {
       result.cards
         .filter(c => {
-          if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
-            return false
-          }
+        //   if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+        //     return false
+        //   }
 
           if (
             c.unlock_date &&
@@ -249,6 +255,11 @@ class SplinterLandsClient {
             return false
           }
 
+            if (c.last_used_date && ((Date.now() - new Date(c.last_used_date)) < 1000*60*60*24 )) {
+                if (c.last_transferred_date && ((Date.now() - new Date(c.last_used_date)) > (Date.now() - new Date(c.last_transferred_date)))) {
+                    return false
+                }
+            }
           return true
         })
         .map((item) => {
@@ -683,14 +694,118 @@ class SplinterLandsClient {
         ) {
           log && console.log("request delegation");
         } else {
-          //setTimeout(()=>SM.BroadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
+            console.log('run claim reward')
+        //   setTimeout(()=>this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
         }
       } catch (err) {
         log && console.log(111, err);
-        // SM.BroadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors)
+        // this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors)
       }
     }
-  }
+    }
+    async broadcastCustomJsonLocal(id, title, data, callback, retries, supressErrors) {
+        if (this.settings.test_mode && !id.startsWith(this.settings.prefix))
+            id = this.settings.prefix + id;
+        let active_auth = this.user.require_active_auth && this.settings.active_auth_ops.includes(id.slice(id.indexOf("sm_") + 3));
+        data.app = "splinterlands/" + Config.version;
+        if (this.settings.test_mode)
+            data.app = this.settings.prefix + data.app;
+        if (isNaN(retries))
+            retries = 2;
+        let bcast_url = Config.tx_broadcast_urls[Math.floor(Math.random() * Config.tx_broadcast_urls.length)];
+        if (this.user.use_proxy) {
+            jQuery.post(`${bcast_url}/proxy`, {
+                player: this.user.name,
+                access_token: this.user.token,
+                id: id,
+                json: data
+            }, response=>{
+                if (response && response.id)
+                    this.trxLookup(response.id, false, null, callback, 10, supressErrors);
+                // else
+                //     alert(`Error sending transaction: ${response ? response.error : "Unknown error"}`)
+            }
+            );
+            return
+        }
+        if (this._use_keychain || active_auth && window.hive_keychain) {
+            let rpc_node = Config.rpc_nodes[this._rpc_index % Config.rpc_nodes.length];
+            hive_keychain.requestCustomJson(this.user.name, id, active_auth ? "Active" : "Posting", JSON.stringify(data), title, function(response) {
+                if (response.success) {
+                    this.trxLookup(response.result.id, false, null, callback, 10, supressErrors)
+                } else {
+                    if (response.error == "user_cancel")
+                        alert("Transaction was cancelled.");
+                    else if (response.error && JSON.stringify(response.error).indexOf("Please wait to transact") >= 0) {
+                        // this.RequestDelegation(id, title, data, callback, retries);
+                        log && console.log("request delegation 12");
+                        return
+                    } else if (response.error != "ignored" && retries > 0) {
+                        rpc_node = Config.rpc_nodes[++this._rpc_index % Config.rpc_nodes.length];
+                        steem.api.setOptions({
+                            transport: "http",
+                            uri: rpc_node,
+                            url: rpc_node,
+                            useAppbaseApi: true
+                        });
+                        console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
+                        console.log("Retrying failed keychain transaction...");
+                        setTimeout(()=>this.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
+                        return
+                    } else if (!supressErrors) {
+                        alert(`There was an error publishing this transaction to the Hive blockchain. Please check to see if it went through or try again in a few minutes. Error: ${response && response.error ? response.error : "Unknown"}`)
+                    }
+                    this.LogEvent("custom_json_failed", {
+                        response: JSON.stringify(response)
+                    });
+                    if (callback)
+                        callback(response)
+                }
+            }, rpc_node)
+        } else {
+            if (active_auth) {
+                let callback_id = `cb_${generatePassword(10)}`;
+                this._active_auth_tx_callbacks[callback_id] = callback;
+                this.ShowDialog("active_auth", {
+                    id: id,
+                    title: title,
+                    data: data,
+                    callback_id: callback_id
+                });
+                return
+            }
+            var that = this
+            steem.broadcast.customJson(this.key, [], [this.user.name], id, JSON.stringify(data), (err, result) => {
+                if (result && !err) {
+                    that.trxLookup(result.id, false, null, callback, 10, supressErrors)
+                } else {
+                    if (err && JSON.stringify(err).indexOf("Please wait to transact") >= 0) {
+                        // this.RequestDelegation(id, title, data, callback, retries);
+                        log && console.log("request delegation 123");
+                        return
+                    } else if (retries > 0) {
+                        let rpc_node = Config.rpc_nodes[++that._rpc_index % Config.rpc_nodes.length];
+                        steem.api.setOptions({
+                            transport: "http",
+                            uri: rpc_node,
+                            url: rpc_node,
+                            useAppbaseApi: true
+                        });
+                        console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
+                        setTimeout(()=>that.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
+                        return
+                    } else if (!supressErrors) {
+                        alert("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                    }
+                    that.LogEvent("custom_json_failed", {
+                        response: JSON.stringify(err)
+                    });
+                    if (callback)
+                        callback(result)
+                }
+            })
+        }
+    }
 
   prepareTx(tx) {
     return Object.assign(
@@ -793,7 +908,7 @@ class SplinterLandsClient {
         type: type,
       },
       data
-    );
+      );
     this.broadcastCustomJson(
       "sm_claim_reward",
       "Steem Monsters Reward Claim",

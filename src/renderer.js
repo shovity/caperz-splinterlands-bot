@@ -4,6 +4,7 @@ ori.use('event store emitter storage', () => {
     emitter.keyboard()
     let playerMonitoringTable
     let proxyMonitoringTable
+    let totalDec = {}
 
     const user = storage.user
 
@@ -317,12 +318,12 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('account.load', (event, data) => {
-        console.log(data)
         if (!data) {
             return
         }
 
         const tableData = data.map((d) => {
+            totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
                 username: d.username,
                 ecr: d.ecr || '--',
@@ -335,9 +336,14 @@ ori.use('event store emitter storage', () => {
                         : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
-                matchStatus: matchStatusMapping(d.matchStatus),
+                matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
             }
         })
+        let total = 0
+        for (const [key, value] of Object.entries(totalDec)) {
+            total += value
+        }
+        $('#total_dec').html(total)
         playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             responsive: true,
@@ -408,6 +414,7 @@ ori.use('event store emitter storage', () => {
     ipc.on('player_table.redraw', (event, data) => {
         console.log('table rerender')
         const tableData = data.map((d) => {
+            totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
                 username: d.username,
                 ecr: d.ecr,
@@ -420,14 +427,23 @@ ori.use('event store emitter storage', () => {
                         : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
-                matchStatus: matchStatusMapping(d.matchStatus),
+                matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
             }
         })
         playerMonitoringTable.clear().rows.add(tableData).draw()
+        let total = 0
+        for (const [key, value] of Object.entries(totalDec)) {
+            console.log(value)
+            total += value
+        }
+        console.log(total)
+        $('#total_dec').html(total)
     })
-
+   
     ipc.on('player_table.player.redraw', (event, d) => {
         console.log('player' + d.username + 'rerender')
+        console.log(d)
+        totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
         const newData = {
             username: d.username,
             ecr: d.ecr || '--',
@@ -438,7 +454,7 @@ ori.use('event store emitter storage', () => {
                 typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
             status: statusMapping(d.status),
             stt: { status: d.status, username: d.username },
-            matchStatus: matchStatusMapping(d.matchStatus),
+            matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
         }
         if ($(`#player_monitoring_table tr#${d.username}`)[0]) {
             playerMonitoringTable
@@ -446,6 +462,11 @@ ori.use('event store emitter storage', () => {
                 .data(newData)
                 .draw(false)
         }
+        let total = 0
+        for (const [key, value] of Object.entries(totalDec)) {
+            total += value
+        }
+        $('#total_dec').html(total)
     })
 
     ipc.on('proxy_table.redraw', (event, data) => {

@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@datastructures-js/priority-queue": "^5.3.0",
+    "@splinterlands/hive-interface": "^2.2.7",
     "axios": "^0.21.1",
     "electron-settings": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0",

@@ -422,11 +422,17 @@ class WSSplinterlandsClient {
 
         active.push(splinter)
       })
+        let myFilteredCards = []
+        myCards.forEach((e) => {
+            if (!myFilteredCards.includes(e)) {
+                myFilteredCards.push(e)
+            }
+        })
       const matchDetails = {
         mana: mana_cap,
         rules: rules,
         active: active.join(','),
-        myCards: myCards,
+          myCards: myFilteredCards,
         leaderboard
       }
 
