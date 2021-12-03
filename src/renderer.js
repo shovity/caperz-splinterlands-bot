@@ -343,7 +343,7 @@ ori.use('event store emitter storage', () => {
         for (const [key, value] of Object.entries(totalDec)) {
             total += value
         }
-        $('#total_dec').html(total)
+        $('#total_dec').html(total.toFixed(2))
         playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             responsive: true,
@@ -433,16 +433,13 @@ ori.use('event store emitter storage', () => {
         playerMonitoringTable.clear().rows.add(tableData).draw()
         let total = 0
         for (const [key, value] of Object.entries(totalDec)) {
-            console.log(value)
             total += value
         }
-        console.log(total)
-        $('#total_dec').html(total)
+        $('#total_dec').html(total.toFixed(2))
     })
    
     ipc.on('player_table.player.redraw', (event, d) => {
         console.log('player' + d.username + 'rerender')
-        console.log(d)
         totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
         const newData = {
             username: d.username,
@@ -466,7 +463,7 @@ ori.use('event store emitter storage', () => {
         for (const [key, value] of Object.entries(totalDec)) {
             total += value
         }
-        $('#total_dec').html(total)
+        $('#total_dec').html(total.toFixed(2))
     })
 
     ipc.on('proxy_table.redraw', (event, data) => {

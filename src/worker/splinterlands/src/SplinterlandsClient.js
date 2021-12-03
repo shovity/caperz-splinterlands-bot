@@ -204,7 +204,7 @@ class SplinterLandsClient {
           return false
             }
             
-            if (c.last_used_date && ((Date.now() - new Date(c.last_used_date)) < 1000*60*60*24 )) {
+            if (c.player != c.last_used_player && c.last_used_date && ((Date.now() - new Date(c.last_used_date)) < 1000*60*60*24 )) {
                 if (c.last_transferred_date && ((Date.now() - new Date(c.last_used_date)) > (Date.now() - new Date(c.last_transferred_date)))) {
                     return false
                 }
