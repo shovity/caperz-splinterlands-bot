@@ -23,7 +23,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = false
+const log = true
 
 const activeObj = {
   gold: 'dragon',
@@ -92,6 +92,7 @@ class WSSplinterlandsClient {
     this.getUserQuestNew = getUserQuestNew
     this.config = config || {};
     this.startQuest = false
+    this.questClaimed = false
     this.spsToken = spsToken
   }
 
@@ -162,7 +163,7 @@ class WSSplinterlandsClient {
       quest = await this.client.getQuest();
     }
 
-    const NeWQuest = () => { // Обновление квеста
+    const NeWQuest = async () => { // Обновление квеста
       this.client.StartDailyQuest(async (data) => {
         if (!!data?.error === false) { // обновление квеста если можно
           const dt = data.trx_info.result
@@ -170,6 +171,7 @@ class WSSplinterlandsClient {
 
           await this.client.setNewQuest(newQuest)
           quest = await this.client.getQuest();
+          this.questClaimed = false
 
           // log && console.log('Старт нового квеста', quest);
           // process.send({
@@ -188,19 +190,33 @@ class WSSplinterlandsClient {
           // });
         }
       });
-    }
+      }
+      
+      if (quest && quest.claim_date) {
+        const claimDate = new Date(quest.claim_date).getTime() / 1000;
+          if (currentTimestamp - claimDate > 24*60*60) {
+            await NeWQuest()
+            this.questClaimed = false
+          } else { 
+            await Update()
+            this.questClaimed = true
+          }
+      } else {
+        await Update()
+      }
 
-    if (quest && quest.completed === quest.total && !quest.claim_date) {
+    if (quest && quest.completed === quest.total && !this.questClaimed) {
       // log && console.log('get reward --------->');
-
-      await Update()
+console.log('cl')
       try {
         let questReward = await this.client.claimReward('quest', {quest_id: quest.id});
         log && console.log('quest was completed --------->', questReward);
         if (!!questReward?.error === false) {
           const res = await this.client.getRewards();
-          log && console.log('got reward --------->', res)
-          NeWQuest()
+            log && console.log('got reward --------->', res)
+            if (res.success) {
+                this.questClaimed = true
+            }
         }
       }
       catch (e) {
@@ -209,22 +225,22 @@ class WSSplinterlandsClient {
 
     }
 
-    if (quest && quest.completed === quest.total && quest.claim_date) {
-      // log && console.log('try start new quest')
-      const startQuestTime = new Date(quest.created_date).getTime() / 1000;
+    // if (quest && quest.completed === quest.total && quest.claim_date) {
+    //   // log && console.log('try start new quest')
+    //   const startQuestTime = new Date(quest.created_date).getTime() / 1000;
 
-      // log && console.log('now ', currentTimestamp)
-      // log && console.log('quest ', startQuestTime)
+    //   // log && console.log('now ', currentTimestamp)
+    //   // log && console.log('quest ', startQuestTime)
 
-      if (currentTimestamp > startQuestTime + 83000) {
-        await Update()
-        NeWQuest()
-      }
-      else {
-        // log && console.log("wait for 24h from at time you start the quest")
-        // log && console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
-      }
-    }
+    //   if (currentTimestamp > startQuestTime + 83000) {
+    //     await Update()
+        
+    //   }
+    //   else {
+    //     // log && console.log("wait for 24h from at time you start the quest")
+    //     // log && console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
+    //   }
+    // }
 
     if (quest?.splinter === 'sneak') {
       this.client.RefreshDailyQuest(async (data) => {
@@ -249,16 +265,13 @@ class WSSplinterlandsClient {
       // if (!(quest?.completed === quest?.total) || ECR > this.config.ecr) {
       // console.log('ECR', ECR)
       // console.log(this.config.ecr)
+      this.client.updatePlayerInfo({
+        questClaimed :this.questClaimed,
+        quest: quest?.completed,
+        maxQuest: quest?.total,
+      })
       if (ECR > this.config.ecr) {
         // p && console.log("Start ranked match, ECR=", ECR)
-        parentPort.postMessage({
-          type: "INFO_UPDATE",
-          player: this.client.user.name,
-          quest: quest?.completed,
-          maxQuest: quest?.total,
-        })
-        this.client.updatePlayerInfo()
-
         this.client.findMatch('Ranked');
       }
       else {

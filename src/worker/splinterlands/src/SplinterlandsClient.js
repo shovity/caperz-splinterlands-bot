@@ -32,7 +32,7 @@ const Config = {
   ]
 };
 
-const log = false
+const log = true
 
 steem.api.setOptions({
   transport: "http",
@@ -116,7 +116,7 @@ class SplinterLandsClient {
     parentPort.postMessage({...data, player})
   }
 
-  updatePlayerInfo = () => {
+  updatePlayerInfo = (data) => {
     if (!this.user ) return;
     let player = this.user.name.toLowerCase() || ''
     parentPort.postMessage({
@@ -127,7 +127,8 @@ class SplinterLandsClient {
       rating: this.getRating(),
       dec: this.getBalance("DEC"),
       lastRewardTime: this.getLastRewardTime(),
-      matchStatus: MATCH_STATUS.MATCHING
+        matchStatus: MATCH_STATUS.MATCHING,
+      ...data
     })
   }
 
@@ -694,11 +695,11 @@ class SplinterLandsClient {
           log && console.log("request delegation");
         } else {
             console.log('run claim reward')
-        //   setTimeout(()=>this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
+          setTimeout(()=>this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
         }
       } catch (err) {
         log && console.log(111, err);
-        // this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors)
+        this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors)
       }
     }
     }

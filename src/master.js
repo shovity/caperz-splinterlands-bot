@@ -191,11 +191,15 @@ master.add = async (workerData) => {
                 account_list[accountIndex].lastRewardTime = m.lastRewardTime
             }
 
+            if (m.questClaimed) {
+                account_list[accountIndex].questClaimed = m.questClaimed
+            }
+
             if (m.matchStatus) {
                 account_list[accountIndex].matchStatus = m.matchStatus || 'NONE'
             }
 
-            if (m.quest) {
+            if (typeof m.quest != 'undefined') {
                 account_list[accountIndex].quest = m.quest
             }
 

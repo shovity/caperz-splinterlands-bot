@@ -331,7 +331,7 @@ ori.use('event store emitter storage', () => {
                 power: d.power || '--',
                 rating: d.rating || '--',
                 quest:
-                    typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                    d.questClaimed ? 'Claimed' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
                         ? `${d.quest}/${d.maxQuest}`
                         : '--',
                 status: statusMapping(d.status),
@@ -422,7 +422,7 @@ ori.use('event store emitter storage', () => {
                 power: d.power || '--',
                 rating: d.rating || '--',
                 quest:
-                    typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                    d.questClaimed ? 'Claimed' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
                         ? `${d.quest}/${d.maxQuest}`
                         : '--',
                 status: statusMapping(d.status),
@@ -440,6 +440,7 @@ ori.use('event store emitter storage', () => {
    
     ipc.on('player_table.player.redraw', (event, d) => {
         console.log('player' + d.username + 'rerender')
+        console.log(d)
         totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
         const newData = {
             username: d.username,
@@ -448,7 +449,7 @@ ori.use('event store emitter storage', () => {
             power: d.power || '--',
             rating: d.rating || '--',
             quest:
-                typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+                d.questClaimed ? 'Claimed' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
             status: statusMapping(d.status),
             stt: { status: d.status, username: d.username },
             matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
