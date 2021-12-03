@@ -109,9 +109,22 @@ master.handleAddAccount = async (account) => {
     ) {
         account_list[accountIndex].proxy = app_setting.proxies[proxyIndex].ip
         account_list[accountIndex].status = ACCOUNT_STATUS.RUNNING
-        const proxy = account_list[accountIndex].proxy  === 'Default IP' ? 
-            null : 
-            `${app_setting.proxies[proxyIndex].protocol}://${account_list[accountIndex].proxy}`
+
+        let proxy
+        if (account_list[accountIndex].proxy === 'Default IP') {
+            proxy = null
+        } else {
+            const [auth, address] = account_list[accountIndex].proxy.split('@')
+            const [account, password] = auth.split(':')
+            const [host, port] = address.split(':')
+
+            proxy = {
+                account,
+                password,
+                host,
+                port,
+            }
+        }
 
         await master.change('log', {
             worker: {

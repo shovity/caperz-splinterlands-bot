@@ -961,9 +961,18 @@ class SplinterLandsClient {
       };
 
       if ( this.proxy ) {
-        objectAxios.proxy = true
+        objectAxios.proxy = {
+          host: this.proxy.host,
+          port: this.proxy.port,
+        }
+        if (this.proxy.account) {
+          objectAxios.proxy.auth = {
+            username: this.proxy.account,
+            password: this.proxy.password
+          }
+        }
         objectAxios.httpsAgent = new HttpsProxyAgent(
-          `${this.proxy}`
+          `https://${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
         )
       }
 
@@ -1024,6 +1033,22 @@ class SplinterLandsClient {
             objectAxios.params = params
         } else {
             objectAxios.data = qs.stringify(params)
+        }
+
+        if ( this.proxy ) {
+          objectAxios.proxy = {
+            host: this.proxy.host,
+            port: this.proxy.port,
+          }
+          if (this.proxy.account) {
+            objectAxios.proxy.auth = {
+              username: this.proxy.account,
+              password: this.proxy.password
+            }
+          }
+          objectAxios.httpsAgent = new HttpsProxyAgent(
+            `${this.proxy}`
+          )
         }
 
         let res = await axios(objectAxios)
@@ -1100,14 +1125,11 @@ class SplinterLandsClient {
   }
 
   async sendRequestProxy(url, params, method = "get", proxy) {
+
     try {
       let objectAxios = {
         method: method,
         url: "https://api2.splinterlands.com/" + url,
-        proxy: false,
-        // httpsAgent: new HttpsProxyAgent(
-        //   `http://${proxy.login}:${proxy.pass}@${proxy.ip}:${proxy.port}`
-        // ),
         timeout: 10000,
         headers: {
           authority: "api2.splinterlands.com",
@@ -1134,6 +1156,22 @@ class SplinterLandsClient {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
         },
       };
+
+      if (this.proxy) {
+        objectAxios.proxy = {
+          host: this.proxy.host,
+          port: this.proxy.port,
+        }
+        if (this.proxy.account) {
+          objectAxios.proxy.auth = {
+            username: this.proxy.account,
+            password: this.proxy.password
+          }
+        }
+        objectAxios.httpsAgent = new HttpsProxyAgent(
+          `https://${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
+        )
+      }
 
       if (method === "get") {
         params.v = new Date().getTime();
