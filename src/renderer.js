@@ -181,6 +181,7 @@ ori.use('event store emitter storage', () => {
         let startQuestEcr = document.getElementById('start_quest_ecr')
         let botPerIp = document.getElementById('bot_per_ip')
         let proxyTable = document.getElementById('proxy_table')
+        let useDproxy = document.getElementById('use_default_proxy')
         let proxyArray = []
         let rowLength = proxyTable.rows.length
         for (i = 1; i < rowLength; i++) {
@@ -195,6 +196,7 @@ ori.use('event store emitter storage', () => {
             startQuestEcr: startQuestEcr.value,
             botPerIp: botPerIp.value,
             proxies: proxyArray,
+            useDefaultProxy: useDproxy.checked
         })
         showNotice('saved')
     })
@@ -215,6 +217,7 @@ ori.use('event store emitter storage', () => {
         })
         ecr.value = data.ecr
         start_quest_ecr.value = data.startQuestEcr
+        use_default_proxy.checked = data.useDefaultProxy
         bot_per_ip.value = data.botPerIp
         data.proxies.forEach((proxy) => {
             let row = proxy_table.insertRow(1)
