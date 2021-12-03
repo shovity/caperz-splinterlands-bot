@@ -101,7 +101,17 @@ master.handleAddAccount = async (account) => {
         ecr: app_setting.ecr
     }
 
-    const proxyIndex = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
+    const proxyIndex = app_setting.proxies.findIndex(p => {
+        if (p.ip === 'Default IP') {
+            if (app_setting.useDefaultProxy) {
+                return p.count < app_setting.botPerIp
+            } else {
+                return false
+            }
+        }
+
+        return p.count < app_setting.botPerIp
+    })
 
     if (
         proxyIndex >= 0 && 
@@ -400,7 +410,17 @@ master.dequeue = async () => {
     let accountFront = master.priorityQueue.front().element
     let app_setting = settings.data.app_setting
     const ecr = app_setting.ecr
-    let proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
+    let proxyFree = app_setting.proxies.findIndex(p => {
+        if (p.ip === 'Default IP') {
+            if (app_setting.useDefaultProxy) {
+                return p.count < app_setting.botPerIp
+            } else {
+                return false
+            }
+        }
+
+        return p.count < app_setting.botPerIp
+    })
 
     while (calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr && proxyFree >= 0) {
         master.priorityQueue.dequeue()
