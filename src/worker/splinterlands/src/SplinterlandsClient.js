@@ -194,9 +194,9 @@ class SplinterLandsClient {
     );
     if (result) {
         return result.cards.filter(c => {
-        // if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
-        //   return false
-        // }
+        if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+          return false
+        }
 
         if (
           c.unlock_date &&
@@ -245,9 +245,9 @@ class SplinterLandsClient {
     if (result) {
       result.cards
         .filter(c => {
-        //   if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
-        //     return false
-        //   }
+          if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+            return false
+          }
 
           if (
             c.unlock_date &&

@@ -154,7 +154,9 @@ class WSSplinterlandsClient {
     const sendCards = await this.client.getSendCards();
 
     log && console.log('Rating: ', rat)
-    log && console.log('Quest: ', quest)
+      log && console.log('Quest: ', quest)
+      
+      
 
     const Update = async () => {
       // await this.getUserQuestNew()
@@ -207,7 +209,6 @@ class WSSplinterlandsClient {
 
     if (quest && quest.completed === quest.total && !this.questClaimed) {
       // log && console.log('get reward --------->');
-console.log('cl')
       try {
         let questReward = await this.client.claimReward('quest', {quest_id: quest.id});
         log && console.log('quest was completed --------->', questReward);
