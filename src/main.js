@@ -5,6 +5,7 @@ const master = require('./master')
 const utils = require('./utils')
 const listener = require('./listener')
 const settings = require('./settings')
+const accountService = require('./service/account')
 
 settings.init()
 let win
@@ -111,9 +112,10 @@ app.on('before-quit', async (e) => {
         const app_setting = settings.data.app_setting
 
         const newList = account_list.map((account) => {
+            accountService.beforePausedOrStopped(account)
             if (account.status === 'RUNNING') {
                 account.status = 'PAUSED'
-            } else {
+            } else if (account.status !== 'WAITING_ECR') {
                 account.status = 'STOPPED'
             }
             return account
@@ -147,11 +149,11 @@ master.change = async (name, param) => {
     switch (name) {
         case 'account_list':
             settings.data.account_list = param.account_list.map((a) => {
-                    return {
-                        ...a,
-                        updatedAt: now,
-                    }
-                })
+                return {
+                    ...a,
+                    updatedAt: now,
+                }
+            })
 
             win.onChangeAccountList()
             break
@@ -194,7 +196,8 @@ master.changePath = async (name, array) => {
             if (!a.username) {
                 return
             }
-            win.onChangeAccount(a)
+            const account = settings.data.account_list.find(e => e.username === a.username)
+            win.onChangeAccount(account)
         })
     }
 }

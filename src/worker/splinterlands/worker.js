@@ -14,31 +14,42 @@ async function main({ username, password, account, emailPass, proxy, config = nu
     parentPort.postMessage({
         type: "MESSAGE",
         data: 'start login'
-      })
-    const user = await client.login(username, postingKey)
-
-    parentPort.postMessage({
-        type: "MESSAGE",
-        data: 'login success'
     })
 
-    const resAuth = await client.auth(user.name, user.token)
+    try {
+        const user = await client.login(username, postingKey)
 
-    if (resAuth && resAuth.success) {
-        // console.log('success login', user.name, client.getEcr(), client.getBalance('DEC'))
-
-        await client.updateSettings()
-
-        let getUserQuestNew
-
-        if (client.user.starter_pack_purchase) {
-            getUserQuestNew = async () => {
-                return await client.login(username, postingKey, true)
+        parentPort.postMessage({
+            type: "MESSAGE",
+            data: 'login success'
+        })
+    
+        const resAuth = await client.auth(user.name, user.token)
+    
+        if (resAuth && resAuth.success) {
+            // console.log('success login', user.name, client.getEcr(), client.getBalance('DEC'))
+    
+            await client.updateSettings()
+    
+            let getUserQuestNew
+    
+            if (client.user.starter_pack_purchase) {
+                getUserQuestNew = async () => {
+                    return await client.login(username, postingKey, true)
+                }
             }
+    
+            const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config, spsToken)
+            WSApi.Connect(user.name, user.token)
         }
-
-        const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config, spsToken)
-        WSApi.Connect(user.name, user.token)
+    } catch (e) {
+        console.error(e)
+        parentPort.postMessage({
+            type: "ERROR",
+            player: username,
+            status: e.response?.status,
+            message: e.message,
+        })
     }
 }
 

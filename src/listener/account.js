@@ -1,5 +1,6 @@
 const master = require('../master')
 const utils = require('../utils')
+const accountService = require('../service/account')
 
 const account = ({ win, ipc, settings }) => {
 
@@ -11,9 +12,16 @@ const account = ({ win, ipc, settings }) => {
     })
     
     ipc.on('account.start', async (event, account) => {
-        const account_list = settings.data.account_list
+        accountService.beforeEnqueue(account)
 
+        const account_list = settings.data.account_list
         const accountIndex = account_list.findIndex((a) => a.username == account)
+
+        if (account_list[accountIndex].status === 'WAITING_ECR') {
+            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+            return
+        }
+
         master.priorityQueue.enqueue(
             account_list[accountIndex],
             master.calculatePriority(account_list[accountIndex], accountIndex)
@@ -30,6 +38,9 @@ const account = ({ win, ipc, settings }) => {
     ipc.on('account.stop', async (event, account) => {
         const account_list = settings.data.account_list
         const accountIndex = account_list.findIndex((a) => a.username === account)
+
+        accountService.beforePausedOrStopped(account_list[accountIndex])
+
         if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'PENDING') {
             settings.data.account_list[accountIndex].status = 'PAUSED'
 

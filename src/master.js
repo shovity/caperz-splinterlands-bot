@@ -6,6 +6,7 @@ const path = require('path')
 const settings = require('./settings')
 const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
 const utils = require('./utils')
+const account = require('./service/account')
 
 const MESSAGE_STATUS = {
     INFO_UPDATE: "INFO_UPDATE",
@@ -19,6 +20,7 @@ const ACCOUNT_STATUS = {
     STOPPED: 'STOPPED',
     NONE: 'NONE',
     PAUSED: 'PAUSED',
+    WAITING_ECR: 'WAITING_ECR',
 }
 
 const MASTER_STATE = {
@@ -49,7 +51,7 @@ const master = {
 
 const calculatePriority = (account, accountIndex = 0) => {
     let priority = 0
-    const ecrNow = calculateECR(account.updatedAt, account.ecr)
+    // const ecrNow = calculateECR(account.updatedAt, account.ecr)
 
     switch (account.status) {
         case ACCOUNT_STATUS.PAUSED: 
@@ -60,9 +62,9 @@ const calculatePriority = (account, accountIndex = 0) => {
             break
     }
 
-    if (ecrNow > master.stopECR) {
-        priority += PRIORITY_POINT.GREATER_STOP_ECR
-    }
+    // if (ecrNow > master.stopECR) {
+    //     priority += PRIORITY_POINT.GREATER_STOP_ECR
+    // }
 
     priority -= accountIndex
 
@@ -113,10 +115,7 @@ master.handleAddAccount = async (account) => {
         return p.count < app_setting.botPerIp
     })
 
-    if (
-        proxyIndex >= 0 && 
-        calculateECR(account.lastRewardTime, account.ecr) > config.ecr
-    ) {
+    if (proxyIndex >= 0) {
         account_list[accountIndex].proxy = app_setting.proxies[proxyIndex].ip
         account_list[accountIndex].status = ACCOUNT_STATUS.RUNNING
 
@@ -172,7 +171,7 @@ master.handleAddAccount = async (account) => {
         master.priorityQueue.enqueue(account)
     }
 
-    await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
+    await master.changePath('account_list', [{ ...account_list[accountIndex] }], 1)
     await master.change('app_setting', { app_setting })
 }
 
@@ -230,7 +229,7 @@ master.add = async (workerData) => {
                 account_list[accountIndex].maxQuest = m.maxQuest
             }
 
-            await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
+            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
         } else if (m.type === MESSAGE_STATUS.STATUS_UPDATE) {
             const accountIndex = account_list.findIndex(a => a.username === m.player)
 
@@ -240,7 +239,7 @@ master.add = async (workerData) => {
 
             account_list[accountIndex].status = m.status
 
-            await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
+            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
 
             if (m.status === 'DONE') {
                 let proxy = account_list[accountIndex].proxy
@@ -256,6 +255,28 @@ master.add = async (workerData) => {
             }
         } else if (m.type === 'MESSAGE') {
             await master.change('log', m.data)
+        } else if (m.type === 'ERROR') {
+            const accountIndex = account_list.findIndex(a => a.username === m.player)
+
+            let proxy = account_list[accountIndex].proxy
+
+            const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
+            if (proxyIndex >= 0) {
+                app_setting.proxies[proxyIndex].count--
+                await master.change('app_setting', { app_setting })
+            }
+
+            account_list[accountIndex].status = 'ERROR'
+
+            if (m.status === 407) {
+                account_list[accountIndex].status = 'PROXY_ERROR'
+            } else if (m.status === 429) {
+                account_list[accountIndex].status = 'MULTI_REQUEST_ERROR'
+            }
+
+            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+
+            worker.instance.terminate()                
         }
     })
 
@@ -275,6 +296,13 @@ master.remove = async (account) => {
     const app_setting = settings.data.app_setting
 
     const accountIndex = account_list.findIndex(a => a.username === account)
+
+    for (const worker of master.workers) {
+        if (worker.instance.threadId === account_list[accountIndex].workerId) {
+            await worker.instance.terminate()
+        }
+    }
+
     let proxy = account_list[accountIndex].proxy
 
     const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
@@ -283,13 +311,8 @@ master.remove = async (account) => {
         await master.change('app_setting', { app_setting })
     }
     account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
-    await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
-
-    for (const worker of master.workers) {
-        if (worker.instance.threadId === account_list[accountIndex].workerId) {
-            await worker.instance.terminate()
-        }
-    }
+    await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+    await master.dequeue()
 }
 
 master.removeAll = async () => {
@@ -328,7 +351,7 @@ master.pauseWorkers = async () => {
     for (let i = 0; i < account_list.length; i++) {
         if (account_list[i].status === ACCOUNT_STATUS.RUNNING) {
             account_list[i].status = ACCOUNT_STATUS.PAUSED
-        } else {
+        } else if (account_list[i].status !== ACCOUNT_STATUS.WAITING_ECR) {
             account_list[i].status = ACCOUNT_STATUS.STOPPED
         }
     }
@@ -353,10 +376,12 @@ master.enqAccounts = async () => {
         return
     }
 
-    let account_list = settings.data.account_list
+    account.beforeEnqueue()
 
+    let account_list = settings.data.account_list
+    
     for (let i = 0; i < account_list.length; i++) {
-        if ([ACCOUNT_STATUS.PENDING, ACCOUNT_STATUS.RUNNING].includes(account_list[i].status)) {
+        if ([ACCOUNT_STATUS.PENDING, ACCOUNT_STATUS.RUNNING, ACCOUNT_STATUS.WAITING_ECR].includes(account_list[i].status)) {
             continue
         }
         await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i], i))
@@ -397,9 +422,9 @@ master.setIntervals = async () => {
 
     }, ONE_DAY_TIME)
 
-    master.hourlyDeqIntervalId = setInterval(async () => {
-        await master.dequeue()
-    }, ONE_HOUR_TIME)
+    // master.hourlyDeqIntervalId = setInterval(async () => {
+    //     await master.dequeue()
+    // }, ONE_HOUR_TIME)
 }
 
 master.dequeue = async () => {
@@ -409,7 +434,7 @@ master.dequeue = async () => {
 
     let accountFront = master.priorityQueue.front().element
     let app_setting = settings.data.app_setting
-    const ecr = app_setting.ecr
+
     let proxyFree = app_setting.proxies.findIndex(p => {
         if (p.ip === 'Default IP') {
             if (app_setting.useDefaultProxy) {
@@ -422,12 +447,22 @@ master.dequeue = async () => {
         return p.count < app_setting.botPerIp
     })
 
-    while (calculateECR(accountFront?.updatedAt, accountFront?.ecr) > ecr && proxyFree >= 0) {
+    while (proxyFree >= 0 && accountFront) {
         master.priorityQueue.dequeue()
         await master.handleAddAccount(accountFront)
         
         let app_setting = settings.data.app_setting
-        proxyFree = app_setting.proxies.findIndex(p => p.count < app_setting.botPerIp)
+        proxyFree = app_setting.proxies.findIndex(p => {
+            if (p.ip === 'Default IP') {
+                if (app_setting.useDefaultProxy) {
+                    return p.count < app_setting.botPerIp
+                } else {
+                    return false
+                }
+            }
+    
+            return p.count < app_setting.botPerIp
+        })
 
         accountFront = master.priorityQueue.front()?.element
     }
@@ -481,14 +516,19 @@ master.updateOpeningPlayerInfo = async () => {
             newAccount.ecr = calculateECR(lastRewardTime, ecr / 100)
             newAccount.dec = dec
             newAccount.lastRewardTime = lastRewardTime
+
+            if (
+                newAccount.ecr >= settings.data.app_setting.ecr && 
+                newAccount.status === ACCOUNT_STATUS.WAITING_ECR
+            ) {
+                newAccount.status = ACCOUNT_STATUS.NONE
+            }
         }
 
         if (accountDetails) {
             newAccount.rating = accountDetails.rating
             newAccount.power = accountDetails.collection_power
         }
-
-        newAccount.index = i
 
         updateList.push(newAccount)
 
@@ -498,9 +538,9 @@ master.updateOpeningPlayerInfo = async () => {
             processPercent: processPercent >= 1 ? processPercent - 1 : 0
         })
 
-        await master.delay(500)
+        await master.delay(200)
 
-        if (account_list?.length - i <= 3 || updateList.length === 3) {
+        if (account_list?.length - i <= 5 || updateList.length === 5) {
             await master.changePath('account_list', updateList)
             updatedList = [
                 ...updatedList,
