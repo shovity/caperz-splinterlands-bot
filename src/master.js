@@ -256,7 +256,7 @@ master.add = async (workerData) => {
         } else if (m.type === 'MESSAGE') {
             await master.change('log', m.data)
         } else if (m.type === 'ERROR') {
-            const accountIndex = account_list.findIndex(a => a.username === m.player)
+            const accountIndex = account_list.findIndex(a => a.username === m.player || m.data.player)
 
             let proxy = account_list[accountIndex].proxy
 
@@ -267,7 +267,6 @@ master.add = async (workerData) => {
             }
 
             account_list[accountIndex].status = 'ERROR'
-
             if (m.status === 407) {
                 account_list[accountIndex].status = 'PROXY_ERROR'
             } else if (m.status === 429) {
