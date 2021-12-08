@@ -5,6 +5,8 @@ const { parentPort } = require('worker_threads')
 const qs = require("qs");
 var md5 = require("md5");
 const HttpsProxyAgent = require("https-proxy-agent");
+const cardByRarity = require('../data/cardByRarity.json')
+const cardsDetail = require('../data/cardsDetails.json')
 const Config = {
   api_url: "https://api2.splinterlands.com",
   ws_url: "wss://ws.splinterlands.com",
@@ -32,7 +34,7 @@ const Config = {
   ]
 };
 
-const log = false
+const log = true
 
 steem.api.setOptions({
   transport: "http",
@@ -91,7 +93,7 @@ function generatePassword(length, rng) {
 }
 
 class SplinterLandsClient {
-  constructor(proxy, config) {
+  constructor(proxy, config, masterKey) {
     this.user = null;
     this.token = null;
     this.settings = null;
@@ -106,8 +108,9 @@ class SplinterLandsClient {
     this.config = config;
     this.gotReward = false
     this.status = ''
+      this._active_auth_tx_callbacks = {}
+      this.masterKey = masterKey
   }
-
   sendMessage = ({player,...data}) => {
     if (!this.user && !player) return;
     if ( !player ) {
@@ -678,8 +681,7 @@ class SplinterLandsClient {
         );
       }
     }
-    log && console.log(!active_auth || active_auth);
-    if (!active_auth || active_auth) {
+    if (!active_auth) {
       try {
         let response = await this.serverBroadcastTx(tx, active_auth);
         log && console.log("response ------------ > 381", response);
@@ -694,13 +696,48 @@ class SplinterLandsClient {
         ) {
           log && console.log("request delegation");
         } else {
-            console.log('run claim reward')
           setTimeout(()=>this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
         }
       } catch (err) {
         log && console.log(111, err);
         this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors)
       }
+    } else {
+        let mKey
+            if (!steem.auth.isWif(this.masterKey)) {
+                try {
+                    mKey = steem.auth.getPrivateKeys(this.user.name, this.masterKey, ['active']).active;
+                } catch (err) { return console.log('The key entered was not a valid private key or master password.'); }
+        }
+        var that = this
+        steem.broadcast.customJson(mKey, [this.user.name],[], id, JSON.stringify(data), (err, result) => {
+            console.log('3' , err)
+            console.log('result 2', result)
+                if (result && !err) {
+                    that.trxLookup(result.id, false, null, callback, 10, supressErrors)
+                } else {
+                    if (err && JSON.stringify(err).indexOf("Please wait to transact") >= 0) {
+                        // this.RequestDelegation(id, title, data, callback, retries);
+                        log && console.log("request delegation 123");
+                        return
+                    } else if (retries > 0) {
+                        let rpc_node = Config.rpc_nodes[++that._rpc_index % Config.rpc_nodes.length];
+                        steem.api.setOptions({
+                            transport: "http",
+                            uri: rpc_node,
+                            url: rpc_node,
+                            useAppbaseApi: true
+                        });
+                        console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
+                        setTimeout(()=>that.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
+                        return
+                    } else if (!supressErrors) {
+                        console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                    }
+                    if (callback)
+                        callback(result)
+                }
+            })
     }
     }
     async broadcastCustomJsonLocal(id, title, data, callback, retries, supressErrors) {
@@ -728,54 +765,48 @@ class SplinterLandsClient {
             );
             return
         }
-        if (this._use_keychain || active_auth && window.hive_keychain) {
-            let rpc_node = Config.rpc_nodes[this._rpc_index % Config.rpc_nodes.length];
-            hive_keychain.requestCustomJson(this.user.name, id, active_auth ? "Active" : "Posting", JSON.stringify(data), title, function(response) {
-                if (response.success) {
-                    this.trxLookup(response.result.id, false, null, callback, 10, supressErrors)
-                } else {
-                    if (response.error == "user_cancel")
-                        alert("Transaction was cancelled.");
-                    else if (response.error && JSON.stringify(response.error).indexOf("Please wait to transact") >= 0) {
-                        // this.RequestDelegation(id, title, data, callback, retries);
-                        log && console.log("request delegation 12");
-                        return
-                    } else if (response.error != "ignored" && retries > 0) {
-                        rpc_node = Config.rpc_nodes[++this._rpc_index % Config.rpc_nodes.length];
-                        steem.api.setOptions({
-                            transport: "http",
-                            uri: rpc_node,
-                            url: rpc_node,
-                            useAppbaseApi: true
-                        });
-                        console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
-                        console.log("Retrying failed keychain transaction...");
-                        setTimeout(()=>this.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
-                        return
-                    } else if (!supressErrors) {
-                        alert(`There was an error publishing this transaction to the Hive blockchain. Please check to see if it went through or try again in a few minutes. Error: ${response && response.error ? response.error : "Unknown"}`)
-                    }
-                    this.LogEvent("custom_json_failed", {
-                        response: JSON.stringify(response)
-                    });
-                    if (callback)
-                        callback(response)
-                }
-            }, rpc_node)
-        } else {
-            if (active_auth) {
-                let callback_id = `cb_${generatePassword(10)}`;
-                this._active_auth_tx_callbacks[callback_id] = callback;
-                this.ShowDialog("active_auth", {
-                    id: id,
-                    title: title,
-                    data: data,
-                    callback_id: callback_id
-                });
+        
+        if (active_auth) {
+            let mKey
+            if (!steem.auth.isWif(this.masterKey)) {
+                try {
+                    mKey = steem.auth.getPrivateKeys(this.user.name, this.masterKey, ['active']).active;
+                } catch (err) { return console.log('The key entered was not a valid private key or master password.'); }
+        }
+                steem.broadcast.customJson(mKey, [this.user.name],[], id, JSON.stringify(data), (err, result) => {
+                    console.log('3' , err)
+                    console.log('result 2', result)
+                        if (result && !err) {
+                            that.trxLookup(result.id, false, null, callback, 10, supressErrors)
+                        } else {
+                            if (err && JSON.stringify(err).indexOf("Please wait to transact") >= 0) {
+                                // this.RequestDelegation(id, title, data, callback, retries);
+                                log && console.log("request delegation 123");
+                                return
+                            } else if (retries > 0) {
+                                let rpc_node = Config.rpc_nodes[++that._rpc_index % Config.rpc_nodes.length];
+                                steem.api.setOptions({
+                                    transport: "http",
+                                    uri: rpc_node,
+                                    url: rpc_node,
+                                    useAppbaseApi: true
+                                });
+                                console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
+                                setTimeout(()=>that.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
+                                return
+                            } else if (!supressErrors) {
+                                console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                            }
+                            if (callback)
+                                callback(result)
+                        }
+                    })
                 return
             }
             var that = this
-            steem.broadcast.customJson(this.key, [], [this.user.name], id, JSON.stringify(data), (err, result) => {
+        steem.broadcast.customJson(this.key, [], [this.user.name], id, JSON.stringify(data), (err, result) => {
+            console.log('3' , err)
+            console.log('result 2', result)
                 if (result && !err) {
                     that.trxLookup(result.id, false, null, callback, 10, supressErrors)
                 } else {
@@ -795,16 +826,13 @@ class SplinterLandsClient {
                         setTimeout(()=>that.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
                         return
                     } else if (!supressErrors) {
-                        alert("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                        console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
                     }
-                    that.LogEvent("custom_json_failed", {
-                        response: JSON.stringify(err)
-                    });
                     if (callback)
                         callback(result)
                 }
             })
-        }
+        
     }
 
   prepareTx(tx) {
@@ -995,7 +1023,7 @@ class SplinterLandsClient {
   async sendRequest(url, params, method = "get") {
     let host = 'https://api2.splinterlands.com/'
 
-    if (host === 'players/details') {
+    if (url === 'players/details') {
       host = Config.splinterHosts[Math.floor(Math.random() * 2)]
     }
     try {
@@ -1242,6 +1270,129 @@ class SplinterLandsClient {
     if (result) {
       return result;
     }
+    }
+    calculateCP(card) {
+        const details = cardsDetail.find(o => o.id === card.card_detail_id);
+            const SM_dec = {
+                gold_burn_bonus_2: 25,
+                alpha_bonus: 0.1,
+                gold_bonus: 0.1,
+                burn_rate: [15, 60, 300, 1500],
+                untamed_burn_rate: [10, 40, 200, 1000],
+                alpha_burn_bonus: 2,
+                promo_burn_bonus: 2,
+                gold_burn_bonus: 50,
+                max_burn_bonus: 1.05,
+        }
+        let burn_rate = card.edition == 4 || details.tier >= 4 ? SM_dec.untamed_burn_rate[details.rarity - 1] : SM_dec.burn_rate[details.rarity - 1];
+        var bcx = 1;
+        var dec = burn_rate * bcx;
+        if (card.gold) {
+            const gold_burn_bonus_prop = details.tier >= 7 ? "gold_burn_bonus_2" : "gold_burn_bonus";
+            dec *= SM_dec[gold_burn_bonus_prop]
+        }
+        if (card.edition == 0)
+            dec *= SM_dec.alpha_burn_bonus;
+        if (card.edition == 2)
+            dec *= SM_dec.promo_burn_bonus;
+        var total_dec = dec ;
+        if (details.tier >= 7)
+            total_dec = total_dec / 2;
+        return total_dec
+    }
+    async cardRental(curPower, expectedPower, maxDec, bl) {
+        let retry = false
+        let blackList = bl
+        let gainedPower = 0
+        let remainingDec = maxDec
+        let remainingPower = expectedPower - curPower
+        let weight = remainingDec / remainingPower
+        console.log(weight)
+        console.log(remainingPower)
+        const res = await this.sendRequest('market/for_rent_grouped', {
+            v: Date.now(),
+            username: this.user.name,
+            token: this.token
+        })
+        const data = res.map(e => {
+            return {
+                ...e,
+                power: this.calculateCP({ ...e, xp: 1, alpha_xp: 0 }),
+                weight: e.low_price / this.calculateCP({ ...e, xp: 1, alpha_xp: 0 }),
+                formated: `${e.card_detail_id}-${e.edition}-${e.gold}`
+            }
+        }).filter(e => {
+            if (blackList.includes(e.formated)) {
+                return false
+            }
+            if (e.weight > weight) {
+                return false
+            }
+            if (e.power > remainingPower) {
+                return false
+            }
+            return true
+        }).sort((a, b) => {
+            return b.power - a.power;
+        });
+        const buyList = []
+        data.forEach(e => {
+            if (remainingPower <= 0) {
+                return
+            }
+            if (e.power <= remainingPower + 50) {
+                buyList.push(e)
+                remainingPower -= e.power
+            }
+        })
+        const buyCard = async (card) => {
+            const res = await this.sendRequest('market/for_rent_by_card', {
+                card_detail_id: card.card_detail_id,
+                gold: card.gold,
+                edition: card.edition,
+                v: Date.now(),
+                username: this.user.name,
+                token: this.token
+            })
+            res.sort((a, b) => {
+                return (+a.buy_price) - (+b.buy_price);
+            });
+            if ((res[0].buy_price / card.power) > weight) {
+                blackList.push(card.formated)
+                retry = true
+                return 0
+            }
+            gainedPower += card.power
+            remainingDec -= (+res[0].buy_price)
+            console.log('price ', res[0].buy_price)
+            return res[0].market_id
+        }
+        
+        const marketIdArray = await Promise.all(buyList.map(e => {
+            console.log(e)
+            return buyCard(e)
+        }))
+        const ids = marketIdArray.filter(e => e != 0)
+        if (ids.length > 0) {
+            const r = await this.broadcastCustomJson("sm_market_rent", "", {
+                items: marketIdArray.filter(e => e != 0),
+                currency: "DEC",
+                days: 1
+            })
+        }
+        if (retry) {
+            await this.cardRental(curPower + gainedPower, expectedPower,remainingDec, blackList)
+            return
+        }
+        parentPort.postMessage({
+            type: "INFO_UPDATE",
+            status: 'RUNNING',
+            player: this.user.name,
+            matchStatus: 'NONE',
+            power: curPower + gainedPower
+        })
+        console.log('done ne')
+        return
   }
 }
 module.exports = SplinterLandsClient;

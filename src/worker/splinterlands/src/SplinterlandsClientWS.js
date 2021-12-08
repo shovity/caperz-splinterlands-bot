@@ -6,7 +6,8 @@ const { parentPort } = require('worker_threads')
 const MATCH_STATUS = {
   MATCHING: 'MATCHING',
   MATCHED: 'MATCHED',
-  SUBMITTING: 'SUBMITTING'
+    SUBMITTING: 'SUBMITTING',
+    NONE: 'NONE'
 }
 
 const Config = {
@@ -23,7 +24,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = false
+const log = true
 
 const activeObj = {
   gold: 'dragon',
@@ -154,10 +155,20 @@ class WSSplinterlandsClient {
     const sendCards = await this.client.getSendCards();
 
     log && console.log('Rating: ', rat)
+      log && console.log('Power: ', this.client.user.collection_power)
       log && console.log('Quest: ', quest)
-      
-      
-
+      if (this.client.user.collection_power < this.config.expectedPower) {
+        parentPort.postMessage({
+            type: "INFO_UPDATE",
+            status: 'RENTING',
+            player: this.client.user.name,
+            matchStatus: MATCH_STATUS.NONE,
+          })
+          let dec = (this.config.maxDec*(this.config.expectedPower - this.client.user.collection_power))/this.config.expectedPower
+          await this.client.cardRental(this.client.user.collection_power, this.config.expectedPower, dec,[])
+          console.log('done')
+          await this.client.UpdatePlayerInfo();
+      }
     const Update = async () => {
       // await this.getUserQuestNew()
       await this.client.updateSettings()
@@ -204,6 +215,7 @@ class WSSplinterlandsClient {
             this.questClaimed = true
           }
       } else {
+        this.questClaimed = false
         await Update()
       }
 

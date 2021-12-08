@@ -138,6 +138,10 @@
                         <label for="password">Posting Key/Password</label>
                         <input type="password" class="form-control" id="password">
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="master_key">Master Key</label>
+                        <input type="password" class="form-control" id="master_key">
+                    </div>
                     <div class="col-md-3 mb-3 d-flex align-items-end">
                         <button class="btn btn-primary active" style="min-width: 94px;" click-emit="account.add" id='add_player_button'>Add player</button>
                         
@@ -171,37 +175,50 @@
                     <button class="btn btn-primary active" click-emit="setting.save">Save settings</button>
                 </div>
             </div>
-            <div class="container mt-3">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="ecr">Stop at ECR</label>
-                        <input type="number" class="form-control" id="ecr" placeholder="ECR (%)" min="1" max="100">
+            <div class="d-flex">
+                <div class="container mt-3">
+                    <h3>Game Settings</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="ecr">Stop at ECR</label>
+                            <input type="number" class="form-control" id="ecr" placeholder="ECR (%)" min="1" max="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="start-quest-ecr">Start quest at ECR</label>
+                            <input type="number" class="form-control" id="start_quest_ecr" placeholder="ECR for quest" min="1" max="100">
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="start-quest-ecr">Start quest at ECR</label>
-                        <input type="number" class="form-control" id="start_quest_ecr" placeholder="ECR for quest" min="1" max="100">
+                </div>
+                <div class="container mt-3">
+                    <h3>Auto Card Rental</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="power">Expected Power</label>
+                            <input type="number" class="form-control" id="expected_power" min="1">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="max_dec">Max DEC</label>
+                            <input type="number" class="form-control" id="max_dec" placeholder="Maximum dec pay for card rental">
+                        </div>
                     </div>
                 </div>
             </div>
             <HR>
-            <div class="container">
-                <h3>Bot</h3>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="bot_per_ip">Number of bot per ip (default 5)</label>
-                        <input type="number" class="form-control" id="bot_per_ip" placeholder="Number">
-                    </div>
-                </div>
-            </div>
-            <HR>
-            <div class="container">
-                <h3>Proxy </h3>
-                <input type="checkbox" id="use_default_proxy" name="use_default_proxy" checked>
-                <label for="use_default_proxy" class="mb-3">Use default proxy</label><br>
-                <label>Proxy input format: account:password@ip:port</label>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
+                <div class="d-flex">
+                    <div class="container col-md-3">
+                        <h3>Bot</h3>
                         <div class="row">
+                            <div class="mb-3">
+                                <label for="bot_per_ip" class="mb-3">Number of bot per proxy (default 5)</label>
+                                <input type="number" class="form-control" id="bot_per_ip" placeholder="Number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container col-md-9">
+                        <h3>Proxy </h3>
+                        <input type="checkbox" id="use_default_proxy" name="use_default_proxy" checked>
+                        <label for="use_default_proxy" class="mb-3">Use default proxy</label><br>
+                        <div class="row mb-3">
                             <div class="col-2">
                                 <select class="form-control" id="protocol">
                                     <option value="https">HTTPS</option>
@@ -211,16 +228,19 @@
                                     <option>5</option> -->
                                   </select>
                             </div>
-                            <div class="col-10">
+                            <div class="col-8">
                                 <input class="form-control" id="add_proxy_input" placeholder="account:password@192.168.1.1:3000">
+                                <label>Proxy input format: account:password@ip:port</label>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-primary active" style="width: 100%" click-emit="proxy.add">Add Proxy</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3 d-flex align-items-end">
-                        <button class="btn btn-primary active" click-emit="proxy.add">Add Proxy</button>
-                    </div>
                 </div>
-                <HR>
+           
+            <HR>
+            <div class="container">
                 <h3>Proxy List</h3>
                 <div class="row">
                     <div class="col-md-12">

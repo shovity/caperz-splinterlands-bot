@@ -9,6 +9,8 @@ const setting = ({ win, ipc, settings }) => {
             startQuestEcr: data.startQuestEcr,
             botPerIp: data.botPerIp,
             useDefaultProxy: data.useDefaultProxy,
+            maxDec: data.maxDec,
+            expectedPower: data.expectedPower
         }
         newSetting.proxies = data.proxies.map((p) => {
             const oldProxy = oldSetting.proxies.find((pr) => p.ip == pr.ip)

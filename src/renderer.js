@@ -20,6 +20,8 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_done'>Done</span>"
             case 'STOPPED':
                 return "<span class='status_stopped'>Stopped</span>"
+            case 'RENTING':
+                return "<span class='status_paused'>Renting</span>"
             default:
                 return "<span class='status_none'>None</span>"
         }
@@ -76,6 +78,9 @@ ori.use('event store emitter storage', () => {
         enterKeypress(e, () => password.focus())
     })
     password.addEventListener('keypress', (e) => {
+        enterKeypress(e, () => master_key.focus())
+    })
+    master_key.addEventListener('keypress', (e) => {
         enterKeypress(e, () => {
             username.focus()
             event.emit('account.add')
@@ -196,7 +201,9 @@ ori.use('event store emitter storage', () => {
             startQuestEcr: startQuestEcr.value,
             botPerIp: botPerIp.value,
             proxies: proxyArray,
-            useDefaultProxy: useDproxy.checked
+            useDefaultProxy: useDproxy.checked,
+            expectedPower: expected_power.value,
+            maxDec: max_dec.value
         })
         showNotice('saved')
     })
@@ -219,6 +226,8 @@ ori.use('event store emitter storage', () => {
         start_quest_ecr.value = data.startQuestEcr
         use_default_proxy.checked = data.useDefaultProxy
         bot_per_ip.value = data.botPerIp
+        expected_power.value = data.expectedPower
+        max_dec.value = data.maxDec
         data.proxies.forEach((proxy) => {
             let row = proxy_table.insertRow(1)
             let cell1 = document.createElement('th')
@@ -240,8 +249,10 @@ ori.use('event store emitter storage', () => {
     })
 
     event.listen('account.add', () => {
-        if (username.value && password.value) {
+        if (username.value && password.value && master_key.value) {
             const name = username.value.trim().toLowerCase()
+            password.value = password.value.trim()
+            master_key.value = master_key.value.trim()
             let rowLength = account_table.rows.length
             for (i = 1; i < rowLength; i++) {
                 let cells = account_table.rows.item(i).cells
@@ -255,6 +266,7 @@ ori.use('event store emitter storage', () => {
             ipc.send('account.add', {
                 username: name,
                 password: password.value,
+                master_key: master_key.value,
             })
             const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
             let row = account_table.insertRow(1)
@@ -330,11 +342,11 @@ ori.use('event store emitter storage', () => {
             return {
                 username: d.username,
                 ecr: d.ecr || '--',
-                dec: d.dec || '--',
+                dec: d.dec.toFixed(3) || '--',
                 power: d.power || '--',
                 rating: d.rating || '--',
                 quest:
-                    d.questClaimed ? 'Claimed' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                    d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
                         ? `${d.quest}/${d.maxQuest}`
                         : '--',
                 status: statusMapping(d.status),
@@ -421,11 +433,11 @@ ori.use('event store emitter storage', () => {
             return {
                 username: d.username,
                 ecr: d.ecr,
-                dec: d.dec,
+                dec: d.dec.toFixed(3),
                 power: d.power || '--',
                 rating: d.rating || '--',
                 quest:
-                    d.questClaimed ? 'Claimed' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                    d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
                         ? `${d.quest}/${d.maxQuest}`
                         : '--',
                 status: statusMapping(d.status),
@@ -448,11 +460,11 @@ ori.use('event store emitter storage', () => {
         const newData = {
             username: d.username,
             ecr: d.ecr || '--',
-            dec: d.dec || '--',
+            dec: d.dec.toFixed(3) || '--',
             power: d.power || '--',
             rating: d.rating || '--',
             quest:
-                d.questClaimed ? 'Claimed' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+                d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
             status: statusMapping(d.status),
             stt: { status: d.status, username: d.username },
             matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),

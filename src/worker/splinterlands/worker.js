@@ -7,10 +7,10 @@ const defaultConfig = {
     questECR: 60,
 }
 
-async function main({ username, password, account, emailPass, proxy, config = null, postingKey, spsToken }) {
+async function main({ username, password, account, emailPass, proxy, config = null, postingKey, masterKey , spsToken }) {
 
     config = config || defaultConfig
-    const client = new SplinterLandsClient(proxy, config)
+    const client = new SplinterLandsClient(proxy, config, masterKey)
     parentPort.postMessage({
         type: "MESSAGE",
         data: 'start login'

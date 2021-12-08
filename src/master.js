@@ -19,6 +19,7 @@ const ACCOUNT_STATUS = {
     STOPPED: 'STOPPED',
     NONE: 'NONE',
     PAUSED: 'PAUSED',
+    RENTING: 'RENTING',
 }
 
 const MASTER_STATE = {
@@ -97,9 +98,7 @@ master.handleAddAccount = async (account) => {
     const app_setting = settings.data.app_setting
     const user = settings.data.user
 
-    const config = {
-        ecr: app_setting.ecr
-    }
+    const config = app_setting
 
     const proxyIndex = app_setting.proxies.findIndex(p => {
         if (p.ip === 'Default IP') {
@@ -142,6 +141,7 @@ master.handleAddAccount = async (account) => {
             },
             username: account.username,
             postingKey: account.postingKey,
+            masterKey: account.masterKey,
             token: account.token,
             proxy,
             config,
@@ -154,6 +154,7 @@ master.handleAddAccount = async (account) => {
                 },
                 username: account.username,
                 postingKey: account.postingKey,
+                masterKey: account.masterKey,
                 token: account.token,
                 proxy,
                 config,
@@ -214,7 +215,7 @@ master.add = async (workerData) => {
                 account_list[accountIndex].lastRewardTime = m.lastRewardTime
             }
 
-            if (m.questClaimed) {
+            if (typeof m.questClaimed != 'undefined') {
                 account_list[accountIndex].questClaimed = m.questClaimed
             }
 
@@ -228,6 +229,12 @@ master.add = async (workerData) => {
 
             if (m.maxQuest) {
                 account_list[accountIndex].maxQuest = m.maxQuest
+            }
+            if (m.status) {
+                account_list[accountIndex].status = m.status
+            }
+            if (m.power) {
+                account_list[accountIndex].power = m.power
             }
 
             await master.changePath('account_list', [{ ...account_list[accountIndex], index: accountIndex }])
