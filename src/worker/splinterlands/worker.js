@@ -18,6 +18,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
 
     try {
         const user = await client.login(username, postingKey)
+        console.log(user)
 
         parentPort.postMessage({
             type: "MESSAGE",
@@ -47,7 +48,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
         parentPort.postMessage({
             type: "ERROR",
             player: username,
-            status: e.response?.status,
+            status: e.status,
             message: e.message,
         })
     }

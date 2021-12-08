@@ -24,7 +24,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = true
+const log = false
 
 const activeObj = {
   gold: 'dragon',

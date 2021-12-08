@@ -34,7 +34,9 @@ const Config = {
   ]
 };
 
-const log = true
+const requester = require('../../../service/requester')
+
+const log = false
 
 steem.api.setOptions({
   transport: "http",
@@ -958,11 +960,7 @@ class SplinterLandsClient {
 
   async sendRequestUrl(url, params, method = "get") {
     try {
-      let objectAxios = {
-        method: method,
-        url: url,
-        proxy: false,
-        timeout: 10000,
+      let option = {
         headers: {
           authority: "api2.splinterlands.com",
           method: method.toUpperCase(),
@@ -987,22 +985,17 @@ class SplinterLandsClient {
           "user-agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
         },
+
       };
 
       if ( this.proxy ) {
-        objectAxios.proxy = {
-          host: this.proxy.host,
-          port: this.proxy.port,
-        }
+        option.proxy = `${this.proxy.host}:${this.proxy.port}`
         if (this.proxy.account) {
-          objectAxios.proxy.auth = {
-            username: this.proxy.account,
-            password: this.proxy.password
-          }
+          option.proxy = `${this.proxy.account}:${this.proxy.password}:${this.proxy.host}:${this.proxy.port}`
         }
-        objectAxios.httpsAgent = new HttpsProxyAgent(
-          `https://${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
-        )
+        // objectAxios.httpsAgent = new HttpsProxyAgent(
+        //   `https://${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
+        // )
       }
 
       if (method === "get") {
@@ -1012,9 +1005,9 @@ class SplinterLandsClient {
         objectAxios.data = qs.stringify(params);
       }
 
-      let res = await axios(objectAxios);
+      let res = await requester[method](url, params, options)
 
-      return res.data;
+      return res;
     } catch (e) {
       log && console.log(e);
       return null;
@@ -1028,72 +1021,51 @@ class SplinterLandsClient {
       host = Config.splinterHosts[Math.floor(Math.random() * 2)]
     }
     try {
-        let objectAxios = {
-            method: method,
-            url: host + url,
-            proxy: false,
-            // httpsAgent: new HttpsProxyAgent(
-            //   `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
-            // ),
-            timeout: 10000,
-            headers: {
-                authority: 'api2.splinterlands.com',
-                method: method.toUpperCase(),
-                path: url,
-                scheme: 'https',
-                accept: method === 'post' ? '*/*' : 'application/json, text/javascript, */*; q=0.01',
-                'accept-encoding': 'gzip, deflate, br',
-                'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-                'content-type': method === 'post' ? 'application/x-www-form-urlencoded' : '',
-                origin: 'https://splinterlands.com',
-                referer: 'https://splinterlands.com',
-                'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-fetch-dest': 'empty',
-                'sec-fetch-mode': 'cors',
-                'sec-fetch-site': 'same-origin',
-                'user-agent':
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
-            },
-        }
+      let option = {
+        headers: {
+          authority: "api2.splinterlands.com",
+          method: method.toUpperCase(),
+          path: url,
+          scheme: "https",
+          accept:
+            method === "post"
+              ? "*/*"
+              : "application/json, text/javascript, */*; q=0.01",
+          "accept-encoding": "gzip, deflate, br",
+          "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+          "content-type":
+            method === "post" ? "application/x-www-form-urlencoded" : "",
+          origin: "https://splinterlands.com",
+          referer: "https://splinterlands.com",
+          "sec-ch-ua":
+            '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
+          "user-agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        },
+      }
 
         if (method === 'get') {
             params.v = new Date().getTime()
-            objectAxios.params = params
-        } else {
-            objectAxios.data = qs.stringify(params)
         }
-
         if ( this.proxy ) {
-          objectAxios.proxy = {
-            host: this.proxy.host,
-            port: this.proxy.port,
-          }
+          option.proxy = `${this.proxy.host}:${this.proxy.port}`
           if (this.proxy.account) {
-            objectAxios.proxy.auth = {
-              username: this.proxy.account,
-              password: this.proxy.password
-            }
+            option.proxy = `${this.proxy.account}:${this.proxy.password}:${this.proxy.host}:${this.proxy.port}`
           }
-          objectAxios.httpsAgent = new HttpsProxyAgent(
-            `${this.proxy}`
-          )
+          // objectAxios.httpsAgent = new HttpsProxyAgent(
+          //   `${this.proxy}`
+          // )
         }
 
-        let res = await axios(objectAxios)
+        let res = await requester[method](host + url, params, option)
 
-        return res.data
+        return res
     } catch (error) {
-      if (error.response) {
-        parentPort.postMessage({
-          type: 'ERROR',
-          data: {
-            player: this.user.name,
-            status: error.response.status,
-          }
-        })
-      }
-      return null
+      throw error
     }
 }
 
@@ -1164,10 +1136,7 @@ class SplinterLandsClient {
   async sendRequestProxy(url, params, method = "get", proxy) {
 
     try {
-      let objectAxios = {
-        method: method,
-        url: "https://api2.splinterlands.com/" + url,
-        timeout: 10000,
+      let option = {
         headers: {
           authority: "api2.splinterlands.com",
           method: method.toUpperCase(),
@@ -1192,37 +1161,28 @@ class SplinterLandsClient {
           "user-agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
         },
-      };
+      }
 
       if (this.proxy) {
-        objectAxios.proxy = {
-          host: this.proxy.host,
-          port: this.proxy.port,
-        }
-        if (this.proxy.account) {
-          objectAxios.proxy.auth = {
-            username: this.proxy.account,
-            password: this.proxy.password
+        option.proxy = `${this.proxy.host}:${this.proxy.port}`
+          if (this.proxy.account) {
+            option.proxy = `${this.proxy.account}:${this.proxy.password}:${this.proxy.host}:${this.proxy.port}`
           }
-        }
-        objectAxios.httpsAgent = new HttpsProxyAgent(
-          `https://${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
-        )
+          // objectAxios.httpsAgent = new HttpsProxyAgent(
+          //   `${this.proxy}`
+          // )
       }
 
       if (method === "get") {
         params.v = new Date().getTime();
-        objectAxios.params = params;
-      } else {
-        objectAxios.data = qs.stringify(params);
       }
 
-      let res = await axios(objectAxios);
+      let res = await requester[method](url, params, option)
 
-      return res.data;
+      return res;
     } catch (e) {
       log && console.log(e);
-      return null;
+      throw e
     }
   }
 
