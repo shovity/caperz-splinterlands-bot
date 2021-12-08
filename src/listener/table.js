@@ -10,6 +10,7 @@ const table = ({ win, ipc, settings }) => {
             const acc = account_list.find((a) => username == a.username)
             newList.push(acc)
         })
+
         settings.data.account_list = newList
     })
 

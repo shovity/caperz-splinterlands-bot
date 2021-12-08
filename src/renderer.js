@@ -18,6 +18,14 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_paused'>Paused</span>"
             case 'DONE':
                 return "<span class='status_done'>Done</span>"
+            case 'WAITING_ECR':
+                return "<span class='status_paused'>Waiting ECR</span>"
+            case 'PROXY_ERROR':
+                return "<span class='status_stopped'>Proxy error</span>"
+            case 'MULTI_REQUEST_ERROR':
+                return "<span class='status_stopped'>Multi request</span>"
+            case 'ERROR':
+                return "<span class='status_stopped'>System error</span>"
             case 'STOPPED':
                 return "<span class='status_stopped'>Stopped</span>"
             case 'RENTING':

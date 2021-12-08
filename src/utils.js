@@ -163,14 +163,15 @@ utils.getDetails = async (username) => {
 
 utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {
     for (let i = 0; i < array.length; i++) {
-        for (let key in array[i]) {
-            if (key === 'index') {
-                continue
+        if (name === 'account_list') {
+            const accountIndex = settings.data[name].findIndex(a => a.username === array[i].username)
+
+            for (let key in array[i]) {
+                settings.data.account_list[accountIndex][key] = array[i][key]
             }
-            settings.data[name][array[i].index][key] = array[i][key]
-        }
         
-        settings.data[name][array[i].index].updatedAt = updatedAt
+            settings.data.account_list[accountIndex].updatedAt = updatedAt
+        }
     }
 }
 

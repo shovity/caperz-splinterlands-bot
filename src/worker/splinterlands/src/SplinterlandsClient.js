@@ -455,6 +455,7 @@ class SplinterLandsClient {
       "Steem Monsters Submit Team",
       data,
       (result) => {
+        // console.log(result)
         if (
           result &&
           !result.error &&
@@ -1082,9 +1083,17 @@ class SplinterLandsClient {
         let res = await axios(objectAxios)
 
         return res.data
-    } catch (e) {
-        console.log(e)
-        return null
+    } catch (error) {
+      if (error.response) {
+        parentPort.postMessage({
+          type: 'ERROR',
+          data: {
+            player: this.user.name,
+            status: error.response.status,
+          }
+        })
+      }
+      return null
     }
 }
 
