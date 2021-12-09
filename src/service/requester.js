@@ -40,8 +40,7 @@ requester.fetch = ({ url, method, body, param, option }) => {
     }
 
     if (option.proxy) {
-        console.log(option.proxy)
-        arg.agent = new HttpsProxyAgent(option.proxy)
+        arg.agent = new HttpsProxyAgent('http://' + option.proxy)
     }
 
     if (param) {

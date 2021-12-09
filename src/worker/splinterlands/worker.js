@@ -18,7 +18,6 @@ async function main({ username, password, account, emailPass, proxy, config = nu
 
     try {
         const user = await client.login(username, postingKey)
-        console.log(user)
 
         parentPort.postMessage({
             type: "MESSAGE",
