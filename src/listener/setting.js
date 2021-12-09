@@ -27,7 +27,7 @@ const setting = ({ win, ipc, settings }) => {
         })
     
         settings.data.app_setting = newSetting
-        await master.enqAccounts()
+        // await master.enqAccounts()
     })
     ipc.on('major_account.save', (e, data) => {
         const oldSetting = settings.data.app_setting

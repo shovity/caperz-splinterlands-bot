@@ -123,14 +123,20 @@ master.handleAddAccount = async (account) => {
             proxy = null
         } else {
             const [auth, address] = account_list[accountIndex].proxy.split('@')
-            const [account, password] = auth.split(':')
-            const [host, port] = address.split(':')
 
-            proxy = {
-                account,
-                password,
-                host,
-                port,
+            if (auth && address) {
+                const [account, password] = auth.split(':')
+                const [host, port] = address.split(':')
+    
+                proxy = {
+                    account,
+                    password,
+                    host,
+                    port,
+                }
+            } else {
+                const [host, port] = account_list[accountIndex].proxy.split(':')
+                proxy = { host, port }
             }
         }
 
@@ -263,7 +269,7 @@ master.add = async (workerData) => {
         } else if (m.type === 'MESSAGE') {
             await master.change('log', m.data)
         } else if (m.type === 'ERROR') {
-            const accountIndex = account_list.findIndex(a => a.username === m.player || m.data.player)
+            const accountIndex = account_list.findIndex(a => a.username === m.player || m.data?.player)
 
             let proxy = account_list[accountIndex].proxy
 
