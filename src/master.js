@@ -290,6 +290,7 @@ master.add = async (workerData) => {
 
             worker.instance.terminate()                
         }
+
     })
 
     worker.instance.on('error', (e) => {

@@ -11,8 +11,8 @@
     "publish": "electron-forge publish",
     "package-win": "rm -rf dist installer && electron-packager . --overwrite --out='dist' --icon=./src/assets/img/icon.ico",
     "create-installer-win": "node build_installer.js",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=dist",
-    "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite"
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=dist --icon=./src/assets/img/icon.ic",
+    "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite --icon=./src/assets/img/icon.ico"
   },
   "author": {
     "name": "shovity",
@@ -75,6 +75,7 @@
     "@hiveio/keychain": "^1.0.4",
     "electron": "15.1.2",
     "electron-installer-dmg": "^3.0.0",
-    "electron-wix-msi": "2.1.1"
+    "electron-wix-msi": "2.1.1",
+    "macos-alias": "^0.2.11"
   }
 }

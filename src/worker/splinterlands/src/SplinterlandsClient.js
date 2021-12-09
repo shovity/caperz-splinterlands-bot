@@ -1,6 +1,5 @@
 var steem = require("steem");
 const eosjs_ecc = require("eosjs-ecc");
-const axios = require("axios").default;
 const { parentPort } = require('worker_threads')
 const qs = require("qs");
 var md5 = require("md5");
@@ -36,7 +35,7 @@ const Config = {
 
 const requester = require('../../../service/requester')
 
-const log = false
+const log = true
 
 steem.api.setOptions({
   transport: "http",
@@ -1000,12 +999,9 @@ class SplinterLandsClient {
 
       if (method === "get") {
         params.v = new Date().getTime();
-        objectAxios.params = params;
-      } else {
-        objectAxios.data = qs.stringify(params);
       }
 
-      let res = await requester[method](url, params, options)
+      let res = await requester[method](url, params, option)
 
       return res;
     } catch (e) {
@@ -1304,6 +1300,7 @@ class SplinterLandsClient {
         }).sort((a, b) => {
             return b.power - a.power;
         });
+        console.log(data)
         const buyList = []
         data.forEach(e => {
             if (remainingPower <= 0) {
