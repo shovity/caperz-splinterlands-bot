@@ -24,7 +24,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = true
+const log = false
 
 const activeObj = {
   gold: 'dragon',
@@ -157,7 +157,7 @@ class WSSplinterlandsClient {
     log && console.log('Rating: ', rat)
       log && console.log('Power: ', this.client.user.collection_power)
       log && console.log('Quest: ', quest)
-      if (this.client.user.collection_power < this.config.expectedPower) {
+      if (this.client.masterKey && this.client.user.collection_power < this.config.expectedPower) {
         parentPort.postMessage({
             type: "INFO_UPDATE",
             status: 'RENTING',
