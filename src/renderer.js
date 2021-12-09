@@ -218,6 +218,7 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('setting.load', (event, data) => {
+        console.log(data)
         if (!data) {
             return
         }
@@ -237,6 +238,8 @@ ori.use('event store emitter storage', () => {
         bot_per_ip.value = data.botPerIp
         expected_power.value = data.expectedPower
         max_dec.value = data.maxDec
+        ma_username.value = data.majorAccount?.player || ''
+        ma_master_key.value = data.majorAccount?.masterKey || ''
         data.proxies.forEach((proxy) => {
             let row = proxy_table.insertRow(1)
             let cell1 = document.createElement('th')
@@ -255,6 +258,16 @@ ori.use('event store emitter storage', () => {
             }
             row.appendChild(cell4)
         })
+    })
+
+    event.listen('major_account.save', () => {
+        if (ma_username.value && ma_master_key.value) {
+            ipc.send('major_account.save', {
+                username: ma_username.value,
+                master_key: ma_master_key.value,
+            })
+            showNotice('Major Account saved!')
+        }
     })
 
     event.listen('account.add', () => {
@@ -397,7 +410,7 @@ ori.use('event store emitter storage', () => {
                     width: '70px',
                     targets: 8,
                     render: function (data, type, row) {
-                        if (data.status == 'RUNNING' || data.status == 'PENDING' || data.status == 'DONE') {
+                        if (['RUNNING','PENDING','DONE','RENTING'].includes(data.status)) {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
                         </button>`

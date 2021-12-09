@@ -2,7 +2,7 @@ const master = require('../master')
 
 const setting = ({ win, ipc, settings }) => {
     ipc.on('setting.save', async (event, data) => {
-        const oldSetting = await settings.data.app_setting
+        const oldSetting = settings.data.app_setting
         let newSetting = {
             ...oldSetting,
             ecr: data.ecr,
@@ -28,6 +28,17 @@ const setting = ({ win, ipc, settings }) => {
     
         settings.data.app_setting = newSetting
         // await master.enqAccounts()
+    })
+    ipc.on('major_account.save', (e, data) => {
+        const oldSetting = settings.data.app_setting
+        let newSetting = {
+            ...oldSetting,
+            majorAccount: {
+                player: data.username,
+                masterKey: data.master_key
+            },
+        }
+        settings.data.app_setting = newSetting
     })
 }
 
