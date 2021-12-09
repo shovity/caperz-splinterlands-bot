@@ -611,7 +611,6 @@ class SplinterLandsClient {
         username: this.user.name,
       }
       );
-      console.log('as',quest)
       
       this.user = Object.assign(this.user, res);
       if (quest) {
@@ -1015,7 +1014,6 @@ class SplinterLandsClient {
 
       return res;
     } catch (e) {
-      log && console.log(e);
       return null;
     }
   }
@@ -1134,7 +1132,6 @@ class SplinterLandsClient {
     );
 
     if (response && !response.error) {
-      log && console.log("response", response);
     }
     return response;
   }
@@ -1187,7 +1184,6 @@ class SplinterLandsClient {
 
       return res;
     } catch (e) {
-      log && console.log(e);
       throw e
     }
   }
@@ -1345,7 +1341,7 @@ class SplinterLandsClient {
         }
         
         const marketIdArray = await Promise.all(buyList.map(e => {
-            log && console.log(e)
+            log && console.log('card',e)
             return buyCard(e)
         }))
         const ids = marketIdArray.filter(e => e != 0)
@@ -1356,7 +1352,6 @@ class SplinterLandsClient {
                     currency: "DEC",
                     days: 1
                 }, (result) => {
-                    console.log('ab')
                     if (result && !result.error && result.trx_info && result.trx_info.success) {
                         resolve(result);
                     } else {
