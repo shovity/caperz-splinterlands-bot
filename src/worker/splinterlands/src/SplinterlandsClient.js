@@ -440,7 +440,7 @@ class SplinterLandsClient {
     //     };
     //     var team_result = await this.sendRequest("battle/send_team", params);
     //     if (!team_result || team_result.error) {
-    //         console.log("There was an error submitting your team, please try again. Error: " + (team_result ? team_result.error : "unknown"));
+    //         log && console.log("There was an error submitting your team, please try again. Error: " + (team_result ? team_result.error : "unknown"));
     //         return
     //     }
     // } else if (submit_and_reveal) {
@@ -457,7 +457,7 @@ class SplinterLandsClient {
       "Steem Monsters Submit Team",
       data,
       (result) => {
-        // console.log(result)
+        // log && console.log(result)
         if (
           result &&
           !result.error &&
@@ -710,12 +710,12 @@ class SplinterLandsClient {
             if (!steem.auth.isWif(this.masterKey)) {
                 try {
                     mKey = steem.auth.getPrivateKeys(this.user.name, this.masterKey, ['active']).active;
-                } catch (err) { return console.log('The key entered was not a valid private key or master password.'); }
+                } catch (err) { return log && console.log('The key entered was not a valid private key or master password.'); }
         }
         var that = this
         steem.broadcast.customJson(mKey, [this.user.name],[], id, JSON.stringify(data), (err, result) => {
-            console.log('3' , err)
-            console.log('result 2', result)
+            log && console.log('3' , err)
+            log && console.log('result 2', result)
                 if (result && !err) {
                     that.trxLookup(result.id, false, null, callback, 10, supressErrors)
                 } else {
@@ -731,11 +731,11 @@ class SplinterLandsClient {
                             url: rpc_node,
                             useAppbaseApi: true
                         });
-                        console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
+                        log && console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
                         setTimeout(()=>that.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
                         return
                     } else if (!supressErrors) {
-                        console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                        log && console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
                     }
                     if (callback)
                         callback(result)
@@ -774,11 +774,11 @@ class SplinterLandsClient {
             if (!steem.auth.isWif(this.masterKey)) {
                 try {
                     mKey = steem.auth.getPrivateKeys(this.user.name, this.masterKey, ['active']).active;
-                } catch (err) { return console.log('The key entered was not a valid private key or master password.'); }
+                } catch (err) { return log && console.log('The key entered was not a valid private key or master password.'); }
         }
                 steem.broadcast.customJson(mKey, [this.user.name],[], id, JSON.stringify(data), (err, result) => {
-                    console.log('3' , err)
-                    console.log('result 2', result)
+                    log && console.log('3' , err)
+                    log && console.log('result 2', result)
                         if (result && !err) {
                             that.trxLookup(result.id, false, null, callback, 10, supressErrors)
                         } else {
@@ -794,11 +794,11 @@ class SplinterLandsClient {
                                     url: rpc_node,
                                     useAppbaseApi: true
                                 });
-                                console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
+                                log && console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
                                 setTimeout(()=>that.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
                                 return
                             } else if (!supressErrors) {
-                                console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                                log && console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
                             }
                             if (callback)
                                 callback(result)
@@ -808,8 +808,8 @@ class SplinterLandsClient {
             }
             var that = this
         steem.broadcast.customJson(this.key, [], [this.user.name], id, JSON.stringify(data), (err, result) => {
-            console.log('3' , err)
-            console.log('result 2', result)
+            log && console.log('3' , err)
+            log && console.log('result 2', result)
                 if (result && !err) {
                     that.trxLookup(result.id, false, null, callback, 10, supressErrors)
                 } else {
@@ -825,11 +825,11 @@ class SplinterLandsClient {
                             url: rpc_node,
                             useAppbaseApi: true
                         });
-                        console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
+                        log && console.log(`SWITCHED TO NEW RPC NODE: ${rpc_node}`);
                         setTimeout(()=>that.broadcastCustomJsonLocal(id, title, data, callback, retries - 1, supressErrors), 3e3);
                         return
                     } else if (!supressErrors) {
-                        console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                        log && console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
                     }
                     if (callback)
                         callback(result)
@@ -1188,7 +1188,7 @@ class SplinterLandsClient {
 
     getBalance(token) {
         if (!this.user.balances) {
-            console.log(this.user)
+            log && console.log(this.user)
             return 0;
         }
     for (let i = 0; i < this.user.balances.length; i++) {
@@ -1276,8 +1276,8 @@ class SplinterLandsClient {
         let remainingDec = maxDec
         let remainingPower = expectedPower - curPower
         let weight = remainingDec / remainingPower
-        console.log(weight)
-        console.log(remainingPower)
+        log && console.log(weight)
+        log && console.log(remainingPower)
         const res = await this.sendRequest('market/for_rent_grouped', {
             v: Date.now(),
             username: this.user.name,
@@ -1333,12 +1333,12 @@ class SplinterLandsClient {
             }
             gainedPower += card.power
             remainingDec -= (+res[0].buy_price)
-            console.log('price ', res[0].buy_price)
+            log && console.log('price ', res[0].buy_price)
             return res[0].market_id
         }
         
         const marketIdArray = await Promise.all(buyList.map(e => {
-            console.log(e)
+            log && console.log(e)
             return buyCard(e)
         }))
         const ids = marketIdArray.filter(e => e != 0)
@@ -1360,7 +1360,7 @@ class SplinterLandsClient {
             matchStatus: 'NONE',
             power: curPower + gainedPower
         })
-        console.log('done ne')
+        log && console.log('done ne')
         return
   }
 }

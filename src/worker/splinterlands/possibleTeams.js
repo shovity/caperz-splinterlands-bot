@@ -45,19 +45,19 @@ const getBattlesWithRuleset = (matchDetails, account, spsToken) => {
 }
 
 const defaultDataForNoTeams = {
-    fire: "red_1_12_5-1-c::8-1-c:158-4-c:3-1-c",
-    water: "blue_0_12_16-1-c::174-4-c:172-4-c",
-    earth: "green_0_12_189-4-c::25-1-c:183-4-c",
-    death: "black_1_12_49-1-c::50-1-c:51-1-c",
-    life: "white_0_12_38-1-c::64-1-c:66-1-c:39-1-c",
-    dragon: "gold_0_12_224-4-c::50-1-c:47-1-c",
+    fire: "red_1_12_167-4-c::157-4-c:159-1-c",
+    water: "blue_0_12_437-7-c::168-4-c:169-4-c",
+    earth: "green_0_12_189-4-c::179-4-c:180-4-c",
+    death: "black_1_12_156-4-c::135-4-c:136-4-c",
+    life: "white_0_12_145-4-c::146-4-c:147-4-c",
+    dragon: "gold_0_12_224-4-c::190-4-c:191-4-c",
 
-    red: "red_1_12_5-1-c::8-1-c:158-4-c:3-1-c",
-    blue: "blue_0_12_16-1-c::174-4-c:172-4-c",
-    green: "green_0_12_189-4-c::25-1-c:183-4-c",
-    black: "black_1_12_49-1-c::50-1-c:51-1-c",
-    white: "white_0_12_38-1-c::64-1-c:66-1-c:39-1-c",
-    gold: "gold_0_12_224-4-c::50-1-c:47-1-c",
+    red: "red_1_12_167-4-c::157-4-c:159-1-c",
+    blue: "blue_0_12_437-7-c::168-4-c:169-4-c",
+    green: "green_0_12_189-4-cc::179-4-c:180-4-c",
+    black: "black_1_12_156-4-cc::135-4-c:136-4-c",
+    white: "white_0_12_145-4-c-c::146-4-c:147-4-c",
+    gold: "gold_0_12_224-4-c::190-4-c:191-4-c",
 }
 
 const getTeamDefault = (matchDetails) => {
