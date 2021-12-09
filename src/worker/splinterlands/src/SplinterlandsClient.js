@@ -34,7 +34,7 @@ const Config = {
   ]
 };
 
-const log = false
+const log = true
 
 steem.api.setOptions({
   transport: "http",
@@ -486,7 +486,7 @@ class SplinterLandsClient {
     );
   }
 
-  trxLookup(trx_id, details, callback, retries, suppressError, timeout) {
+  trxLookup(trx_id, details, callback, timeout, suppressError) {
 
     if (this._transactions[trx_id]) {
       if (this._transactions[trx_id].status == "complete") {
@@ -604,8 +604,18 @@ class SplinterLandsClient {
         name: this.user.name,
       }
     );
-
-    this.user = Object.assign(this.user, res);
+    const quest = await this.sendRequestUrl(
+      `https://api.splinterlands.io/players/quests`,
+      {
+        username: this.user.name,
+      }
+      );
+      console.log('as',quest)
+      
+      this.user = Object.assign(this.user, res);
+      if (quest) {
+        this.user.quest = quest[0]
+      }
   }
 
   async broadcastCustomJson(id, title, data, callback, retries, supressErrors) {
@@ -713,9 +723,9 @@ class SplinterLandsClient {
         var that = this
         steem.broadcast.customJson(mKey, [this.user.name],[], id, JSON.stringify(data), (err, result) => {
             log && console.log('3' , err)
-            log && console.log('result 2', result)
+            log && console.log('result 21', result)
                 if (result && !err) {
-                    that.trxLookup(result.id, false, null, callback, 10, supressErrors)
+                    that.trxLookup(result.id, null, callback, 10, supressErrors)
                 } else {
                     if (err && JSON.stringify(err).indexOf("Please wait to transact") >= 0) {
                         // this.RequestDelegation(id, title, data, callback, retries);
@@ -759,7 +769,7 @@ class SplinterLandsClient {
                 json: data
             }, response=>{
                 if (response && response.id)
-                    this.trxLookup(response.id, false, null, callback, 10, supressErrors);
+                    this.trxLookup(response.id, null, callback, 10, supressErrors);
                 // else
                 //     alert(`Error sending transaction: ${response ? response.error : "Unknown error"}`)
             }
@@ -776,9 +786,9 @@ class SplinterLandsClient {
         }
                 steem.broadcast.customJson(mKey, [this.user.name],[], id, JSON.stringify(data), (err, result) => {
                     log && console.log('3' , err)
-                    log && console.log('result 2', result)
+                    log && console.log('result 22', result)
                         if (result && !err) {
-                            that.trxLookup(result.id, false, null, callback, 10, supressErrors)
+                            that.trxLookup(result.id, null, callback, 10, supressErrors)
                         } else {
                             if (err && JSON.stringify(err).indexOf("Please wait to transact") >= 0) {
                                 // this.RequestDelegation(id, title, data, callback, retries);
@@ -807,9 +817,9 @@ class SplinterLandsClient {
             var that = this
         steem.broadcast.customJson(this.key, [], [this.user.name], id, JSON.stringify(data), (err, result) => {
             log && console.log('3' , err)
-            log && console.log('result 2', result)
+            log && console.log('result 23', result)
                 if (result && !err) {
-                    that.trxLookup(result.id, false, null, callback, 10, supressErrors)
+                    that.trxLookup(result.id, null, callback, 10, supressErrors)
                 } else {
                     if (err && JSON.stringify(err).indexOf("Please wait to transact") >= 0) {
                         // this.RequestDelegation(id, title, data, callback, retries);
@@ -1383,11 +1393,21 @@ class SplinterLandsClient {
         }))
         const ids = marketIdArray.filter(e => e != 0)
         if (ids.length > 0) {
-            const r = await this.broadcastCustomJson("sm_market_rent", "", {
-                items: marketIdArray.filter(e => e != 0),
-                currency: "DEC",
-                days: 1
-            })
+            const prm = new Promise((resolve, reject) => {
+                this.broadcastCustomJson("sm_market_rent", "", {
+                    items: marketIdArray.filter(e => e != 0),
+                    currency: "DEC",
+                    days: 1
+                }, (result) => {
+                    console.log('ab')
+                    if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        resolve(result);
+                    } else {
+                        resolve(null);
+                    }
+                })
+              });
+            const r = await prm
         }
         if (retry) {
             await this.cardRental(curPower + gainedPower, expectedPower,remainingDec, blackList)

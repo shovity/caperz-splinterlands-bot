@@ -21,6 +21,7 @@ const loadConfigData = async () => {
         startQuestEcr: 60,
         botPerIp: 5,
         proxies: [{ ip: 'Default IP', count: 0, protocol: 'https', status: 'active' }],
+        useDefaultProxy: true,
     }
     settings.data.app_setting = app_setting
     master.stopECR = app_setting.ecr
@@ -71,14 +72,14 @@ const createWindow = () => {
 
     win.handleSplashScreen = async () => {
         const user = settings.data.user
-    
+
         if (user?.token) {
             master.splashStatus = 'on'
             win.webContents.send('splash.on')
-    
+
             await master.updateOpeningPlayerInfo()
-        
-            win.webContents.send('splash.off')   
+
+            win.webContents.send('splash.off')
         }
     }
 
@@ -196,7 +197,7 @@ master.changePath = async (name, array) => {
             if (!a.username) {
                 return
             }
-            const account = settings.data.account_list.find(e => e.username === a.username)
+            const account = settings.data.account_list.find((e) => e.username === a.username)
             win.onChangeAccount(account)
         })
     }

@@ -24,7 +24,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = false
+const log = true
 
 const activeObj = {
   gold: 'dragon',
@@ -144,7 +144,9 @@ class WSSplinterlandsClient {
   }
 
   async CheckCondition() {
-    log && console.log('CheckCondition')
+      log && console.log('CheckCondition')
+      
+      await this.client.UpdatePlayerInfo();
     const ECR = this.client.getEcr();
     const rat = this.client.getRating();
     const userName = this.client.getUserName();
@@ -167,7 +169,7 @@ class WSSplinterlandsClient {
           let dec = (this.config.maxDec*(this.config.expectedPower - this.client.user.collection_power))/this.config.expectedPower
           await this.client.cardRental(this.client.user.collection_power, this.config.expectedPower, dec,[])
           console.log('done')
-          await this.client.UpdatePlayerInfo();
+          this.CheckCondition()
       }
     const Update = async () => {
       // await this.getUserQuestNew()
@@ -206,13 +208,13 @@ class WSSplinterlandsClient {
       }
       
       if (quest && quest.claim_date) {
-        const claimDate = new Date(quest.claim_date).getTime() / 1000;
-          if (currentTimestamp - claimDate > 24*60*60) {
+        this.questClaimed = true
+        const createdDate = new Date(quest.created_date).getTime() / 1000;
+          if (currentTimestamp - createdDate > 24*60*60) {
             await NeWQuest()
-            this.questClaimed = false
+            
           } else { 
             await Update()
-            this.questClaimed = true
           }
       } else {
         this.questClaimed = false
@@ -228,6 +230,7 @@ class WSSplinterlandsClient {
           const res = await this.client.getRewards();
             log && console.log('got reward --------->', res)
             if (res.success) {
+                await Update()
                 this.questClaimed = true
             }
         }

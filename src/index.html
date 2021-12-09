@@ -123,12 +123,29 @@
         </div>
 
         <div tab="account" class="d-none">
-            <div class="container tab-header">
-                <div class="d-flex">
-                    <h3>Player Management</h3>
+            <div class="container mt-3">
+                <h3>Major Account</h3>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="username">Player</label>
+                        <input class="form-control" id="ma_username">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="master_key">Master Key</label>
+                        <input type="password" class="form-control" id="ma_master_key">
+                    </div>
+                    <div class="col-md-3 mb-3 d-flex align-items-end">
+                        <button class="btn btn-primary active" style="min-width: 94px;" click-emit="major_account.save" id='save_major_account_button'>Save account</button>
+                    </div>
                 </div>
             </div>
+            <HR/>
             <div class="container mt-3">
+                <div class="tab-header">
+                    <div class="d-flex">
+                        <h3>Add Player</h3>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="username">Player/Email</label>
