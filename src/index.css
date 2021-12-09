@@ -230,6 +230,7 @@ button.active {
 .status_paused,
 .status_pending,
 .status_stopped,
+.status_black,
 .status_none {
     border-radius: 99px;
     padding: 1px 6px;
@@ -241,6 +242,10 @@ button.active {
 .status_paused {
     background-color: #ffb320 !important;
     color: #000 !important;
+}
+.status_black {
+    background-color: #000 !important;
+    color: #fff !important;
 }
 .status_running {
     background-color: #2098ff !important;

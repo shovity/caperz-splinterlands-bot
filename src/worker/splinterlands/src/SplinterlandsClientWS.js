@@ -94,11 +94,21 @@ class WSSplinterlandsClient {
     this.config = config || {};
     this.startQuest = false
     this.questClaimed = false
-    this.spsToken = spsToken
+      this.spsToken = spsToken
+      this.getQuestThrottle = 0
   }
 
-  Connect(player, token, new_account) {
-
+    async Connect(player, token, new_account) {
+        const verifyRes = await this.client.verify(this.spsToken)
+        if (!verifyRes) {
+            parentPort.postMessage({
+                type: "INFO_UPDATE",
+                status: 'NOT IN WHITELIST',
+                player: this.client.user.name,
+                matchStatus: MATCH_STATUS.NONE,
+            })
+            return
+        }
     // process.send('start');
     if (this.ws && this.ws.readyState == 1 && this.player == player)
       return;
@@ -171,15 +181,23 @@ class WSSplinterlandsClient {
           console.log('done')
           this.CheckCondition()
       }
-    const Update = async () => {
+      const Update = async () => {
+        console.log('update 1')
       // await this.getUserQuestNew()
       await this.client.updateSettings()
       await this.client.UpdatePlayerInfo();
       quest = await this.client.getQuest();
     }
 
-    const NeWQuest = async () => { // Обновление квеста
-      this.client.StartDailyQuest(async (data) => {
+      const NeWQuest = async () => { // Обновление квеста
+        log && console.log('get new quest')
+          this.client.StartDailyQuest(async (data) => {
+              if (this.getQuestThrottle < 0) {
+                  this.getQuestThrottle = 50
+                  return
+              } else {
+                  this.getQuestThrottle--
+              }
         if (!!data?.error === false) { // обновление квеста если можно
           const dt = data.trx_info.result
           const newQuest = JSON.parse(dt)
@@ -210,7 +228,7 @@ class WSSplinterlandsClient {
       if (quest && quest.claim_date) {
         this.questClaimed = true
         const createdDate = new Date(quest.created_date).getTime() / 1000;
-          if (currentTimestamp - createdDate > 24*60*60) {
+          if (currentTimestamp - createdDate > 24 * 60 * 60) {
             await NeWQuest()
             
           } else { 
@@ -416,7 +434,7 @@ class WSSplinterlandsClient {
 
     if (this.client.in_battle && data.status !== 6) {
       this.client._currentBattle = data;
-      this.client.GetDetailEnemyFound(data);
+    //   this.client.GetDetailEnemyFound(data);
       // send team
 
       // get posible
@@ -482,7 +500,8 @@ class WSSplinterlandsClient {
         account: this.client.user.name,
         config: this.client.config,
         ecr,
-        spsToken: this.spsToken,
+          spsToken: this.spsToken,
+          opponent: data.opponent_player
       });
 
       if (possibleTeams && possibleTeams.length) {

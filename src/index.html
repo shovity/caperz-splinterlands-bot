@@ -66,27 +66,29 @@
         <div tab="monitoring" >
             <div class="container tab-header">
                 <div class="d-flex justify-content-between">
-                    <h3>Dashboard</h3>
-                    <button id="startButton" class="btn btn-primary active" click-emit="account.start_all">
-                        <div class="d-flex align-items-center">
-                            <img src="./assets/img/play.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
-                            <span>Start All</span>
-                        </div>
-                    </button>
-                    <button id="stopButton" class="btn btn-primary active d-none" click-emit="account.stop_all">
-                        <div class="d-flex align-items-center">
-                            <img src="./assets/img/pause.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
-                            <span>Pause All</span>
-                        </div>
-                    </button>
+                    <h3 style="margin-right: 16px;">Dashboard</h3>
+                    <div class="d-flex align-items-center">
+                        <h6 style="margin: 0px;margin-right: 16px;">Total DEC: <span id="total_dec">0</span></h6>
+                            <button id="startButton" class="btn btn-primary active" click-emit="account.start_all">
+                                <div class="d-flex align-items-center">
+                                    <img src="./assets/img/play.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
+                                    <span>Start All</span>
+                                </div>
+                            </button>
+                            <button id="stopButton" class="btn btn-primary active d-none" click-emit="account.stop_all">
+                                <div class="d-flex align-items-center">
+                                    <img src="./assets/img/pause.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
+                                    <span>Pause All</span>
+                                </div>
+                            </button>
+                    </div>
                 </div>
             </div>
             <hr/>
             <div class="container" >
                 <div id="player_monitoring">
-                    <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex mb-3">
                         <h5>Player Table</h5>
-                        <h6>Total DEC: <span id="total_dec">0</span></h6>
                     </div>
                     <table id="player_monitoring_table" class="cell-border stripe" >
                         <thead>

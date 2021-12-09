@@ -2991,7 +2991,7 @@ lzma-native@^8.0.1:
     node-gyp-build "^4.2.1"
     readable-stream "^3.6.0"
 
-macos-alias@^0.2.11, macos-alias@~0.2.5:
+macos-alias@~0.2.5:
   version "0.2.11"
   resolved "https://registry.yarnpkg.com/macos-alias/-/macos-alias-0.2.11.tgz#feeea6c13ba119814a43fc43c470b31e59ef718a"
   integrity sha1-/u6mwTuhGYFKQ/xDxHCzHlnvcYo=

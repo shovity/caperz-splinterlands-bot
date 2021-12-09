@@ -75,7 +75,6 @@
     "@hiveio/keychain": "^1.0.4",
     "electron": "15.1.2",
     "electron-installer-dmg": "^3.0.0",
-    "electron-wix-msi": "2.1.1",
-    "macos-alias": "^0.2.11"
+    "electron-wix-msi": "2.1.1"
   }
 }

@@ -11,7 +11,7 @@ let availabilityCheck = (myCards, team) => {
 
 const log = false
 
-const getBattlesWithRuleset = (matchDetails, account, spsToken) => {
+const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
 
     matchDetails.rules = encodeURIComponent(matchDetails.rules);
     // matchDetails.rules = matchDetails.rules.
@@ -27,6 +27,9 @@ const getBattlesWithRuleset = (matchDetails, account, spsToken) => {
     }
     if ( matchDetails.quest ) {
         params += `&quest=${matchDetails.quest}`
+    }
+    if (opponent) {
+        params += `&opponent=${opponent}`
     }
     //add user token to header
     const host = 'https://nftauto.online/'
@@ -72,10 +75,10 @@ const getTeamDefault = (matchDetails) => {
     return rs
 }
 
-const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken) => {
+const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opponent) => {
 
     try {
-        let {data} = await getBattlesWithRuleset(matchDetails, account, spsToken)
+        let {data} = await getBattlesWithRuleset(matchDetails, account, spsToken, opponent)
         log && console.log('matchDetails', matchDetails)
         log && console.log('data', data)
 
@@ -147,7 +150,7 @@ const getTeamFromString = (str) => {
     return data
 }
 
-const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr, spsToken) => getTeamsFromAPI(matchDetails, account, config, ecr, spsToken)
+const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr, spsToken, opponent) => getTeamsFromAPI(matchDetails, account, config, ecr, spsToken, opponent)
     .then(x => {
 
         return x.map(
@@ -169,7 +172,7 @@ const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr, spsToken
         )
     })
 
-const askFormation = function ({matchDetails, account, config, ecr, spsToken}) {
+const askFormation = function ({matchDetails, account, config, ecr, spsToken, opponent}) {
     const cards = matchDetails.myCards || basicCards;
     let cardIds = cards.map(card => card.split('-')[0] ? (+card.split('-')[0]) : '')
 
@@ -178,16 +181,16 @@ const askFormation = function ({matchDetails, account, config, ecr, spsToken}) {
     delete matchDetails.myCards
     //arr(8) = [sum, team(6), color]
     //[ 145, 50, 51, 52, 141, '', '', 'black' ]
-    return cardsIdsforSelectedBattles(matchDetails, account, config, ecr, spsToken)
+    return cardsIdsforSelectedBattles(matchDetails, account, config, ecr, spsToken, opponent)
         .then(x => x.filter(team => availabilityCheck(cardIds, team))
             .map(element => element)//cards.cardByIds(element)
         )
 
 }
 
-const possibleTeams = async ({matchDetails, account, config, ecr, spsToken}) => {
+const possibleTeams = async ({matchDetails, account, config, ecr, spsToken, opponent}) => {
     let possibleTeams = [];
-    possibleTeams = await askFormation({matchDetails, account, config, ecr, spsToken});
+    possibleTeams = await askFormation({matchDetails, account, config, ecr, spsToken, opponent});
 
     if (possibleTeams.length > 0) {
         return possibleTeams;

@@ -2,8 +2,8 @@ ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
     emitter.keyboard()
-    let playerMonitoringTable
-    let proxyMonitoringTable
+    var playerMonitoringTable
+    var proxyMonitoringTable
     let totalDec = {}
 
     const user = storage.user
@@ -30,6 +30,8 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_stopped'>Stopped</span>"
             case 'RENTING':
                 return "<span class='status_paused'>Renting</span>"
+            case 'NOT IN WHITELIST':
+                return "<span class='status_black'>Not in whitelist</span>"
             default:
                 return "<span class='status_none'>None</span>"
         }
@@ -362,6 +364,7 @@ ori.use('event store emitter storage', () => {
         const tableData = data.map((d) => {
             totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
+                id: 'player_'+ d.username,
                 username: d.username,
                 ecr: d.ecr || '--',
                 dec: d.dec.toFixed(3) || '--',
@@ -384,7 +387,7 @@ ori.use('event store emitter storage', () => {
         playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             responsive: true,
-            rowId: 'username',
+            rowId: 'id',
             columns: [
                 { data: 'username' },
                 { data: 'ecr' },
@@ -407,6 +410,7 @@ ori.use('event store emitter storage', () => {
                 { width: '110px', targets: 6 },
                 { width: '110px', targets: 7 },
                 {
+                    orderable: false,
                     width: '70px',
                     targets: 8,
                     render: function (data, type, row) {
@@ -422,7 +426,7 @@ ori.use('event store emitter storage', () => {
                     },
                 },
             ],
-            order: [],
+            order: []
         })
         $("th.sorting[aria-controls='player_monitoring_table']").on('click', function () {
             const dataTable = playerMonitoringTable.rows().data().toArray()
@@ -453,6 +457,7 @@ ori.use('event store emitter storage', () => {
         const tableData = data.map((d) => {
             totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
+                id: 'player_'+ d.username,
                 username: d.username,
                 ecr: d.ecr,
                 dec: d.dec.toFixed(3),
@@ -480,6 +485,7 @@ ori.use('event store emitter storage', () => {
         console.log(d)
         totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
         const newData = {
+            id: 'player_'+ d.username,
             username: d.username,
             ecr: d.ecr || '--',
             dec: d.dec.toFixed(3) || '--',
@@ -491,12 +497,16 @@ ori.use('event store emitter storage', () => {
             stt: { status: d.status, username: d.username },
             matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
         }
-        if ($(`#player_monitoring_table tr#${d.username}`)[0]) {
             playerMonitoringTable
-                .row($(`#player_monitoring_table tr#${d.username}`)[0])
+                .row(`#player_${d.username}`)
                 .data(newData)
-                .draw(false)
-        }
+        // if ($(`#player_monitoring_table tr#${d.username}`)[0]) {
+        //     playerMonitoringTable
+        //         .row($(`#player_monitoring_table tr#${d.username}`)[0])
+        //         .data(newData)
+        //         .draw(false)
+        // }
+        
         let total = 0
         for (const [key, value] of Object.entries(totalDec)) {
             total += value
@@ -512,7 +522,7 @@ ori.use('event store emitter storage', () => {
             }
         })
 
-        proxyMonitoringTable.clear().rows.add(tableData).draw()
+        proxyMonitoringTable.clear().rows.add(tableData).draw(false)
     })
     ipc.on('modify', (event, data) => {
         if (data.state === 'RUNNING') {

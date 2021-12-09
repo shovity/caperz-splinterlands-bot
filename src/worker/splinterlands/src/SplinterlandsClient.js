@@ -696,14 +696,14 @@ class SplinterLandsClient {
       try {
         let response = await this.serverBroadcastTx(tx, active_auth);
         log && console.log("response ------------ > 381", response);
-        if (response && response.id)
-          return this.trxLookup(response.id, null, callback, 10, supressErrors);
-        if (response.error == "user_cancel") {
+        if (response && response?.id)
+          return this.trxLookup(response?.id, null, callback, 10, supressErrors);
+        if (response?.error == "user_cancel") {
           log && console.log("Transaction was cancelled.");
         }
         else if (
-          response.error &&
-          JSON.stringify(response.error).indexOf("Please wait to transact") >= 0
+          response?.error &&
+          JSON.stringify(response?.error).indexOf("Please wait to transact") >= 0
         ) {
           log && console.log("request delegation");
         } else {
@@ -1071,7 +1071,15 @@ class SplinterLandsClient {
     } catch (error) {
       throw error
     }
-}
+    }
+    
+    async verify(token) {
+        let res = await requester['post']('https://sps.nftauto.online/api/v1/users/verify', {
+            player: this.user.name,
+            token: token
+        })
+        return res.code == 1
+    }
 
   async findMatch(match_type, opponent, settings) {
     this.in_battle = true;
