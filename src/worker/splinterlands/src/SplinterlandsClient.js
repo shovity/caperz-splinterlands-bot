@@ -1314,13 +1314,13 @@ class SplinterLandsClient {
         }).sort((a, b) => {
             return b.power - a.power;
         });
-        console.log(data)
         const buyList = []
         data.forEach(e => {
             if (remainingPower <= 0) {
                 return
             }
             if (e.power <= remainingPower + 50) {
+                log && console.log('card to buy',e)
                 buyList.push(e)
                 remainingPower -= e.power
             }

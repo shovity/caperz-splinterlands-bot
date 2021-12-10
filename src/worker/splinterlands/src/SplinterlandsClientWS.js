@@ -180,6 +180,7 @@ class WSSplinterlandsClient {
           await this.client.cardRental(this.client.user.collection_power, this.config.expectedPower, dec,[])
           console.log('done')
           this.CheckCondition()
+          return
       }
       const Update = async () => {
         console.log('update 1')
