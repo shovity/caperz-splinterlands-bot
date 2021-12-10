@@ -152,16 +152,21 @@ ori.use('event store emitter storage', () => {
     event.listen('proxy.add', () => {
         let vl = add_proxy_input.value
         if (vl) {
-            if (vl.includes('http://')) {
-                showNotice('Protocol have to be HTTPS. HTTP is not accepted')
-                return
-            }
             if (vl.includes('https://')) {
                 vl = vl.replace('https://', '')
             }
+            if (vl.includes('http://')) {
+                vl = vl.replace('http://', '')
+            }
+            if (vl.includes('socks4://')) {
+                vl = vl.replace('socks4://', '')
+            }
+            if (vl.includes('socks5://')) {
+                vl = vl.replace('socks5://', '')
+            }
             const reg =
-                // /^[^:]+\:[^:]+\@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
-                /(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
+                /^[^:]+\:[^:]+\@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
+                // /(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
             if (!reg.test(vl)) {
                 showNotice('Invalid proxy format')
                 return

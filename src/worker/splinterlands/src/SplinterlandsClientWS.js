@@ -154,7 +154,6 @@ class WSSplinterlandsClient {
   }
 
   async CheckCondition() {
-      log && console.log('CheckCondition')
       
       await this.client.UpdatePlayerInfo();
     const ECR = this.client.getEcr();
@@ -166,6 +165,7 @@ class WSSplinterlandsClient {
     const dec = this.client.getBalance('DEC')
     const sendCards = await this.client.getSendCards();
 
+    log && console.log('CheckCondition->>',userName)
     log && console.log('Rating: ', rat)
       log && console.log('Power: ', this.client.user.collection_power)
       log && console.log('Quest: ', quest)

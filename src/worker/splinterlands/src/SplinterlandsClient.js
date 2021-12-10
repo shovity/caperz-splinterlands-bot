@@ -1307,7 +1307,7 @@ class SplinterLandsClient {
             if (e.weight > weight) {
                 return false
             }
-            if (e.power > remainingPower) {
+            if (e.power > remainingPower + 50) {
                 return false
             }
             return true

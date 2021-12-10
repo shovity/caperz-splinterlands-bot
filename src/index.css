@@ -267,3 +267,9 @@ button.active {
 .verify_failed * {
     color: #dc3545 !important;
 }
+.section {
+    background-color: #2f2f2f;
+    border-radius: 16px;
+    padding: 8px 16px;
+    margin: 8px;
+}
