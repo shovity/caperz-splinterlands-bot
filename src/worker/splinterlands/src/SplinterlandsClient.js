@@ -35,7 +35,7 @@ const Config = {
 
 const requester = require('../../../service/requester')
 
-const log = true
+const log = false
 
 steem.api.setOptions({
   transport: "http",
@@ -999,7 +999,7 @@ class SplinterLandsClient {
       if ( this.proxy ) {
         option.proxy = `${this.proxy.host}:${this.proxy.port}`
         if (this.proxy.account) {
-          option.proxy = `${this.proxy.account}:${this.proxy.password}:${this.proxy.host}:${this.proxy.port}`
+          option.proxy = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
         }
         // objectAxios.httpsAgent = new HttpsProxyAgent(
         //   `https://${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
@@ -1058,7 +1058,7 @@ class SplinterLandsClient {
         if ( this.proxy ) {
           option.proxy = `${this.proxy.host}:${this.proxy.port}`
           if (this.proxy.account) {
-            option.proxy = `${this.proxy.account}:${this.proxy.password}:${this.proxy.host}:${this.proxy.port}`
+            option.proxy = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
           }
           // objectAxios.httpsAgent = new HttpsProxyAgent(
           //   `${this.proxy}`
@@ -1177,7 +1177,7 @@ class SplinterLandsClient {
       if (this.proxy) {
         option.proxy = `${this.proxy.host}:${this.proxy.port}`
           if (this.proxy.account) {
-            option.proxy = `${this.proxy.account}:${this.proxy.password}:${this.proxy.host}:${this.proxy.port}`
+            option.proxy = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
           }
           // objectAxios.httpsAgent = new HttpsProxyAgent(
           //   `${this.proxy}`
