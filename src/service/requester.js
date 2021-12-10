@@ -1,5 +1,6 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
-const HttpsProxyAgent = require('https-proxy-agent');
+const HttpsProxyAgent = require('https-proxy-agent')
+const SocksProxyAgent = require('socks-proxy-agent')
 // process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 
@@ -41,7 +42,24 @@ requester.fetch = ({ url, method, body, param, option }) => {
     }
 
     if (option.proxy) {
-        arg.agent = new HttpsProxyAgent('http://' + option.proxy)
+        if (option.proxy) {
+            switch (option.proxy.protocol) {
+                case 'https':
+                    arg.agent = new HttpsProxyAgent('http://' + option.proxy.url)
+                    break
+                case 'socks5':
+                    arg.agent = new SocksProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
+                    break
+                case 'socks4':
+                    arg.agent = new SocksProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
+                    break            
+                case 'http':
+                    arg.agent = new HttpsProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
+                    break
+                default:
+                    arg.agent = new HttpsProxyAgent('http://' + option.proxy.url)
+            }
+        }
     }
 
     if (param) {

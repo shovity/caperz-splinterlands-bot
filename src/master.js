@@ -134,24 +134,27 @@ master.handleAddAccount = async (account) => {
                     host,
                     port,
                 }
+
+                proxy.protocol = app_setting.proxies[proxyIndex].protocol || 'https://'
             } else {
                 const [host, port] = account_list[accountIndex].proxy.split(':')
                 proxy = { host, port }
+                proxy.protocol = app_setting.proxies[proxyIndex].protocol || 'https://'
             }
         }
 
-        await master.change('log', {
-            worker: {
-                name: 'splinterlands',
-            },
-            username: account.username,
-            postingKey: account.postingKey,
-            masterKey: account.masterKey,
-            token: account.token,
-            proxy,
-            config,
-            spsToken: user.token
-        })
+        // await master.change('log', {
+        //     worker: {
+        //         name: 'splinterlands',
+        //     },
+        //     username: account.username,
+        //     postingKey: account.postingKey,
+        //     masterKey: account.masterKey,
+        //     token: account.token,
+        //     proxy,
+        //     config,
+        //     spsToken: user.token
+        // })
         try {
             const worker = await master.add({
                 worker: {
@@ -184,7 +187,7 @@ master.handleAddAccount = async (account) => {
 
 master.add = async (workerData) => {
 
-    await master.change('log', 'add worker')
+    // await master.change('log', 'add worker')
 
     const worker = {}
 
@@ -285,6 +288,8 @@ master.add = async (workerData) => {
             } else if (m.status === 429) {
                 account_list[accountIndex].status = 'MULTI_REQUEST_ERROR'
             }
+
+            await master.change('log', m)
 
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
 
@@ -488,7 +493,7 @@ master.delay = (time) => {
 }
 
 master.updateOpeningPlayerInfo = async () => {
-    const LOADING_TIME = 2 * 1000
+    const LOADING_TIME = 20 * 1000
     const startTime = Date.now()
 
     if (master.playerUpdaterStatus === 'running') {

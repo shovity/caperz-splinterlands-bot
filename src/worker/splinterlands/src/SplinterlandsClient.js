@@ -997,9 +997,12 @@ class SplinterLandsClient {
       };
 
       if ( this.proxy ) {
-        option.proxy = `${this.proxy.host}:${this.proxy.port}`
+        option.proxy = {
+          url: `${this.proxy.host}:${this.proxy.port}`,
+          protocol: `${this.proxy.protocol}`
+        }
         if (this.proxy.account) {
-          option.proxy = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
+          option.proxy.url = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
         }
         // objectAxios.httpsAgent = new HttpsProxyAgent(
         //   `https://${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
@@ -1056,9 +1059,12 @@ class SplinterLandsClient {
             params.v = new Date().getTime()
         }
         if ( this.proxy ) {
-          option.proxy = `${this.proxy.host}:${this.proxy.port}`
+          option.proxy = {
+            url: `${this.proxy.host}:${this.proxy.port}`,
+            protocol: `${this.proxy.protocol}`
+          }
           if (this.proxy.account) {
-            option.proxy = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
+            option.proxy.url = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
           }
           // objectAxios.httpsAgent = new HttpsProxyAgent(
           //   `${this.proxy}`
@@ -1175,10 +1181,13 @@ class SplinterLandsClient {
       }
 
       if (this.proxy) {
-        option.proxy = `${this.proxy.host}:${this.proxy.port}`
-          if (this.proxy.account) {
-            option.proxy = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
-          }
+        option.proxy = {
+          url: `${this.proxy.host}:${this.proxy.port}`,
+          protocol: `${this.proxy.protocol}`
+        }
+        if (this.proxy.account) {
+          option.proxy.url = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
+        }
           // objectAxios.httpsAgent = new HttpsProxyAgent(
           //   `${this.proxy}`
           // )
