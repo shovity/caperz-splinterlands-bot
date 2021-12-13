@@ -133,15 +133,15 @@ utils.loginEmail = async (email, password) => {
 utils.statusMapping = (status) => {
     switch (status) {
         case 'PENDING':
-            return "<span class='status_pending'>Pending</span>"
+            return "<span class='status_light_blue'>Pending</span>"
         case 'PAUSED':
-            return "<span class='status_paused'>Paused</span>"
+            return "<span class='status_yellow'>Paused</span>"
         case 'STOPPED':
-            return "<span class='status_stopped'>Stopped</span>"
+            return "<span class='status_red'>Stopped</span>"
         case 'DONE':
-            return "<span class='status_done'>Done</span>"
+            return "<span class='status_green'>Done</span>"
         default:
-            return "<span class='status_none'>None</span>"
+            return "<span class='status_gray'>None</span>"
     }
 }
 

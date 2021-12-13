@@ -2,6 +2,7 @@ ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
     emitter.keyboard()
+    const log = false
     var playerMonitoringTable
     var proxyMonitoringTable
     let totalDec = {}
@@ -11,41 +12,41 @@ ori.use('event store emitter storage', () => {
     const statusMapping = (status) => {
         switch (status ? status.toUpperCase() : 'NONE') {
             case 'PENDING':
-                return "<span class='status_pending'>Pending</span>"
+                return "<span class='status_light_blue'>Pending</span>"
             case 'RUNNING':
-                return "<span class='status_running'>Running</span>"
+                return "<span class='status_blue'>Running</span>"
             case 'PAUSED':
-                return "<span class='status_paused'>Paused</span>"
+                return "<span class='status_light_yellow'>Paused</span>"
             case 'DONE':
-                return "<span class='status_done'>Done</span>"
+                return "<span class='status_green'>Done</span>"
             case 'WAITING_ECR':
-                return "<span class='status_paused'>Waiting ECR</span>"
+                return "<span class='status_light_yellow'>Waiting ECR</span>"
             case 'PROXY_ERROR':
-                return "<span class='status_stopped'>Proxy error</span>"
+                return "<span class='status_red'>Proxy error</span>"
             case 'MULTI_REQUEST_ERROR':
-                return "<span class='status_stopped'>Multi request</span>"
+                return "<span class='status_red'>Multi request</span>"
             case 'ERROR':
-                return "<span class='status_stopped'>System error</span>"
+                return "<span class='status_red'>System error</span>"
             case 'STOPPED':
-                return "<span class='status_stopped'>Stopped</span>"
+                return "<span class='status_red'>Stopped</span>"
             case 'RENTING':
-                return "<span class='status_paused'>Renting</span>"
+                return "<span class='status_yellow'>Renting</span>"
             case 'NOT IN WHITELIST':
                 return "<span class='status_black'>Not in whitelist</span>"
             default:
-                return "<span class='status_none'>None</span>"
+                return "<span class='status_gray'>None</span>"
         }
     }
     const matchStatusMapping = (status) => {
         switch (status ? status.toUpperCase() : 'NONE') {
             case 'MATCHING':
-                return "<span class='status_pending'>Matching</span>"
+                return "<span class='status_light_yellow'>Matching</span>"
             case 'MATCHED':
-                return "<span class='status_running'>Matched</span>"
+                return "<span class='status_yellow'>Matched</span>"
             case 'SUBMITTING':
-                return "<span class='status_paused'>Submitting</span>"
+                return "<span class='status_blue'>Submitting</span>"
             default:
-                return "<span class='status_none'>None</span>"
+                return "<span class='status_gray'>None</span>"
         }
     }
 
@@ -56,13 +57,13 @@ ori.use('event store emitter storage', () => {
     }
 
     ipc.on('splash.on', () => {
-        console.log('on')
+        log && console.log('on')
         splashScreen.removeClass('d-none')
         app.addClass('d-none')
     })
 
     ipc.on('splash.off', () => {
-        console.log('off')
+        log && console.log('off')
         splashScreen.addClass('d-none')
         app.removeClass('d-none')
     })
@@ -225,7 +226,7 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('setting.load', (event, data) => {
-        console.log(data)
+        log && console.log(data)
         if (!data) {
             return
         }
@@ -375,6 +376,7 @@ ori.use('event store emitter storage', () => {
                 dec: d.dec.toFixed(3) || '--',
                 power: d.power || '--',
                 rating: d.rating || '--',
+                lastUpdate: new Date().toLocaleTimeString(),
                 quest:
                     d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
                         ? `${d.quest}/${d.maxQuest}`
@@ -400,6 +402,7 @@ ori.use('event store emitter storage', () => {
                 { data: 'power' },
                 { data: 'rating' },
                 { data: 'quest' },
+                { data: 'lastUpdate' },
                 { data: 'status' },
                 { data: 'matchStatus' },
                 { data: 'stt' },
@@ -412,12 +415,13 @@ ori.use('event store emitter storage', () => {
                 { width: '80px', targets: 3 },
                 { width: '90px', targets: 4 },
                 { width: '90px', targets: 5 },
-                { width: '110px', targets: 6 },
-                { width: '110px', targets: 7 },
+                { width: '90px', targets: 6 },
+                { width: '90px', targets: 7 },
+                { width: '90px', targets: 8 },
                 {
                     orderable: false,
-                    width: '70px',
-                    targets: 8,
+                    width: '40px',
+                    targets: 9,
                     render: function (data, type, row) {
                         if (['RUNNING','PENDING','DONE','RENTING'].includes(data.status)) {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
@@ -458,7 +462,7 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('player_table.redraw', (event, data) => {
-        console.log('table rerender')
+        log && console.log('table rerender')
         const tableData = data.map((d) => {
             totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
@@ -472,6 +476,7 @@ ori.use('event store emitter storage', () => {
                     d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
                         ? `${d.quest}/${d.maxQuest}`
                         : '--',
+                lastUpdate: new Date().toLocaleTimeString(),
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
@@ -486,8 +491,8 @@ ori.use('event store emitter storage', () => {
     })
    
     ipc.on('player_table.player.redraw', (event, d) => {
-        console.log('player' + d.username + 'rerender')
-        console.log(d)
+        log && console.log('player' + d.username + 'rerender')
+        log && console.log(d)
         totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
         const newData = {
             id: 'player_'+ d.username,
@@ -498,6 +503,7 @@ ori.use('event store emitter storage', () => {
             rating: d.rating || '--',
             quest:
                 d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+            lastUpdate: new Date().toLocaleTimeString(),
             status: statusMapping(d.status),
             stt: { status: d.status, username: d.username },
             matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),

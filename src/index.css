@@ -225,40 +225,45 @@ button.active {
     border: 1px solid #4e4e4e;
 }
 
-.status_running,
-.status_done,
-.status_paused,
-.status_pending,
-.status_stopped,
+.status_blue,
+.status_green,
+.status_yellow,
+.status_light_yellow,
+.status_light_blue,
+.status_red,
 .status_black,
-.status_none {
+.status_gray {
     border-radius: 99px;
     padding: 1px 6px;
     font-size: 12px;
 }
-.status_none {
+.status_gray {
     background-color: #6b6b6b !important;
 }
-.status_paused {
+.status_yellow {
     background-color: #ffb320 !important;
+    color: #000 !important;
+}
+.status_light_yellow {
+    background-color: #fddb98 !important;
     color: #000 !important;
 }
 .status_black {
     background-color: #000 !important;
     color: #fff !important;
 }
-.status_running {
+.status_blue {
     background-color: #2098ff !important;
     color: #000 !important;
 }
-.status_pending {
+.status_light_blue {
     background-color: #8fc7f7 !important;
     color: #000 !important;
 }
-.status_done {
+.status_green {
     background-color: #48a300 !important;
 }
-.status_stopped {
+.status_red {
     background-color: #dc3545 !important;
 }
 .verify_pending * {

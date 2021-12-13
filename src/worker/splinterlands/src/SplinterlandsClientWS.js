@@ -24,7 +24,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = true
+const log = false
 
 const activeObj = {
   gold: 'dragon',
@@ -156,6 +156,7 @@ class WSSplinterlandsClient {
   async CheckCondition() {
       
       await this.client.UpdatePlayerInfo();
+      await this.client.updatePlayerInfo();
     const ECR = this.client.getEcr();
     const rat = this.client.getRating();
     const userName = this.client.getUserName();
@@ -183,7 +184,7 @@ class WSSplinterlandsClient {
           return
       }
       const Update = async () => {
-        console.log('update 1')
+        log && console.log('update 1')
       // await this.getUserQuestNew()
       await this.client.updateSettings()
       await this.client.UpdatePlayerInfo();
@@ -300,7 +301,8 @@ class WSSplinterlandsClient {
       // if (!(quest?.completed === quest?.total) || ECR > this.config.ecr) {
       // console.log('ECR', ECR)
       // console.log(this.config.ecr)
-      this.client.updatePlayerInfo({
+        this.client.updatePlayerInfo({
+          matchStatus: MATCH_STATUS.MATCHING,
         questClaimed :this.questClaimed,
         quest: quest?.completed,
         maxQuest: quest?.total,

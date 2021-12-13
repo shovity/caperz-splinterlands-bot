@@ -129,9 +129,9 @@ class SplinterLandsClient {
       player,
       ecr: this.getEcr(),
       rating: this.getRating(),
-      dec: this.getBalance("DEC"),
+        dec: this.getBalance("DEC"),
+      power: this.user.collection_power,
       lastRewardTime: this.getLastRewardTime(),
-        matchStatus: MATCH_STATUS.MATCHING,
       ...data
     })
   }
@@ -1292,8 +1292,8 @@ class SplinterLandsClient {
         let retry = false
         let blackList = bl
         let gainedPower = 0
-        let remainingDec = maxDec
         let remainingPower = expectedPower - curPower
+        let remainingDec = remainingPower <= 100 ? 1 : maxDec
         let weight = remainingDec / remainingPower
         log && console.log(weight)
         log && console.log(remainingPower)
@@ -1316,7 +1316,7 @@ class SplinterLandsClient {
             if (e.weight > weight) {
                 return false
             }
-            if (e.power > remainingPower + 50) {
+            if (e.power > remainingPower + 100) {
                 return false
             }
             return true
@@ -1328,7 +1328,7 @@ class SplinterLandsClient {
             if (remainingPower <= 0) {
                 return
             }
-            if (e.power <= remainingPower + 50) {
+            if (e.power <= remainingPower + 100) {
                 log && console.log('card to buy',e)
                 buyList.push(e)
                 remainingPower -= e.power
