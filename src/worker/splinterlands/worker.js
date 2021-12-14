@@ -47,8 +47,8 @@ async function main({ username, password, account, emailPass, proxy, config = nu
         parentPort.postMessage({
             type: "ERROR",
             player: username,
-            status: e.status,
-            message: e.message,
+            status: e.status || e.code,
+            message: e.statusText || e.message,
         })
     }
 }
