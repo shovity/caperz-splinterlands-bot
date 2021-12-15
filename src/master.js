@@ -493,8 +493,11 @@ master.delay = (time) => {
 }
 
 master.updateOpeningPlayerInfo = async () => {
-    const LOADING_TIME = 20 * 1000
+    const ONE_SECOND = 1000
+    const THREE_SECOND = 3 * ONE_SECOND
+    const TWENTY_SECOND = 20 * ONE_SECOND
     const startTime = Date.now()
+    const app_setting = settings.data.app_setting
 
     if (master.playerUpdaterStatus === 'running') {
         return
@@ -505,6 +508,7 @@ master.updateOpeningPlayerInfo = async () => {
     let account_list = settings.data.account_list
     let updatedList = []
     let updateList = []
+    let proxyIndex = 0
 
     for (let i = 0; i < account_list?.length || 0; i++) {
         const newAccount = account_list[i]
@@ -513,8 +517,36 @@ master.updateOpeningPlayerInfo = async () => {
         let accountDetails
 
         try {
-            accountBalances = await utils.getBalances(account_list[i].username)
-            accountDetails = await utils.getDetails(account_list[i].username)
+            let proxy
+
+            if (app_setting.proxies[proxyIndex].ip === 'Default IP') {
+                proxy = null
+            } else {
+                const [auth, address] = app_setting.proxies[proxyIndex].ip.split('@')
+    
+                if (auth && address) {
+                    const [account, password] = auth.split(':')
+                    const [host, port] = address.split(':')
+        
+                    proxy = {
+                        account,
+                        password,
+                        host,
+                        port,
+                    }
+    
+                    proxy.protocol = app_setting.proxies[proxyIndex].protocol || 'https://'
+                } else {
+                    const [host, port] = account_list[accountIndex].ip.split(':')
+                    proxy = { host, port }
+                    proxy.protocol = app_setting.proxies[proxyIndex].protocol || 'https://'
+                }
+            }
+
+            proxyIndex = proxyIndex < app_setting.proxies.length - 1 ? proxyIndex + 1 : 0
+
+            accountBalances = await utils.getBalances(account_list[i].username, proxy)
+            accountDetails = await utils.getDetails(account_list[i].username, proxy)
         } catch (error) {
             console.error('updateOpeningPlayerInfo get balances error', error)
             continue
@@ -556,8 +588,6 @@ master.updateOpeningPlayerInfo = async () => {
             processPercent: processPercent >= 1 ? processPercent - 1 : 0
         })
 
-        await master.delay(200)
-
         if (account_list?.length - i <= 5 || updateList.length === 5) {
             await master.changePath('account_list', updateList)
             updatedList = [
@@ -565,11 +595,13 @@ master.updateOpeningPlayerInfo = async () => {
                 ...updateList
             ]
             updateList = []
+
+            await master.delay(THREE_SECOND)
         }
 
         const now = Date.now()
 
-        if (master.splashStatus === 'on' && now - startTime >= LOADING_TIME) {
+        if (master.splashStatus === 'on' && now - startTime >= TWENTY_SECOND) {
             await master.change('process_loading', {
                 processPercent: 99,
                 splashStatus: 'off',

@@ -586,7 +586,7 @@ class SplinterLandsClient {
   async updateSettings() {
     const result = await this.sendRequest("settings", {
       token: this.token,
-      username: this.user.username,
+      username: this.user.name,
     });
 
     this.settings = result;

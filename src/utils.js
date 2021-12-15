@@ -1,7 +1,7 @@
 var steem = require('steem')
 const eosjs_ecc = require('eosjs-ecc')
-const axios = require('axios').default
 const qs = require('qs')
+const requester = require('./service/requester')
 
 const utils = {}
 
@@ -10,56 +10,63 @@ const splinterHosts = [
     'https://api2.splinterlands.com/'
 ]
 
-const sendRequest = async (url, params, method = 'get') => {
+const sendRequest = async (url, params, method = 'get', proxy) => {
     let host = 'https://api2.splinterlands.com/'
+
+    console.log(proxy?.host)
 
     if (url === 'players/balances') {
         host = splinterHosts[Math.floor(Math.random() * 2)]
     }
 
     try {
-        let objectAxios = {
-            method: method,
-            url: host + url,
-            proxy: false,
-            // httpsAgent: new HttpsProxyAgent(
-            //   `http://${this.proxy.login}:${this.proxy.pass}@${this.proxy.ip}:${this.proxy.port}`
-            // ),
-            timeout: 15000,
+        let option = {
             headers: {
-                authority: 'api2.splinterlands.com',
+                authority: "api2.splinterlands.com",
                 method: method.toUpperCase(),
                 path: url,
-                scheme: 'https',
-                accept: method === 'post' ? '*/*' : 'application/json, text/javascript, */*; q=0.01',
-                'accept-encoding': 'gzip, deflate, br',
-                'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-                'content-type': method === 'post' ? 'application/x-www-form-urlencoded' : '',
-                origin: 'https://splinterlands.com',
-                referer: 'https://splinterlands.com',
-                'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-fetch-dest': 'empty',
-                'sec-fetch-mode': 'cors',
-                'sec-fetch-site': 'same-origin',
-                'user-agent':
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
+                scheme: "https",
+                accept:
+                method === "post"
+                    ? "*/*"
+                    : "application/json, text/javascript, */*; q=0.01",
+                "accept-encoding": "gzip, deflate, br",
+                "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+                "content-type":
+                method === "post" ? "application/x-www-form-urlencoded" : "",
+                origin: "https://splinterlands.com",
+                referer: "https://splinterlands.com",
+                "sec-ch-ua":
+                '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "user-agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
             },
         }
-
+  
         if (method === 'get') {
             params.v = new Date().getTime()
-            objectAxios.params = params
-        } else {
-            objectAxios.data = qs.stringify(params)
+        }
+        if (proxy) {
+            option.proxy = {
+                url: `${proxy.host}:${proxy.port}`,
+                protocol: `${proxy.protocol}`
+            }
+            if (proxy.account) {
+                option.proxy.url = `${proxy.account}:${proxy.password}@${proxy.host}:${proxy.port}`
+            }
+            // objectAxios.httpsAgent = new HttpsProxyAgent(
+            //   `${this.proxy}`
+            // )
         }
 
-        let res = await axios(objectAxios)
-
-        return res.data
-    } catch (e) {
-        console.log(e)
-        return null
+        let res = await requester[method](host + url, params, option)
+        return res
+    } catch (error) {
+        console.error(error)
     }
 }
 const generatePassword = (length, rng) => {
@@ -145,20 +152,24 @@ utils.statusMapping = (status) => {
     }
 }
 
-utils.getBalances = async (username) => {
+utils.getBalances = async (username, proxy) => {
     const params =  {
         username,
     }
 
-    return await sendRequest('players/balances', params)
+    const method = 'get'
+
+    return await sendRequest('players/balances', params, method, proxy)
 }
 
-utils.getDetails = async (username) => {
+utils.getDetails = async (username, proxy) => {
     const params = {
         name: username,
     }
 
-    return await sendRequest('players/details', params)
+    const method = 'get'
+
+    return await sendRequest('players/details', params, method, proxy)
 }
 
 utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {

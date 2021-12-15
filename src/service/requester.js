@@ -17,7 +17,7 @@ const requester = {
 const setting = requester.setting
 
 
-requester.fetch = ({ url, method, body, param, option }) => {
+requester.fetch = async ({ url, method, body, param, option }) => {
     option = option || {}
     
     const arg = {
@@ -67,23 +67,18 @@ requester.fetch = ({ url, method, body, param, option }) => {
             + Object.keys(param).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(param[k])}`).join('&')
     }
 
-    return fetch(url, arg).then((res) => {
+    const res = await fetch(url, arg)
 
-        if (option.parse === 'text') {
-            return res.text()
-        }
+    if (!res.ok) {
+        throw new Error(res)
+    }
 
-        return res.json()
-    }).then(res => {
-        if (res.error) {
-            return Promise.reject(res.error)
-        }
+    const data = await res.json()
 
-        return Promise.resolve(res)
-    })
+    return data
 }
 
-requester.get = (url, param, option) => {
+requester.get = async (url, param, option) => {
     return requester.fetch({
         method: 'GET',
         url,
@@ -92,7 +87,7 @@ requester.get = (url, param, option) => {
     })
 }
 
-requester.post = (url, body, option) => {
+requester.post = async (url, body, option) => {
 
     return requester.fetch({
         method: 'POST',
@@ -102,7 +97,7 @@ requester.post = (url, body, option) => {
     })
 }
 
-requester.put = (url, body, option) => {
+requester.put = async (url, body, option) => {
     
     return requester.fetch({
         method: 'PUT',
@@ -112,7 +107,7 @@ requester.put = (url, body, option) => {
     })
 }
 
-requester.patch = (url, body, option) => {
+requester.patch = async (url, body, option) => {
     
     return requester.fetch({
         method: 'PATCH',
@@ -122,7 +117,7 @@ requester.patch = (url, body, option) => {
     })
 }
 
-requester.delete = (url, body, option) => {
+requester.delete = async (url, body, option) => {
     
     return requester.fetch({
         method: 'DELETE',
