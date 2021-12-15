@@ -102,10 +102,7 @@ ori.use('event store emitter storage', () => {
     })
 
     event.listen('select_tab', (name) => {
-        if (name == 'monitoring') {
-            ipc.send('player_table.redraw')
-            ipc.send('proxy_table.redraw')
-        }
+        
         for (const nav of navs) {
             nav.removeClass('active')
         }
@@ -220,7 +217,15 @@ ori.use('event store emitter storage', () => {
             proxies: proxyArray,
             useDefaultProxy: useDproxy.checked,
             expectedPower: expected_power.value,
-            maxDec: max_dec.value
+            maxDec: max_dec.value,
+            autoTransferCard: auto_transfer_card.checked,
+            transferKeepDec: transfer_keep_dec.value,
+            transferStartDec: transfer_start_dec.value,
+            rentalDay: rental_day.value,
+            majorAccount: {
+                player: ma_username.value,
+                masterKey: ma_master_key.value,
+            }
         })
         showNotice('saved')
     })
@@ -246,6 +251,10 @@ ori.use('event store emitter storage', () => {
         bot_per_ip.value = data.botPerIp
         expected_power.value = data.expectedPower
         max_dec.value = data.maxDec
+        auto_transfer_card.checked = data.autoTransferCard
+        transfer_keep_dec.value = data.transferKeepDec
+        transfer_start_dec.value = data.transferStartDec
+        rental_day.value = data.rentalDay
         ma_username.value = data.majorAccount?.player || ''
         ma_master_key.value = data.majorAccount?.masterKey || ''
         data.proxies.forEach((proxy) => {
@@ -266,16 +275,6 @@ ori.use('event store emitter storage', () => {
             }
             row.appendChild(cell4)
         })
-    })
-
-    event.listen('major_account.save', () => {
-        if (ma_username.value && ma_master_key.value) {
-            ipc.send('major_account.save', {
-                username: ma_username.value,
-                master_key: ma_master_key.value,
-            })
-            showNotice('Major Account saved!')
-        }
     })
 
     event.listen('account.add', () => {
@@ -372,10 +371,10 @@ ori.use('event store emitter storage', () => {
             return {
                 id: 'player_'+ d.username,
                 username: d.username,
-                ecr: d.ecr || '--',
-                dec: d.dec.toFixed(3) || '--',
-                power: d.power || '--',
-                rating: d.rating || '--',
+                ecr: d.ecr || 0,
+                dec: d.dec.toFixed(3) || 0,
+                power: d.power || 0,
+                rating: d.rating || 0,
                 lastUpdate: new Date().toLocaleTimeString(),
                 quest:
                     d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
@@ -468,10 +467,10 @@ ori.use('event store emitter storage', () => {
             return {
                 id: 'player_'+ d.username,
                 username: d.username,
-                ecr: d.ecr,
-                dec: d.dec.toFixed(3),
-                power: d.power || '--',
-                rating: d.rating || '--',
+                ecr: d.ecr || 0,
+                dec: d.dec.toFixed(3) || 0,
+                power: d.power || 0,
+                rating: d.rating || 0,
                 quest:
                     d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
                         ? `${d.quest}/${d.maxQuest}`
@@ -497,10 +496,10 @@ ori.use('event store emitter storage', () => {
         const newData = {
             id: 'player_'+ d.username,
             username: d.username,
-            ecr: d.ecr || '--',
-            dec: d.dec.toFixed(3) || '--',
-            power: d.power || '--',
-            rating: d.rating || '--',
+            ecr: d.ecr || 0,
+            dec: d.dec.toFixed(3) || 0,
+            power: d.power || 0,
+            rating: d.rating || 0,
             quest:
                 d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
             lastUpdate: new Date().toLocaleTimeString(),

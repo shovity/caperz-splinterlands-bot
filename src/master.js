@@ -206,16 +206,16 @@ master.add = async (workerData) => {
                 return worker.instance.terminate()
             }
 
-            if (m.ecr) {
+            if (typeof m.ecr != 'undefined') {
                 const now = Date.now()
                 account_list[accountIndex].ecr = calculateECR(now, m.ecr)
             }
 
-            if (m.rating) {
+            if (typeof m.rating != 'undefined') {
                 account_list[accountIndex].rating = m.rating
             }
 
-            if (m.dec) {
+            if (typeof m.dec != 'undefined') {
                 account_list[accountIndex].dec = m.dec
             }
 
@@ -241,7 +241,7 @@ master.add = async (workerData) => {
             if (m.status) {
                 account_list[accountIndex].status = m.status
             }
-            if (m.power) {
+            if (typeof m.power != 'undefined') {
                 account_list[accountIndex].power = m.power
             }
 

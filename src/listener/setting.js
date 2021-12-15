@@ -10,7 +10,15 @@ const setting = ({ win, ipc, settings }) => {
             botPerIp: data.botPerIp,
             useDefaultProxy: data.useDefaultProxy,
             maxDec: data.maxDec,
-            expectedPower: data.expectedPower
+            transferKeepDec: data.transferKeepDec,
+            transferStartDec: data.transferStartDec,
+            autoTransferCard: data.autoTransferCard,
+            rentalDay: data.rentalDay,
+            expectedPower: data.expectedPower,
+            majorAccount: {
+                player: data.username,
+                masterKey: data.masterKey
+            }
         }
         newSetting.proxies = data.proxies.map((p) => {
             const oldProxy = oldSetting.proxies.find((pr) => p.ip == pr.ip)
@@ -28,17 +36,6 @@ const setting = ({ win, ipc, settings }) => {
     
         settings.data.app_setting = newSetting
         // await master.enqAccounts()
-    })
-    ipc.on('major_account.save', (e, data) => {
-        const oldSetting = settings.data.app_setting
-        let newSetting = {
-            ...oldSetting,
-            majorAccount: {
-                player: data.username,
-                masterKey: data.master_key
-            },
-        }
-        settings.data.app_setting = newSetting
     })
 }
 

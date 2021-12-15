@@ -126,47 +126,31 @@
         </div>
 
         <div tab="account" class="d-none">
-            <div class="container mt-3 d-none">
-                <h3>Major Account</h3>
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <label for="username">Player</label>
-                        <input class="form-control" id="ma_username">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="master_key">Master Key</label>
-                        <input type="password" class="form-control" id="ma_master_key">
-                    </div>
-                    <div class="col-md-3 mb-3 d-flex align-items-end">
-                        <button class="btn btn-primary active" style="min-width: 94px;" click-emit="major_account.save" id='save_major_account_button'>Save account</button>
-                    </div>
-                </div>
-            </div>
-            <HR/>
             <div class="container mt-3">
-                <div class="tab-header">
+                <div class="tab-header section">
                     <div class="d-flex">
                         <h3>Add Player</h3>
                     </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="username">Player/Email</label>
+                            <input class="form-control" id="username">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="password">Posting Key/Password</label>
+                            <input type="password" class="form-control" id="password">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="master_key">Master Key</label>
+                            <input type="password" class="form-control" id="master_key">
+                        </div>
+                        <div class="col-md-3 mb-3 d-flex align-items-end">
+                            <button class="btn btn-primary active" style="min-width: 94px;" click-emit="account.add" id='add_player_button'>Add player</button>
+                            
+                        </div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <label for="username">Player/Email</label>
-                        <input class="form-control" id="username">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="password">Posting Key/Password</label>
-                        <input type="password" class="form-control" id="password">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="master_key">Master Key</label>
-                        <input type="password" class="form-control" id="master_key">
-                    </div>
-                    <div class="col-md-3 mb-3 d-flex align-items-end">
-                        <button class="btn btn-primary active" style="min-width: 94px;" click-emit="account.add" id='add_player_button'>Add player</button>
-                        
-                    </div>
-                </div>
+                
                 <HR>
                 <h3>Player List</h3>
                 <div class="row">
@@ -212,11 +196,15 @@
                 <div class="container mt-3 section">
                     <h3>Auto Card Rental</h3>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label for="power">Expected Power</label>
                             <input type="number" class="form-control" id="expected_power" min="1">
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="rental_day">Days</label>
+                            <input type="number" class="form-control" id="rental_day" placeholder="Days for rental">
+                        </div>
+                        <div class="col-md-4 mb-3">
                             <label for="max_dec">Max DEC</label>
                             <input type="number" class="form-control" id="max_dec" placeholder="Maximum dec pay for card rental">
                         </div>
@@ -224,8 +212,41 @@
                 </div>
             </div>
             <HR>
+            <div class="d-flex">
+                <div class="container mt-3 w-25 section">
+                    <h3>Major Account</h3>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="master_key">Player name</label>
+                            <input class="form-control" id="ma_username">
+                        </div>
+                        <div class="col-md-3 mb-3 d-none">
+                            <label for="master_key">Master Key</label>
+                            <input type="password" class="form-control" id="ma_master_key">
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="container mt-3 w-75 section">
+                    <h3>Auto Transfer</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="transfer_keep_dec">Hold DEC</label>
+                            <input type="number" class="form-control" id="transfer_keep_dec">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="transfer_start_dec">Transfer at DEC</label>
+                            <input type="number" class="form-control" id="transfer_start_dec">
+                        </div>
+                    </div>
+                    
+                    <input type="checkbox" id="auto_transfer_card" name="auto_transfer_card">
+                    <label for="auto_transfer_card" class="mb-2">Auto transfer card to major account</label><br>
+                </div>
+            </div>
+            <HR>
                 <div class="d-flex">
-                    <div class="container col-md-3 section">
+                    <div class="container w-25 section">
                         <h3>Bot</h3>
                         <div class="row">
                             <div class="mb-3">
@@ -234,7 +255,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="container col-md-9 section">
+                    <div class="container w-75 section">
                         <h3>Proxy </h3>
                         <input type="checkbox" id="use_default_proxy" name="use_default_proxy" checked>
                         <label for="use_default_proxy" class="mb-3">Use default proxy</label><br>

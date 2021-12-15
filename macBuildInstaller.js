@@ -3,8 +3,8 @@ const createDMG = require('electron-installer-dmg');
 async function buildDMG() {
     try {
         await createDMG({
-            appPath: './dist/NFTauto Desktop ver2.2.1-darwin-x64/NFTauto Desktop ver2.2.1.app',
-            name: 'NFTauto Desktop ver2.2.1',
+            appPath: './dist/NFTauto Desktop-darwin-x64/NFTauto Desktop.app',
+            name: 'NFTauto Desktop',
             out: './dist',
             overwrite: true,
             debug: true,

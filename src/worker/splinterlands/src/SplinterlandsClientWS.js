@@ -170,7 +170,7 @@ class WSSplinterlandsClient {
     log && console.log('Rating: ', rat)
       log && console.log('Power: ', this.client.user.collection_power)
       log && console.log('Quest: ', quest)
-      if (this.client.masterKey && this.client.user.collection_power < this.config.expectedPower) {
+      if (this.client.masterKey && this.config.expectedPower && this.config.maxDec && this.config.rentalDay && this.client.user.collection_power < this.config.expectedPower) {
         parentPort.postMessage({
             type: "INFO_UPDATE",
             status: 'RENTING',
@@ -178,8 +178,7 @@ class WSSplinterlandsClient {
             matchStatus: MATCH_STATUS.NONE,
           })
           let dec = (this.config.maxDec*(this.config.expectedPower - this.client.user.collection_power))/this.config.expectedPower
-          await this.client.cardRental(this.client.user.collection_power, this.config.expectedPower, dec,[])
-          console.log('done')
+          await this.client.cardRental(this.client.user.collection_power, this.config.expectedPower, dec,[], this.config.rentalDay)
           this.CheckCondition()
           return
       }
@@ -307,7 +306,7 @@ class WSSplinterlandsClient {
         quest: quest?.completed,
         maxQuest: quest?.total,
       })
-      if (ECR > this.config.ecr) {
+        if (ECR > this.config.ecr) {
         // p && console.log("Start ranked match, ECR=", ECR)
         this.client.findMatch('Ranked');
       }
@@ -332,7 +331,7 @@ class WSSplinterlandsClient {
         // }
 
         //done
-        this.client.processDone()
+        await this.client.processDone()
         process.exit()
 
       }

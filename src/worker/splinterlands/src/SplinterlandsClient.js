@@ -120,7 +120,7 @@ class SplinterLandsClient {
     parentPort.postMessage({...data, player})
   }
 
-  updatePlayerInfo = (data) => {
+    updatePlayerInfo = (data) => {
     if (!this.user ) return;
     let player = this.user.name.toLowerCase() || ''
     parentPort.postMessage({
@@ -129,7 +129,7 @@ class SplinterLandsClient {
       player,
       ecr: this.getEcr(),
       rating: this.getRating(),
-        dec: this.getBalance("DEC"),
+      dec: this.getBalance("DEC"),
       power: this.user.collection_power,
       lastRewardTime: this.getLastRewardTime(),
       ...data
@@ -150,14 +150,30 @@ class SplinterLandsClient {
     return +(recoverECR + ecr).toFixed(2)
   }
 
-  processDone = () => {
-    if (!this.user ) return;
+  processDone = async () => {
+      if (!this.user) return;
+      let d = this.getBalance("DEC")
+      if (  this.config.majorAccount.player &&
+          this.config.majorAccount.player != this.user.name.toLowerCase() &&
+          this.config.transferStartDec &&
+          this.config.transferKeepDec &&
+          this.config.transferStartDec <= d) {
+          await this.transferDEC(d - this.config.transferKeepDec)
+      }
+      if (this.config.majorAccount.player &&
+        this.config.majorAccount.player != this.user.name.toLowerCase() &&
+        this.config.autoTransferCard) {
+        await this.transferCard()
+      }
+      await this.UpdatePlayerInfo()
+          await this.updatePlayerInfo()
     let player = this.user.name.toLowerCase() || ''
     parentPort.postMessage({
       type: TYPE.STATUS_UPDATE,
       status: STATUS.DONE,
       player
     })
+      return true
   }
 
   async GetDetailEnemyFound(battle_queue) {
@@ -491,7 +507,9 @@ class SplinterLandsClient {
 
     if (this._transactions[trx_id]) {
       if (this._transactions[trx_id].status == "complete") {
-        if (callback) callback(this._transactions[trx_id].data);
+          if (callback) {
+              setTimeout(callback(this._transactions[trx_id].data),5000)
+          };
         delete this._transactions[trx_id];
       }
       return;
@@ -616,6 +634,8 @@ class SplinterLandsClient {
       if (quest) {
         this.user.quest = quest[0]
       }
+      
+      return
   }
 
   async broadcastCustomJson(id, title, data, callback, retries, supressErrors) {
@@ -1288,15 +1308,15 @@ class SplinterLandsClient {
             total_dec = total_dec / 2;
         return total_dec
     }
-    async cardRental(curPower, expectedPower, maxDec, bl) {
+    async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1) {
         let retry = false
         let blackList = bl
         let gainedPower = 0
         let remainingPower = expectedPower - curPower
-        let remainingDec = remainingPower <= 100 ? 1 : maxDec
-        let weight = remainingDec / remainingPower
-        log && console.log(weight)
-        log && console.log(remainingPower)
+        let remainingDec = remainingPower <= 100 ? 1*rentalDay : maxDec
+        let weight = (remainingDec/rentalDay) / remainingPower
+        console.log(weight)
+        console.log(remainingPower)
         const res = await this.sendRequest('market/for_rent_grouped', {
             v: Date.now(),
             username: this.user.name,
@@ -1352,7 +1372,7 @@ class SplinterLandsClient {
                 return 0
             }
             gainedPower += card.power
-            remainingDec -= (+res[0].buy_price)
+            remainingDec -= (+res[0].buy_price)*rentalDay
             log && console.log('price ', res[0].buy_price)
             return res[0].market_id
         }
@@ -1367,7 +1387,7 @@ class SplinterLandsClient {
                 this.broadcastCustomJson("sm_market_rent", "", {
                     items: marketIdArray.filter(e => e != 0),
                     currency: "DEC",
-                    days: 1
+                    days: rentalDay
                 }, (result) => {
                     if (result && !result.error && result.trx_info && result.trx_info.success) {
                         resolve(result);
@@ -1379,18 +1399,63 @@ class SplinterLandsClient {
             const r = await prm
         }
         if (retry) {
-            await this.cardRental(curPower + gainedPower, expectedPower,remainingDec, blackList)
+            await this.cardRental(curPower + gainedPower, expectedPower,remainingDec, blackList, rentalDay)
             return
         }
         parentPort.postMessage({
             type: "INFO_UPDATE",
             status: 'RUNNING',
             player: this.user.name,
-            matchStatus: 'NONE',
-            power: curPower + gainedPower
+            matchStatus: 'NONE'
         })
         log && console.log('done ne')
         return
-  }
+    }
+    async transferDEC(dec) {
+        const prm = new Promise((resolve, reject) => {
+            this.broadcastCustomJson("sm_token_transfer", "", {
+                to: this.config.majorAccount.player,
+                qty: dec,
+                token: 'DEC',
+                type: 'withdraw',
+                memo: this.config.majorAccount.player
+            }, (result) => {
+                if (result && !result.error && result.trx_info && result.trx_info.success) {
+                    resolve(result);
+                } else {
+                    resolve(null);
+                }
+            })
+          });
+        const r = await prm
+        return r
+    }
+    async transferCard() {
+        const result = await this.sendRequest(
+            `cards/collection/${this.user.name}`,
+            { username: this.user.name, token: this.token }
+        );
+        const cards = []
+        result.cards.forEach(e => {
+            cards.push(e.uid)
+        })
+        if (cards.length == 0) {
+            return null
+        }
+        const prm = new Promise((resolve, reject) => {
+            this.broadcastCustomJson("sm_gift_cards", "", {
+                to: this.config.majorAccount.player,
+                cards: cards,
+            }, (result) => {
+                if (result && !result.error && result.trx_info && result.trx_info.success) {
+                    resolve(result);
+                } else {
+                    resolve(null);
+                }
+            })
+          });
+        const r = await prm
+        return r
+    }
 }
 module.exports = SplinterLandsClient;
