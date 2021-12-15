@@ -177,7 +177,7 @@ class WSSplinterlandsClient {
             player: this.client.user.name,
             matchStatus: MATCH_STATUS.NONE,
           })
-          let dec = (this.config.maxDec*(this.config.expectedPower - this.client.user.collection_power))/this.config.expectedPower
+          let dec = ((this.config.maxDec*this.config.rentalDay)*(this.config.expectedPower - this.client.user.collection_power))/this.config.expectedPower
           await this.client.cardRental(this.client.user.collection_power, this.config.expectedPower, dec,[], this.config.rentalDay)
           this.CheckCondition()
           return
