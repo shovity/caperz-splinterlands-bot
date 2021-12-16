@@ -13,8 +13,6 @@ const splinterHosts = [
 const sendRequest = async (url, params, method = 'get', proxy) => {
     let host = 'https://api2.splinterlands.com/'
 
-    console.log(proxy?.host)
-
     if (url === 'players/balances') {
         host = splinterHosts[Math.floor(Math.random() * 2)]
     }
@@ -65,8 +63,8 @@ const sendRequest = async (url, params, method = 'get', proxy) => {
 
         let res = await requester[method](host + url, params, option)
         return res
-    } catch (error) {
-        console.error(error)
+    } catch (err) {
+        console.error('utils ', err.status || err.code, err.statusText)
     }
 }
 const generatePassword = (length, rng) => {

@@ -1,4 +1,4 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
+const requester = require('../../service/requester')
 const basicCards = require('./data/basicCards.js');
 
 let availabilityCheck = (myCards, team) => {
@@ -36,15 +36,11 @@ const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
     const url = `api/v2/splinterlands/teams?${params}`;
     // console.log('API call: ', host+url)
     log && console.log('token header', spsToken)
-    return fetch(host+url, {
-        method: 'GET',
-        headers: {
+    return requester.get(host+url, {},{
+        header: {
             'authorization': spsToken
         }
     })
-        .then(x => x && x.json())
-        .then(data => data)
-        .catch((e) => console.log('fetch ', e))
 }
 
 const defaultDataForNoTeams = {
@@ -78,7 +74,8 @@ const getTeamDefault = (matchDetails) => {
 const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opponent) => {
 
     try {
-        let {data} = await getBattlesWithRuleset(matchDetails, account, spsToken, opponent)
+        const {data} = await getBattlesWithRuleset(matchDetails, account, spsToken, opponent)
+
         log && console.log('matchDetails', matchDetails)
         log && console.log('data', data)
 
@@ -89,6 +86,9 @@ const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opp
         }
     }
     catch (e) {
+        console.error('getTeamsFromAPI: ', e.status || e.code, e.statusText)
+        console.log(getTeamDefault(matchDetails))
+
         return getTeamDefault(matchDetails)
     }
 

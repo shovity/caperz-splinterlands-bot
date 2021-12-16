@@ -43,7 +43,6 @@ async function main({ username, password, account, emailPass, proxy, config = nu
             WSApi.Connect(user.name, user.token)
         }
     } catch (e) {
-        console.error(e)
         parentPort.postMessage({
             type: "ERROR",
             player: username,

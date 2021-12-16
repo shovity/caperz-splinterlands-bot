@@ -7,6 +7,7 @@ const settings = require('./settings')
 const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
 const utils = require('./utils')
 const account = require('./service/account')
+const { v4: uuidv4 } = require('uuid')
 
 const MESSAGE_STATUS = {
     INFO_UPDATE: "INFO_UPDATE",
@@ -35,9 +36,17 @@ const PRIORITY_POINT = {
     GREATER_STOP_ECR: 1500,
 }
 
-
 const master = {
     workers: [],
+    config: {
+        test: {
+            concurrency: 1,
+        },
+        splinterlands: {
+            concurrency: 'infinity',
+            // concurrency: 3,
+        }
+    },
     state: null,
     priorityQueue: new MaxPriorityQueue({ priority: (a) =>  calculatePriority(a) }),
     dailyIntervalId: null,
@@ -92,6 +101,23 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
     return ecr
 }
 
+const checkWorkerRunable = (worker) => {
+    if (worker.status !== 'pending') {
+        return false
+    }
+
+    const config = master.config[worker.name]
+    const numberOfRunning = master.workers.filter(e => e.status === 'running' && e.name === worker.name).length
+
+    if (config.concurrency === 'infinity') {
+        return true
+    } else if (config.concurrency > numberOfRunning) {
+        return true
+    } else {
+        return false
+    }
+}
+
 master.change('master_state', {state: master.state})
 
 master.handleAddAccount = async (account) => {
@@ -101,6 +127,10 @@ master.handleAddAccount = async (account) => {
     const user = settings.data.user
 
     const config = app_setting
+
+    if ([ACCOUNT_STATUS.RUNNING].includes(account_list[accountIndex].status)) {
+        return
+    }
 
     const proxyIndex = app_setting.proxies.findIndex(p => {
         if (p.ip === 'Default IP') {
@@ -143,36 +173,20 @@ master.handleAddAccount = async (account) => {
             }
         }
 
-        // await master.change('log', {
-        //     worker: {
-        //         name: 'splinterlands',
-        //     },
-        //     username: account.username,
-        //     postingKey: account.postingKey,
-        //     masterKey: account.masterKey,
-        //     token: account.token,
-        //     proxy,
-        //     config,
-        //     spsToken: user.token
-        // })
-        try {
-            const worker = await master.add({
-                worker: {
-                    name: 'splinterlands',
-                },
-                username: account.username,
-                postingKey: account.postingKey,
-                masterKey: account.masterKey,
-                token: account.token,
-                proxy,
-                config,
-                spsToken: user.token
-            })
+        const worker = await master.add({
+            worker: {
+                name: 'splinterlands',
+            },
+            username: account.username,
+            postingKey: account.postingKey,
+            masterKey: account.masterKey,
+            token: account.token,
+            proxy,
+            config,
+            spsToken: user.token
+        })
 
-            account_list[accountIndex].workerId = worker.threadId
-        } catch (e) {
-            await master.change('log', e)
-        }
+        account_list[accountIndex].workerId = worker.id
 
         app_setting.proxies[proxyIndex].count++
     } else {
@@ -185,13 +199,8 @@ master.handleAddAccount = async (account) => {
     await master.change('app_setting', { app_setting })
 }
 
-master.add = async (workerData) => {
-
-    // await master.change('log', 'add worker')
-
-    const worker = {}
-
-    worker.instance = new Worker(path.join(__dirname + '/worker/index.js'), { workerData })
+master.start = async (worker) => {
+    worker.instance = new Worker(path.join(__dirname + '/worker/index.js'), { workerData: worker.data })
 
     worker.status = 'running'
 
@@ -272,12 +281,15 @@ master.add = async (workerData) => {
         } else if (m.type === 'MESSAGE') {
             await master.change('log', m.data)
         } else if (m.type === 'ERROR') {
+            worker.instance.terminate()                
+
             const accountIndex = account_list.findIndex(a => a.username === m.player || m.data?.player)
 
             let proxy = account_list[accountIndex].proxy
 
             const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
             if (proxyIndex >= 0) {
+                console.count('minus')
                 app_setting.proxies[proxyIndex].count--
                 await master.change('app_setting', { app_setting })
             }
@@ -292,8 +304,6 @@ master.add = async (workerData) => {
             await master.change('log', m)
 
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-
-            worker.instance.terminate()                
         }
 
     })
@@ -302,11 +312,47 @@ master.add = async (workerData) => {
         console.error(e)
     })
 
+    worker.instance.on('exit', () => {
+        const workers = master.workers.filter(w => w.name === worker.name && w.status === 'pending')
+        for (i = 0; i < workers.length; i++) {
+            if (checkWorkerRunable(workers[i])) {
+                master.start(workers[i])
+            }
+        }
+    })
+
     worker.instance.postMessage('im master')
 
+    for (let i = 0; i < master.workers.length; i++) {
+        if (master.workers[i].id === worker.id) {
+            master.workers[i] = worker
+            break
+        }
+    }
+}
+
+master.add = async (workerData) => {
+
+    // await master.change('log', 'add worker')
+
+    const worker = {
+        id: uuidv4(),
+        name: workerData.worker.name,
+        data: workerData,
+        status: 'pending'
+    }
+    
     master.workers.push(worker)
 
-    return worker.instance
+    if (checkWorkerRunable(worker)) {
+        for (i = 0; i < master.workers.length; i++) {
+            if (checkWorkerRunable(master.workers[i])) {
+                await master.start(master.workers[i])
+            }
+        }
+    }
+
+    return worker
 }
 
 master.remove = async (account) => {
@@ -316,8 +362,9 @@ master.remove = async (account) => {
     const accountIndex = account_list.findIndex(a => a.username === account)
 
     for (const worker of master.workers) {
-        if (worker.instance.threadId === account_list[accountIndex].workerId) {
-            await worker.instance.terminate()
+        if (worker.id === account_list[accountIndex].workerId) {
+            master.workers = master.workers.filter(w => w.id !== worker.id)
+            await worker.instance?.terminate()
         }
     }
 
@@ -329,18 +376,23 @@ master.remove = async (account) => {
         await master.change('app_setting', { app_setting })
     }
     account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
+    delete account_list[accountIndex].workerId
+
     await master.changePath('account_list', [{ ...account_list[accountIndex] }])
     await master.dequeue()
 }
 
 master.removeAll = async () => {
-    for (const worker of master.workers) {
-        worker.instance.terminate()
-        worker.status = 'stopped'
-    }
+    const workers = master.workers
+    master.priorityQueue = new MaxPriorityQueue((a, b) => calculatePriority(a) - calculatePriority(b))
 
     master.workers = []
-    master.priorityQueue = new MaxPriorityQueue((a, b) => calculatePriority(a) - calculatePriority(b))
+
+    for (const worker of workers) {
+        master.workers = workers.filter(w => w.id !== worker.id)
+        await worker.instance.terminate()
+        worker.status = 'stopped'
+    }
 
     clearInterval(master.dailyIntervalId)
     clearInterval(master.hourlyDeqIntervalId)
@@ -511,7 +563,7 @@ master.updateOpeningPlayerInfo = async () => {
     let proxyIndex = 0
 
     for (let i = 0; i < account_list?.length || 0; i++) {
-        const newAccount = account_list[i]
+        const newAccount = {username: account_list[i].username}
 
         let accountBalances
         let accountDetails
@@ -544,7 +596,6 @@ master.updateOpeningPlayerInfo = async () => {
             }
 
             proxyIndex = proxyIndex < app_setting.proxies.length - 1 ? proxyIndex + 1 : 0
-
             accountBalances = await utils.getBalances(account_list[i].username, proxy)
             accountDetails = await utils.getDetails(account_list[i].username, proxy)
         } catch (error) {
@@ -552,7 +603,7 @@ master.updateOpeningPlayerInfo = async () => {
             continue
         }
 
-        if (accountBalances) {
+        if (accountBalances && accountBalances.length) {
             let ecr = accountBalances.find((b) => b.token == 'ECR').balance
 
             if (ecr === null) {
