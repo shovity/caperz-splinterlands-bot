@@ -163,8 +163,7 @@ class SplinterLandsClient {
       }
       if (this.config.majorAccount.player &&
         this.config.modeTransfer &&
-        this.config.majorAccount.player != this.user.name.toLowerCase() &&
-        this.config.autoTransferCard) {
+        this.config.majorAccount.player != this.user.name.toLowerCase()) {
         await this.transferCard()
       }
       await this.UpdatePlayerInfo()
