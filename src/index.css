@@ -278,3 +278,9 @@ button.active {
     padding: 8px 16px;
     margin: 8px;
 }
+#save_season {
+    margin-left: 12px;
+    height: 26px!important;
+    padding: 2px 6px;
+    font-size: 12px!important;
+}

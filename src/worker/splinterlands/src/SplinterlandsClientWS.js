@@ -182,6 +182,13 @@ class WSSplinterlandsClient {
           this.CheckCondition()
           return
       }
+      if (this.config.modeCollectSeasonReward) {
+          try {
+              await this.client.collectSeasonReward(this.config.season)
+          } catch (error) {
+              log && console.log('err',error)
+          }
+      }
       const Update = async () => {
         log && console.log('update 1')
       // await this.getUserQuestNew()
@@ -306,7 +313,7 @@ class WSSplinterlandsClient {
         quest: quest?.completed,
         maxQuest: quest?.total,
       })
-        if (ECR > this.config.ecr) {
+        if (ECR > this.config.ecr && this.config.modePlay) {
         // p && console.log("Start ranked match, ECR=", ECR)
         this.client.findMatch('Ranked');
       }

@@ -84,8 +84,43 @@
                     </div>
                 </div>
             </div>
-            <hr/>
             <div class="container" >
+                <div class="section mt-3">
+                      <div class="mt-1 d-flex" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-controls="collapseOne">
+                        <h5>Auto mode </h5>
+                        <h5>▼</h5>
+                      </div>
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                      <div class="">
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" id="mode_play" click-emit="modePlayToggle">
+                            <label class="form-check-label" for="mode_play">Play game</label>
+                        </div>
+                        <!-- <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" id="mode_card_rental" click-emit="modeCardRentalToggle">
+                            <label class="form-check-label" for="mode_card_rental">Card Rental</label>
+                        </div> -->
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" id="mode_transfer" click-emit="modeTransferToggle">
+                            <label class="form-check-label" for="mode_transfer">Transfer DEC & cards</label>
+                        </div>
+                        <div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input" type="checkbox" id="mode_collect_season_reward" click-emit="modeCollectSeasonRewardToggle">
+                                <label class="form-check-label" for="mode_collect_season_reward">Claim Season Rewards </label>
+                            </div>
+                            <div class="mb-1 d-flex" style="margin-left: 40px;">
+                                <p>Season:</p>
+                                <input class="form-control" style="padding: 0;width: 40px;height: 26px;margin-left: 6px;" id="season">
+                                <button id="save_season" class="btn btn-primary active"  click-emit="setSeason">
+                                    <span>save</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
                 <div id="player_monitoring">
                     <div class="d-flex mb-3">
                         <h5>Player Table</h5>
@@ -239,9 +274,6 @@
                             <input type="number" class="form-control" id="transfer_start_dec">
                         </div>
                     </div>
-                    
-                    <input type="checkbox" id="auto_transfer_card" name="auto_transfer_card">
-                    <label for="auto_transfer_card" class="mb-2">Auto transfer card to major account</label><br>
                 </div>
             </div>
             <HR>
