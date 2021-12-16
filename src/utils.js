@@ -13,8 +13,6 @@ const splinterHosts = [
 const sendRequest = async (url, params, method = 'get', proxy) => {
     let host = 'https://api2.splinterlands.com/'
 
-    console.log(proxy?.host)
-
     if (url === 'players/balances') {
         host = splinterHosts[Math.floor(Math.random() * 2)]
     }

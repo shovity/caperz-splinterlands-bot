@@ -13,6 +13,8 @@ ori.use('event store emitter storage', () => {
         switch (status ? status.toUpperCase() : 'NONE') {
             case 'PENDING':
                 return "<span class='status_light_blue'>Pending</span>"
+            case 'TRANSFERRING':
+                return "<span class='status_light_blue'>Transferring</span>"
             case 'RUNNING':
                 return "<span class='status_blue'>Running</span>"
             case 'PAUSED':
@@ -21,6 +23,8 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_green'>Done</span>"
             case 'WAITING_ECR':
                 return "<span class='status_light_yellow'>Waiting ECR</span>"
+            case 'COLLECTING':
+                return "<span class='status_light_yellow'>Claiming SSR</span>"
             case 'PROXY_ERROR':
                 return "<span class='status_red'>Proxy error</span>"
             case 'MULTI_REQUEST_ERROR':
@@ -146,6 +150,28 @@ ori.use('event store emitter storage', () => {
     event.listen('account.stop', (account) => {
         ipc.send('account.stop', account)
     })
+    event.listen('modePlayToggle', () => {
+        ipc.send('setting.save', {
+            modePlay: mode_play.checked
+        })
+    })
+    event.listen('modeTransferToggle', () => {
+        ipc.send('setting.save', {
+            modeTransfer: mode_transfer.checked
+        })
+    })
+    event.listen('modeCollectSeasonRewardToggle', () => {
+        ipc.send('setting.save', {
+            modeCollectSeasonReward: mode_collect_season_reward.checked
+        })
+    })
+
+    event.listen('setSeason', () => {
+        showNotice('Saved')
+        ipc.send('setting.save', {
+            season: season.value
+        })
+    })
 
     event.listen('proxy.add', () => {
         let vl = add_proxy_input.value
@@ -218,13 +244,11 @@ ori.use('event store emitter storage', () => {
             useDefaultProxy: useDproxy.checked,
             expectedPower: expected_power.value,
             maxDec: max_dec.value,
-            autoTransferCard: auto_transfer_card.checked,
             transferKeepDec: transfer_keep_dec.value,
             transferStartDec: transfer_start_dec.value,
             rentalDay: rental_day.value,
             majorAccount: {
                 player: ma_username.value,
-                masterKey: ma_master_key.value,
             }
         })
         showNotice('saved')
@@ -251,12 +275,14 @@ ori.use('event store emitter storage', () => {
         bot_per_ip.value = data.botPerIp
         expected_power.value = data.expectedPower
         max_dec.value = data.maxDec
-        auto_transfer_card.checked = data.autoTransferCard
+        season.value = data.season
+        mode_play.checked = data.modePlay
+        mode_transfer.checked = data.modeTransfer
+        mode_collect_season_reward.checked = data.modeCollectSeasonReward
         transfer_keep_dec.value = data.transferKeepDec
         transfer_start_dec.value = data.transferStartDec
         rental_day.value = data.rentalDay
         ma_username.value = data.majorAccount?.player || ''
-        ma_master_key.value = data.majorAccount?.masterKey || ''
         data.proxies.forEach((proxy) => {
             let row = proxy_table.insertRow(1)
             let cell1 = document.createElement('th')
@@ -422,7 +448,7 @@ ori.use('event store emitter storage', () => {
                     width: '40px',
                     targets: 9,
                     render: function (data, type, row) {
-                        if (['RUNNING','PENDING','DONE','RENTING'].includes(data.status)) {
+                        if (['RUNNING','PENDING','DONE','RENTING','COLLECTING','TRANSFERRING'].includes(data.status)) {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
                         </button>`

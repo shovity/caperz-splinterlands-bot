@@ -153,7 +153,8 @@ class SplinterLandsClient {
   processDone = async () => {
       if (!this.user) return;
       let d = this.getBalance("DEC")
-      if (  this.config.majorAccount.player &&
+      if (this.config.modeTransfer &&
+          this.config.majorAccount.player &&
           this.config.majorAccount.player != this.user.name.toLowerCase() &&
           this.config.transferStartDec &&
           this.config.transferKeepDec &&
@@ -161,6 +162,7 @@ class SplinterLandsClient {
           await this.transferDEC(d - this.config.transferKeepDec)
       }
       if (this.config.majorAccount.player &&
+        this.config.modeTransfer &&
         this.config.majorAccount.player != this.user.name.toLowerCase() &&
         this.config.autoTransferCard) {
         await this.transferCard()
@@ -1412,6 +1414,12 @@ class SplinterLandsClient {
         return
     }
     async transferDEC(dec) {
+        parentPort.postMessage({
+            type: "INFO_UPDATE",
+            status: 'TRANSFERRING',
+            player: this.user.name,
+            matchStatus: 'NONE'
+        })
         const prm = new Promise((resolve, reject) => {
             this.broadcastCustomJson("sm_token_transfer", "", {
                 to: this.config.majorAccount.player,
@@ -1428,16 +1436,25 @@ class SplinterLandsClient {
             })
           });
         const r = await prm
+        
         return r
     }
     async transferCard() {
+        parentPort.postMessage({
+            type: "INFO_UPDATE",
+            status: 'TRANSFERRING',
+            player: this.user.name,
+            matchStatus: 'NONE'
+        })
         const result = await this.sendRequest(
             `cards/collection/${this.user.name}`,
             { username: this.user.name, token: this.token }
         );
         const cards = []
         result.cards.forEach(e => {
-            cards.push(e.uid)
+            if (this.user.name == e.player) {
+                cards.push(e.uid)
+            }
         })
         if (cards.length == 0) {
             return null
@@ -1453,8 +1470,40 @@ class SplinterLandsClient {
                     resolve(null);
                 }
             })
+        });
+        const r = await prm
+        return r
+    }
+    async collectSeasonReward(season) {
+        parentPort.postMessage({
+            type: "INFO_UPDATE",
+            status: 'COLLECTING',
+            player: this.user.name,
+            matchStatus: 'NONE'
+        })
+        const prm = new Promise((resolve, reject) => {
+            this.broadcastCustomJson("sm_claim_reward", "", {
+                type: 'league_season',
+                season: season
+            }, (result) => {
+                if (result && !result.error && result.trx_info && result.trx_info.success) {
+                    resolve(result);
+                } else {
+                    resolve(null);
+                }
+            })
           });
         const r = await prm
+        if (r != null) {
+            await this.UpdatePlayerInfo()
+            await this.updatePlayerInfo()
+        }
+        parentPort.postMessage({
+            type: "INFO_UPDATE",
+            status: 'RUNNING',
+            player: this.user.name,
+            matchStatus: 'NONE'
+        })
         return r
     }
 }

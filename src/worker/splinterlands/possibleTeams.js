@@ -202,7 +202,8 @@ const teamSelection = async (possibleTeams, matchDetails, quest) => {
     //check if daily quest is not completed
     if(possibleTeams.length > 0 ) {
         let team = possibleTeams[0]
-        const filteredTeams = possibleTeams.filter(team=> team[7] !== 'gold')
+        // const filteredTeams = possibleTeams.filter(team=> team[7] !== 'gold')
+        const filteredTeams = possibleTeams
 
         if (filteredTeams.length > 0) {
             team = filteredTeams[0]
