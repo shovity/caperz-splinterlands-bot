@@ -18,6 +18,7 @@ const setting = requester.setting
 
 
 requester.fetch = async ({ url, method, body, param, option }) => {
+
     option = option || {}
     
     const arg = {
@@ -42,23 +43,21 @@ requester.fetch = async ({ url, method, body, param, option }) => {
     }
 
     if (option.proxy) {
-        if (option.proxy) {
-            switch (option.proxy.protocol) {
-                case 'https':
-                    arg.agent = new HttpsProxyAgent('http://' + option.proxy.url)
-                    break
-                case 'socks5':
-                    arg.agent = new SocksProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
-                    break
-                case 'socks4':
-                    arg.agent = new SocksProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
-                    break            
-                case 'http':
-                    arg.agent = new HttpsProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
-                    break
-                default:
-                    arg.agent = new HttpsProxyAgent('http://' + option.proxy.url)
-            }
+        switch (option.proxy.protocol) {
+            case 'https':
+                arg.agent = new HttpsProxyAgent('http://' + option.proxy.url)
+                break
+            case 'socks5':
+                arg.agent = new SocksProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
+                break
+            case 'socks4':
+                arg.agent = new SocksProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
+                break            
+            case 'http':
+                arg.agent = new HttpsProxyAgent(option.proxy.protocol + '://' + option.proxy.url)
+                break
+            default:
+                arg.agent = new HttpsProxyAgent('http://' + option.proxy.url)
         }
     }
 
@@ -67,15 +66,19 @@ requester.fetch = async ({ url, method, body, param, option }) => {
             + Object.keys(param).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(param[k])}`).join('&')
     }
 
-    const res = await fetch(url, arg)
+    try {
+        const res = await fetch(url, arg)
 
-    if (!res.ok) {
-        throw new Error(res)
+        if (!res.ok) {
+            throw res
+        }
+    
+        const data = await res.json()
+    
+        return data
+    } catch (err) {
+        throw err
     }
-
-    const data = await res.json()
-
-    return data
 }
 
 requester.get = async (url, param, option) => {
