@@ -29,7 +29,7 @@ const Config = {
     ],
 }
 
-const log = true
+const log = false
 
 const activeObj = {
     gold: 'dragon',

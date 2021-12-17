@@ -8,6 +8,7 @@ const cardByRarity = require('../data/cardByRarity.json')
 const cardsDetail = require('../data/cardsDetails.json')
 const Config = {
     api_url: 'https://api2.splinterlands.com',
+    battle_url: 'https://battle.splinterlands.com',
     ws_url: 'wss://ws.splinterlands.com',
     external_chain_api_url: 'https://ec-api.splinterlands.com',
     tx_broadcast_urls: ['https://broadcast.splinterlands.com', 'https://bcast.splinterlands.com'],
@@ -28,7 +29,7 @@ const Config = {
 
 const requester = require('../../../service/requester')
 
-const log = true
+const log = false
 
 steem.api.setOptions({
     transport: 'http',
@@ -861,7 +862,7 @@ class SplinterLandsClient {
                 if (!signed_tx) return
                 let op_name = this.removeTxPrefix(tx.operations[0][1].id)
                 if (this.settings.api_ops && this.settings.api_ops.includes(op_name)) {
-                    const resultBattleTx = await this.sendRequest(
+                    const resultBattleTx = await this.sendRequestBattle(
                         'battle/battle_tx',
                         {
                             signed_tx: JSON.stringify(signed_tx),
@@ -1003,6 +1004,55 @@ class SplinterLandsClient {
             let option = {
                 headers: {
                     authority: 'api2.splinterlands.com',
+                    method: method.toUpperCase(),
+                    path: url,
+                    scheme: 'https',
+                    accept: method === 'post' ? '*/*' : 'application/json, text/javascript, */*; q=0.01',
+                    'accept-encoding': 'gzip, deflate, br',
+                    'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                    'content-type': method === 'post' ? 'application/x-www-form-urlencoded' : '',
+                    origin: 'https://splinterlands.com',
+                    referer: 'https://splinterlands.com',
+                    'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
+                    'sec-ch-ua-mobile': '?0',
+                    'sec-fetch-dest': 'empty',
+                    'sec-fetch-mode': 'cors',
+                    'sec-fetch-site': 'same-origin',
+                    'user-agent':
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
+                },
+            }
+
+            if (method === 'get') {
+                params.v = new Date().getTime()
+            }
+            if (this.proxy) {
+                option.proxy = {
+                    url: `${this.proxy.host}:${this.proxy.port}`,
+                    protocol: `${this.proxy.protocol}`,
+                }
+                if (this.proxy.account) {
+                    option.proxy.url = `${this.proxy.account}:${this.proxy.password}@${this.proxy.host}:${this.proxy.port}`
+                }
+                // objectAxios.httpsAgent = new HttpsProxyAgent(
+                //   `${this.proxy}`
+                // )
+            }
+
+            let res = await requester[method](host + url, params, option)
+
+            return res
+        } catch (error) {
+            throw error
+        }
+    }
+    async sendRequestBattle(url, params, method = 'get') {
+        let host = 'https://battle.splinterlands.com/'
+
+        try {
+            let option = {
+                headers: {
+                    authority: 'battle.splinterlands.com',
                     method: method.toUpperCase(),
                     path: url,
                     scheme: 'https',

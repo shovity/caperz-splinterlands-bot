@@ -2,7 +2,7 @@ ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
     emitter.keyboard()
-    const log = true
+    const log = false
     var playerMonitoringTable
     var proxyMonitoringTable
     let totalDec = {}
@@ -106,6 +106,11 @@ ori.use('event store emitter storage', () => {
     })
 
     event.listen('select_tab', (name) => {
+        if (name == 'monitoring') {
+            ipc.send('player_table.redraw')
+            ipc.send('proxy_table.redraw')
+        }
+
         for (const nav of navs) {
             nav.removeClass('active')
         }
