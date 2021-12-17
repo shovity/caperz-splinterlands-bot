@@ -8,11 +8,7 @@ const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
 const utils = require('./utils')
 const account = require('./service/account')
 const { v4: uuidv4 } = require('uuid')
-
-const MESSAGE_STATUS = {
-    INFO_UPDATE: "INFO_UPDATE",
-    STATUS_UPDATE: "STATUS_UPDATE",
-}
+const workerService = require('./service/worker')
 
 const ACCOUNT_STATUS = {
     PENDING: 'PENDING',
@@ -101,22 +97,7 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
     return ecr
 }
 
-const checkWorkerRunable = (worker) => {
-    if (worker.status !== 'pending') {
-        return false
-    }
 
-    const config = master.config[worker.name]
-    const numberOfRunning = master.workers.filter(e => e.status === 'running' && e.name === worker.name).length
-
-    if (config.concurrency === 'infinity') {
-        return true
-    } else if (config.concurrency > numberOfRunning) {
-        return true
-    } else {
-        return false
-    }
-}
 
 master.change('master_state', {state: master.state})
 
@@ -128,7 +109,10 @@ master.handleAddAccount = async (account) => {
 
     const config = app_setting
 
-    if ([ACCOUNT_STATUS.RUNNING].includes(account_list[accountIndex].status)) {
+    if (
+        account_list[accountIndex].status === ACCOUNT_STATUS.RUNNING ||
+        (account_list[accountIndex].status === ACCOUNT_STATUS.PAUSED && account.status !== ACCOUNT_STATUS.PAUSED)
+    ) {
         return
     }
 
@@ -205,107 +189,7 @@ master.start = async (worker) => {
     worker.status = 'running'
 
     worker.instance.on('message', async (m) => {
-        const account_list = settings.data.account_list
-        const app_setting = settings.data.app_setting
-
-        if (m.type === MESSAGE_STATUS.INFO_UPDATE) {
-            const accountIndex = account_list.findIndex(a => a.username === m.player)
-
-            if (accountIndex === -1) {
-                return worker.instance.terminate()
-            }
-
-            if (typeof m.ecr != 'undefined') {
-                const now = Date.now()
-                account_list[accountIndex].ecr = calculateECR(now, m.ecr)
-            }
-
-            if (typeof m.rating != 'undefined') {
-                account_list[accountIndex].rating = m.rating
-            }
-
-            if (typeof m.dec != 'undefined') {
-                account_list[accountIndex].dec = m.dec
-            }
-
-            if (m.lastRewardTime) {
-                account_list[accountIndex].lastRewardTime = m.lastRewardTime
-            }
-
-            if (typeof m.questClaimed != 'undefined') {
-                account_list[accountIndex].questClaimed = m.questClaimed
-            }
-
-            if (m.matchStatus) {
-                account_list[accountIndex].matchStatus = m.matchStatus || 'NONE'
-            }
-
-            if (typeof m.quest != 'undefined') {
-                account_list[accountIndex].quest = m.quest
-            }
-
-            if (m.maxQuest) {
-                account_list[accountIndex].maxQuest = m.maxQuest
-            }
-            if (m.status) {
-                account_list[accountIndex].status = m.status
-            }
-            if (typeof m.power != 'undefined') {
-                account_list[accountIndex].power = m.power
-            }
-
-            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-        } else if (m.type === MESSAGE_STATUS.STATUS_UPDATE) {
-            const accountIndex = account_list.findIndex(a => a.username === m.player)
-
-            if (accountIndex === -1) {
-                return worker.instance.terminate()
-            }
-
-            account_list[accountIndex].status = m.status
-
-            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-
-            if (m.status === 'DONE') {
-                let proxy = account_list[accountIndex].proxy
-    
-                const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
-                if (proxyIndex >= 0) {
-                    app_setting.proxies[proxyIndex].count--
-                    await master.change('app_setting', { app_setting })
-                }
-
-                await master.dequeue()
-                worker.instance.terminate()                
-            }
-        } else if (m.type === 'MESSAGE') {
-            await master.change('log', m.data)
-        } else if (m.type === 'ERROR') {
-            worker.instance.terminate()                
-
-            const accountIndex = account_list.findIndex(a => a.username === m.player || m.data?.player)
-
-            let proxy = account_list[accountIndex].proxy
-
-            const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
-            if (proxyIndex >= 0) {
-                console.count('minus')
-                app_setting.proxies[proxyIndex].count--
-                await master.change('app_setting', { app_setting })
-            }
-
-            account_list[accountIndex].status = 'ERROR'
-            if (m.status === 407) {
-                account_list[accountIndex].status = 'PROXY_ERROR'
-            } else if (m.status === 429) {
-                account_list[accountIndex].status = 'MULTI_REQUEST_ERROR'
-            }
-
-            await master.change('log', m)
-
-            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-        }
-
+        workerService.handleMessage(worker, m, master)
     })
 
     worker.instance.on('error', (e) => {
@@ -315,7 +199,7 @@ master.start = async (worker) => {
     worker.instance.on('exit', () => {
         const workers = master.workers.filter(w => w.name === worker.name && w.status === 'pending')
         for (i = 0; i < workers.length; i++) {
-            if (checkWorkerRunable(workers[i])) {
+            if (workerService.checkWorkerRunable(workers[i], master)) {
                 master.start(workers[i])
             }
         }
@@ -344,9 +228,9 @@ master.add = async (workerData) => {
     
     master.workers.push(worker)
 
-    if (checkWorkerRunable(worker)) {
+    if (workerService.checkWorkerRunable(worker, master)) {
         for (i = 0; i < master.workers.length; i++) {
-            if (checkWorkerRunable(master.workers[i])) {
+            if (workerService.checkWorkerRunable(master.workers[i], master)) {
                 await master.start(master.workers[i])
             }
         }
@@ -519,9 +403,13 @@ master.dequeue = async () => {
 
     while (proxyFree >= 0 && accountFront) {
         master.priorityQueue.dequeue()
+
         await master.handleAddAccount(accountFront)
-        
+
+        accountFront = master.priorityQueue.front()?.element
+
         let app_setting = settings.data.app_setting
+
         proxyFree = app_setting.proxies.findIndex(p => {
             if (p.ip === 'Default IP') {
                 if (app_setting.useDefaultProxy) {
@@ -533,8 +421,6 @@ master.dequeue = async () => {
     
             return p.count < app_setting.botPerIp
         })
-
-        accountFront = master.priorityQueue.front()?.element
     }
 }
 
