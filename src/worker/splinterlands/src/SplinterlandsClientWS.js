@@ -24,7 +24,7 @@ const Config = {
   rpc_nodes: ["https://api.hive.blog", "https://anyx.io", "https://hived.splinterlands.com", "https://api.openhive.network"]
 }
 
-const log = false
+const log = true
 
 const activeObj = {
   gold: 'dragon',
@@ -95,7 +95,6 @@ class WSSplinterlandsClient {
     this.startQuest = false
     this.questClaimed = false
       this.spsToken = spsToken
-      this.getQuestThrottle = 0
   }
 
     async Connect(player, token, new_account) {
@@ -157,11 +156,10 @@ class WSSplinterlandsClient {
       
       await this.client.UpdatePlayerInfo();
       await this.client.updatePlayerInfo();
+      let quest = await this.client.getQuest();
     const ECR = this.client.getEcr();
     const rat = this.client.getRating();
     const userName = this.client.getUserName();
-
-    let quest = await this.client.getQuest();
     const currentTimestamp = new Date().getTime() / 1000;
     const dec = this.client.getBalance('DEC')
     const sendCards = await this.client.getSendCards();
@@ -189,48 +187,26 @@ class WSSplinterlandsClient {
               log && console.log('err',error)
           }
       }
-      const Update = async () => {
-        log && console.log('update 1')
-      // await this.getUserQuestNew()
-      await this.client.updateSettings()
-      await this.client.UpdatePlayerInfo();
-      quest = await this.client.getQuest();
-    }
 
       const NeWQuest = async () => { // Обновление квеста
-        log && console.log('get new quest')
-          this.client.StartDailyQuest(async (data) => {
-              if (this.getQuestThrottle < 0) {
-                  this.getQuestThrottle = 50
-                  return
-              } else {
-                  this.getQuestThrottle--
-              }
-        if (!!data?.error === false) { // обновление квеста если можно
-          const dt = data.trx_info.result
-          const newQuest = JSON.parse(dt)
-
-          await this.client.setNewQuest(newQuest)
-          quest = await this.client.getQuest();
-          this.questClaimed = false
-
-          // log && console.log('Старт нового квеста', quest);
-          // process.send({
-          //   time: getFormatedTime(), events: [
-          //     {key: 'quest', value: quest, param: 'set'},
-          //   ]
-          // });
-
-        } else { // получение новых данных
-          // log && console.log('Ошибка квеста', data?.error);
-          // log && console.log('Старт нового квеста', quest);
-          // process.send({
-          //   time: getFormatedTime(), events: [
-          //     {key: 'quest', value: quest, param: 'set'},
-          //   ]
-          // });
+          log && console.log('get new quest')
+          const prm = new Promise((resolve, reject) => {
+            this.client.StartDailyQuest(async (data) => {
+          if (!!data?.error === false) { // обновление квеста если можно
+            const dt = data.trx_info.result
+            const newQuest = JSON.parse(dt)
+  
+            await this.client.setNewQuest(newQuest)
+            quest = await this.client.getQuest();
+              this.questClaimed = false
+              resolve(true)
+          } else {
+            resolve(false)
         }
-      });
+        });
+        });
+        const r = await prm
+          return r
       }
       
       if (quest && quest.claim_date) {
@@ -238,58 +214,25 @@ class WSSplinterlandsClient {
         const createdDate = new Date(quest.created_date).getTime() / 1000;
           if (currentTimestamp - createdDate > 24 * 60 * 60) {
             await NeWQuest()
-            
-          } else { 
-            await Update()
           }
       } else {
         this.questClaimed = false
-        await Update()
       }
 
-    if (quest && quest.completed === quest.total && !this.questClaimed) {
-      // log && console.log('get reward --------->');
+    if (quest && quest.isComplete && !this.questClaimed) {
+      log && console.log('get reward --------->');
       try {
-        let questReward = await this.client.claimReward('quest', {quest_id: quest.id});
+        let questReward = await this.client.claimReward(quest.id);
         log && console.log('quest was completed --------->', questReward);
-        if (!!questReward?.error === false) {
-          const res = await this.client.getRewards();
-            log && console.log('got reward --------->', res)
-            if (res.success) {
-                await Update()
-                this.questClaimed = true
-            }
+        if (!questReward?.error) {
+        //   await this.client.getRewards();
+          this.questClaimed = true
         }
       }
       catch (e) {
-
+        log && console.log(e)
       }
 
-    }
-
-    // if (quest && quest.completed === quest.total && quest.claim_date) {
-    //   // log && console.log('try start new quest')
-    //   const startQuestTime = new Date(quest.created_date).getTime() / 1000;
-
-    //   // log && console.log('now ', currentTimestamp)
-    //   // log && console.log('quest ', startQuestTime)
-
-    //   if (currentTimestamp > startQuestTime + 83000) {
-    //     await Update()
-        
-    //   }
-    //   else {
-    //     // log && console.log("wait for 24h from at time you start the quest")
-    //     // log && console.log("time for wait -------> ", startQuestTime + 83000 - currentTimestamp)
-    //   }
-    // }
-
-    if (quest?.splinter === 'sneak') {
-      this.client.RefreshDailyQuest(async (data) => {
-        // await this.getUserQuestNew()
-        await NeWQuest()
-        quest = await this.client.getQuest();
-      })
     }
 
     
@@ -318,25 +261,6 @@ class WSSplinterlandsClient {
         this.client.findMatch('Ranked');
       }
       else {
-
-        // if (dec > 100 && userName !== mainUser) {
-        //     await Update()
-        //     log && console.log('Sending DEC.')
-        //     let decSend = parseInt(dec);
-        //     this.client.TransferDEC(mainUser, decSend, (data) => {
-        //         log && console.log(data);
-        //     });
-        //     setTimeout(() => {  log && console.log("Waiting 1m after sending."); }, 60000);
-        // }
-        // if (sendCards.length != 0 && userName !== mainUser) {
-        //     await Update()
-        //     log && console.log('Sending cards.')
-        //     this.client.GiftCards(sendCards, mainUser, (data) => {
-        //         log && console.log(data);
-        //     });
-        //     setTimeout(() => {  log && console.log("Waiting 1m after sending."); }, 60000);
-        // }
-
         //done
         await this.client.processDone()
         process.exit()
@@ -344,16 +268,11 @@ class WSSplinterlandsClient {
       }
     }
     else {
-      // log && console.log('Sleep 1m QUEST NOT FOUND: ' + userName)
       setTimeout(() => {
         this.CheckCondition();
       }, 1000 * 60 * 1);
     }
   }
-
-  // Close(){
-  //     this.ws.close();
-  // }
 
   OnMessage(m) {
     var message = JSON.parse(m.data);

@@ -435,14 +435,14 @@ ori.use('event store emitter storage', () => {
 
             columnDefs: [
                 { orderable: false, targets: 0 },
-                { width: '80px', targets: 1 },
-                { width: '80px', targets: 2 },
-                { width: '80px', targets: 3 },
-                { width: '90px', targets: 4 },
-                { width: '90px', targets: 5 },
-                { width: '90px', targets: 6 },
+                { width: '60px', targets: 1 },
+                { width: '60px', targets: 2 },
+                { width: '60px', targets: 3 },
+                { width: '60px', targets: 4 },
+                { width: '60px', targets: 5 },
+                { width: '100px', targets: 6 },
                 { width: '90px', targets: 7 },
-                { width: '90px', targets: 8 },
+                { width: '100px', targets: 8 },
                 {
                     orderable: false,
                     width: '40px',

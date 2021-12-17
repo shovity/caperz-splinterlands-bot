@@ -35,7 +35,7 @@ const Config = {
 
 const requester = require('../../../service/requester')
 
-const log = false
+const log = true
 
 steem.api.setOptions({
   transport: "http",
@@ -131,7 +131,9 @@ class SplinterLandsClient {
       rating: this.getRating(),
       dec: this.getBalance("DEC"),
       power: this.user.collection_power,
-      lastRewardTime: this.getLastRewardTime(),
+        lastRewardTime: this.getLastRewardTime(),
+        quest: this.user.quest.completed_items,
+        maxQuest: this.user.quest.total_items,
       ...data
     })
   }
@@ -342,16 +344,16 @@ class SplinterLandsClient {
     );
   }
 
-  getRewards() {
+  async getRewards() {
     try {
-      const res = this.sendRequest("players/rewards_revealed", {
+      const res = await this.sendRequest("players/rewards_revealed", {
         username: this.user.name,
         token: this.token,
       });
 
       if (res) {
-        return res;
         this.gotReward = true
+        return res;
       } else {
         return null;
       }
@@ -837,7 +839,7 @@ class SplinterLandsClient {
             }
             var that = this
         steem.broadcast.customJson(this.key, [], [this.user.name], id, JSON.stringify(data), (err, result) => {
-            log && console.log('3' , err)
+            log && console.log('334' , err)
             log && console.log('result 23', result)
                 if (result && !err) {
                     that.trxLookup(result.id, null, callback, 10, supressErrors)
@@ -845,6 +847,9 @@ class SplinterLandsClient {
                     if (err && JSON.stringify(err).indexOf("Please wait to transact") >= 0) {
                         // this.RequestDelegation(id, title, data, callback, retries);
                         log && console.log("request delegation 123");
+                        if (callback) {
+                            callback(result)
+                        }
                         return
                     } else if (retries > 0) {
                         let rpc_node = Config.rpc_nodes[++that._rpc_index % Config.rpc_nodes.length];
@@ -859,9 +864,11 @@ class SplinterLandsClient {
                         return
                     } else if (!supressErrors) {
                         log && console.log("There was an error publishing this transaction to the Hive blockchain. Please try again in a few minutes. Error: " + err)
+                        if (callback) {
+                            callback(result)
+                        }
                     }
-                    if (callback)
-                        callback(result)
+                    
                 }
             })
         
@@ -959,22 +966,29 @@ class SplinterLandsClient {
     };
   }
 
-  async claimReward(type, data, callback) {
+  async claimReward(id) {
     // type quest
     // quest id
-
-    var obj = Object.assign(
-      {
-        type: type,
-      },
-      data
-      );
-    this.broadcastCustomJson(
-      "sm_claim_reward",
-      "Steem Monsters Reward Claim",
-      obj,
-      callback
-    );
+console.log('asbc')
+      const prm = new Promise((resolve, reject) => {
+        this.broadcastCustomJson("sm_claim_reward",
+        "",
+        {
+            type: 'quest',
+            quest_id: id
+          },
+            (result) => {
+            console.log(result)
+            if (result && !result.error && result.trx_info && result.trx_info.success) {
+                resolve(result);
+            } else {
+                resolve(null);
+            }
+        })
+      });
+      const r = await prm
+      return r
+    
   }
 
   async auth(username, token) {
@@ -1413,97 +1427,110 @@ class SplinterLandsClient {
         return
     }
     async transferDEC(dec) {
-        parentPort.postMessage({
-            type: "INFO_UPDATE",
-            status: 'TRANSFERRING',
-            player: this.user.name,
-            matchStatus: 'NONE'
-        })
-        const prm = new Promise((resolve, reject) => {
-            this.broadcastCustomJson("sm_token_transfer", "", {
-                to: this.config.majorAccount.player,
-                qty: dec,
-                token: 'DEC',
-                type: 'withdraw',
-                memo: this.config.majorAccount.player
-            }, (result) => {
-                if (result && !result.error && result.trx_info && result.trx_info.success) {
-                    resolve(result);
-                } else {
-                    resolve(null);
-                }
+        try {
+            parentPort.postMessage({
+                type: "INFO_UPDATE",
+                status: 'TRANSFERRING',
+                player: this.user.name,
+                matchStatus: 'NONE'
             })
-          });
-        const r = await prm
-        
-        return r
+            const prm = new Promise((resolve, reject) => {
+                this.broadcastCustomJson("sm_token_transfer", "", {
+                    to: this.config.majorAccount.player,
+                    qty: dec,
+                    token: 'DEC',
+                    type: 'withdraw',
+                    memo: this.config.majorAccount.player
+                }, (result) => {
+                    if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        resolve(result);
+                    } else {
+                        resolve(null);
+                    }
+                })
+              });
+            const r = await prm
+            
+            return r
+        } catch (error) {
+            log && console.log(error)
+        }
     }
     async transferCard() {
-        parentPort.postMessage({
-            type: "INFO_UPDATE",
-            status: 'TRANSFERRING',
-            player: this.user.name,
-            matchStatus: 'NONE'
-        })
-        const result = await this.sendRequest(
-            `cards/collection/${this.user.name}`,
-            { username: this.user.name, token: this.token }
-        );
-        const cards = []
-        result.cards.forEach(e => {
-            if (this.user.name == e.player) {
-                cards.push(e.uid)
-            }
-        })
-        if (cards.length == 0) {
-            return null
-        }
-        const prm = new Promise((resolve, reject) => {
-            this.broadcastCustomJson("sm_gift_cards", "", {
-                to: this.config.majorAccount.player,
-                cards: cards,
-            }, (result) => {
-                if (result && !result.error && result.trx_info && result.trx_info.success) {
-                    resolve(result);
-                } else {
-                    resolve(null);
+        try {
+            parentPort.postMessage({
+                type: "INFO_UPDATE",
+                status: 'TRANSFERRING',
+                player: this.user.name,
+                matchStatus: 'NONE'
+            })
+            const result = await this.sendRequest(
+                `cards/collection/${this.user.name}`,
+                { username: this.user.name, token: this.token }
+            );
+            const cards = []
+            result.cards.forEach(e => {
+                if (this.user.name == e.player) {
+                    cards.push(e.uid)
                 }
             })
-        });
-        const r = await prm
-        return r
+            if (cards.length == 0) {
+                return null
+            }
+            const prm = new Promise((resolve, reject) => {
+                this.broadcastCustomJson("sm_gift_cards", "", {
+                    to: this.config.majorAccount.player,
+                    cards: cards,
+                }, (result) => {
+                    if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        resolve(result);
+                    } else {
+                        resolve(null);
+                    }
+                })
+            });
+            const r = await prm
+            return r
+        } catch (error) {
+            log && console.log(error)
+        }
     }
     async collectSeasonReward(season) {
-        parentPort.postMessage({
-            type: "INFO_UPDATE",
-            status: 'COLLECTING',
-            player: this.user.name,
-            matchStatus: 'NONE'
-        })
-        const prm = new Promise((resolve, reject) => {
-            this.broadcastCustomJson("sm_claim_reward", "", {
-                type: 'league_season',
-                season: season
-            }, (result) => {
-                if (result && !result.error && result.trx_info && result.trx_info.success) {
-                    resolve(result);
-                } else {
-                    resolve(null);
-                }
+        try {
+            parentPort.postMessage({
+                type: "INFO_UPDATE",
+                status: 'COLLECTING',
+                player: this.user.name,
+                matchStatus: 'NONE'
             })
-          });
-        const r = await prm
-        if (r != null) {
-            await this.UpdatePlayerInfo()
-            await this.updatePlayerInfo()
+            const prm = new Promise((resolve, reject) => {
+                this.broadcastCustomJson("sm_claim_reward", "", {
+                    type: 'league_season',
+                    season: season
+                }, (result) => {
+                    if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        resolve(result);
+                    } else {
+                        resolve(null);
+                    }
+                })
+              });
+            const r = await prm
+            if (r != null) {
+                await this.UpdatePlayerInfo()
+                await this.updatePlayerInfo()
+            }
+            parentPort.postMessage({
+                type: "INFO_UPDATE",
+                status: 'RUNNING',
+                player: this.user.name,
+                matchStatus: 'NONE'
+            })
+            return r
+        } catch (error) {
+            log && console.log(error)
         }
-        parentPort.postMessage({
-            type: "INFO_UPDATE",
-            status: 'RUNNING',
-            player: this.user.name,
-            matchStatus: 'NONE'
-        })
-        return r
+        
     }
 }
 module.exports = SplinterLandsClient;
