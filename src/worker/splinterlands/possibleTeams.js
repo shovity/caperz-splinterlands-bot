@@ -1,19 +1,18 @@
 const requester = require('../../service/requester')
-const basicCards = require('./data/basicCards.js');
+const basicCards = require('./data/basicCards.js')
 
 let availabilityCheck = (myCards, team) => {
-    let baseCards = basicCards.map(card => getCardIdFromString(card).id)
+    let baseCards = basicCards.map((card) => getCardIdFromString(card).id)
     let cards = myCards.concat(baseCards)
     cards.push('')
     let teamCards = team.slice(0, 7)
-    return teamCards.every(v => cards.includes(v))
-};
+    return teamCards.every((v) => cards.includes(v))
+}
 
 const log = false
 
 const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
-
-    matchDetails.rules = encodeURIComponent(matchDetails.rules);
+    matchDetails.rules = encodeURIComponent(matchDetails.rules)
     // matchDetails.rules = matchDetails.rules.
     matchDetails.player = account
     let params = `rules=${matchDetails.rules}`
@@ -22,10 +21,10 @@ const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
     params += `&active=${matchDetails.active}`
     params += `&mana_cap=${matchDetails.mana_cap}`
     params += `&player=${account}`
-    if ( matchDetails.color ) {
+    if (matchDetails.color) {
         params += `&color=${matchDetails.color}`
     }
-    if ( matchDetails.quest ) {
+    if (matchDetails.quest) {
         params += `&quest=${matchDetails.quest}`
     }
     if (opponent) {
@@ -33,36 +32,40 @@ const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
     }
     //add user token to header
     const host = 'https://nftauto.online/'
-    const url = `api/v2/splinterlands/teams?${params}`;
+    const url = `api/v2/splinterlands/teams?${params}`
     // console.log('API call: ', host+url)
     log && console.log('token header', spsToken)
-    return requester.get(host+url, {},{
-        header: {
-            'authorization': spsToken
+    return requester.get(
+        host + url,
+        {},
+        {
+            header: {
+                authorization: spsToken,
+            },
         }
-    })
+    )
 }
 
 const defaultDataForNoTeams = {
-    fire: "red_1_12_167-4-c::157-4-c:159-1-c",
-    water: "blue_0_12_437-7-c::168-4-c:169-4-c",
-    earth: "green_0_12_189-4-c::179-4-c:180-4-c",
-    death: "black_1_12_156-4-c::135-4-c:136-4-c",
-    life: "white_0_12_145-4-c::146-4-c:147-4-c",
-    dragon: "gold_0_12_224-4-c::190-4-c:191-4-c",
+    fire: 'red_1_12_167-4-c::157-4-c:159-1-c',
+    water: 'blue_0_12_437-7-c::168-4-c:169-4-c',
+    earth: 'green_0_12_189-4-c::179-4-c:180-4-c',
+    death: 'black_1_12_156-4-c::135-4-c:136-4-c',
+    life: 'white_0_12_145-4-c::146-4-c:147-4-c',
+    dragon: 'gold_0_12_224-4-c::190-4-c:191-4-c',
 
-    red: "red_1_12_167-4-c::157-4-c:159-1-c",
-    blue: "blue_0_12_437-7-c::168-4-c:169-4-c",
-    green: "green_0_12_189-4-cc::179-4-c:180-4-c",
-    black: "black_1_12_156-4-cc::135-4-c:136-4-c",
-    white: "white_0_12_145-4-c-c::146-4-c:147-4-c",
-    gold: "gold_0_12_224-4-c::190-4-c:191-4-c",
+    red: 'red_1_12_167-4-c::157-4-c:159-1-c',
+    blue: 'blue_0_12_437-7-c::168-4-c:169-4-c',
+    green: 'green_0_12_189-4-cc::179-4-c:180-4-c',
+    black: 'black_1_12_156-4-cc::135-4-c:136-4-c',
+    white: 'white_0_12_145-4-c-c::146-4-c:147-4-c',
+    gold: 'gold_0_12_224-4-c::190-4-c:191-4-c',
 }
 
 const getTeamDefault = (matchDetails) => {
     let rs = []
-    if ( matchDetails.active.length > 0 ) {
-        matchDetails.active.split(',').forEach(splinter => {
+    if (matchDetails.active.length > 0) {
+        matchDetails.active.split(',').forEach((splinter) => {
             if (defaultDataForNoTeams[splinter]) {
                 rs.push(defaultDataForNoTeams[splinter])
             }
@@ -72,38 +75,35 @@ const getTeamDefault = (matchDetails) => {
 }
 
 const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opponent) => {
-
     try {
-        const {data} = await getBattlesWithRuleset(matchDetails, account, spsToken, opponent)
+        const { data } = await getBattlesWithRuleset(matchDetails, account, spsToken, opponent)
 
         log && console.log('matchDetails', matchDetails)
         log && console.log('data', data)
 
-        if ( data && data.length > 0) {
+        if (data && data.length > 0) {
             return data
         } else {
             return getTeamDefault(matchDetails)
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error('getTeamsFromAPI: ', e.status || e.code, e.statusText)
         console.log(getTeamDefault(matchDetails))
 
         return getTeamDefault(matchDetails)
     }
-
 }
 
 //27-1-c
 const getCardIdFromString = (str) => {
     let rs = {}
-    if ( str) {
+    if (str) {
         let [id, edition, type] = str.split('-')
         if (id) {
             id = +id
             rs = {
                 id,
-                edition
+                edition,
             }
         }
     }
@@ -115,13 +115,13 @@ const getTeamFromString = (str) => {
     let data = {
         summoner: {},
         monsters: [],
-        color: ''
+        color: '',
     }
     let arr = str.split('_')
     if (arr && arr.length > 0) {
         let color = arr[0]
         let rex = new RegExp(/^[a-z]/)
-        if ( !rex.test(color)) {
+        if (!rex.test(color)) {
             color = ''
         }
         let match = arr[arr.length - 1]
@@ -130,77 +130,71 @@ const getTeamFromString = (str) => {
         monsters = monsters.split(':')
         let team = []
         if (monsters.length > 0) {
-            monsters.forEach(mon => {
+            monsters.forEach((mon) => {
                 let obj = getCardIdFromString(mon)
                 //{id, edition}
-                if ( obj.id ) {
+                if (obj.id) {
                     team.push(obj)
                 }
             })
         }
         if (summoner && monsters.length > 0) {
-
             data = {
                 summoner: getCardIdFromString(summoner),
                 monsters: team,
-                color
+                color,
             }
         }
     }
     return data
 }
 
-const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr, spsToken, opponent) => getTeamsFromAPI(matchDetails, account, config, ecr, spsToken, opponent)
-    .then(x => {
-
-        return x.map(
-            (team) => {
-                let teamData = getTeamFromString(team)
-                let arr = new Array(8).fill('')
-                if ( teamData.summoner.id ) {
-                    arr[0] = teamData.summoner.id
-                }
-                if ( teamData.monsters.length > 0 ) {
-                    teamData.monsters.forEach((mon, index) => {
-                        arr[index+1] = mon.id ? mon.id : ''
-                    })
-                }
-                arr[7] = teamData.color
-
-                return arr
+const cardsIdsforSelectedBattles = (matchDetails, account, config, ecr, spsToken, opponent) =>
+    getTeamsFromAPI(matchDetails, account, config, ecr, spsToken, opponent).then((x) => {
+        return x.map((team) => {
+            let teamData = getTeamFromString(team)
+            let arr = new Array(8).fill('')
+            if (teamData.summoner.id) {
+                arr[0] = teamData.summoner.id
             }
-        )
+            if (teamData.monsters.length > 0) {
+                teamData.monsters.forEach((mon, index) => {
+                    arr[index + 1] = mon.id ? mon.id : ''
+                })
+            }
+            arr[7] = teamData.color
+
+            return arr
+        })
     })
 
-const askFormation = function ({matchDetails, account, config, ecr, spsToken, opponent}) {
-    const cards = matchDetails.myCards || basicCards;
-    let cardIds = cards.map(card => card.split('-')[0] ? (+card.split('-')[0]) : '')
+const askFormation = function ({ matchDetails, account, config, ecr, spsToken, opponent }) {
+    const cards = matchDetails.myCards || basicCards
+    let cardIds = cards.map((card) => (card.split('-')[0] ? +card.split('-')[0] : ''))
 
     matchDetails.cards = cards.join(',')
     matchDetails.mana_cap = matchDetails.mana
     delete matchDetails.myCards
     //arr(8) = [sum, team(6), color]
     //[ 145, 50, 51, 52, 141, '', '', 'black' ]
-    return cardsIdsforSelectedBattles(matchDetails, account, config, ecr, spsToken, opponent)
-        .then(x => x.filter(team => availabilityCheck(cardIds, team))
-            .map(element => element)//cards.cardByIds(element)
-        )
-
+    return cardsIdsforSelectedBattles(matchDetails, account, config, ecr, spsToken, opponent).then(
+        (x) => x.filter((team) => availabilityCheck(cardIds, team)).map((element) => element) //cards.cardByIds(element)
+    )
 }
 
-const possibleTeams = async ({matchDetails, account, config, ecr, spsToken, opponent}) => {
-    let possibleTeams = [];
-    possibleTeams = await askFormation({matchDetails, account, config, ecr, spsToken, opponent});
+const possibleTeams = async ({ matchDetails, account, config, ecr, spsToken, opponent }) => {
+    let possibleTeams = []
+    possibleTeams = await askFormation({ matchDetails, account, config, ecr, spsToken, opponent })
 
     if (possibleTeams.length > 0) {
-        return possibleTeams;
+        return possibleTeams
     }
-    return possibleTeams;
+    return possibleTeams
 }
 
 const teamSelection = async (possibleTeams, matchDetails, quest) => {
     //check if daily quest is not completed
-    if(possibleTeams.length > 0 ) {
+    if (possibleTeams.length > 0) {
         let team = possibleTeams[0]
         // const filteredTeams = possibleTeams.filter(team=> team[7] !== 'gold')
         const filteredTeams = possibleTeams
@@ -211,16 +205,14 @@ const teamSelection = async (possibleTeams, matchDetails, quest) => {
 
         let summoner = team[0]
         let arr = team.slice(1, 7)
-        return { summoner, cards: arr, color: team[team.length - 1]};
+        return { summoner, cards: arr, color: team[team.length - 1] }
     }
 
-    throw new Error('NO TEAM available to be played.');
+    throw new Error('NO TEAM available to be played.')
 }
 
-
-module.exports.possibleTeams = possibleTeams;
-module.exports.teamSelection = teamSelection;
-
+module.exports.possibleTeams = possibleTeams
+module.exports.teamSelection = teamSelection
 
 // const summoners = history.map(x => x.summoner_id);
 
