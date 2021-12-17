@@ -100,6 +100,8 @@ class WSSplinterlandsClient {
         this.startQuest = false
         this.questClaimed = false
         this.spsToken = spsToken
+        this.claimQuestError = false
+        this.collectSeasonRewardDone = false
     }
 
     async Connect(player, token, new_account) {
@@ -197,9 +199,10 @@ class WSSplinterlandsClient {
             this.CheckCondition()
             return
         }
-        if (this.config.modeCollectSeasonReward) {
+        if (this.config.modeCollectSeasonReward && !this.collectSeasonRewardDone) {
             try {
                 await this.client.collectSeasonReward(this.config.season)
+                this.collectSeasonRewardDone = true
             } catch (error) {
                 log && console.log('err', error)
             }
@@ -238,14 +241,17 @@ class WSSplinterlandsClient {
             this.questClaimed = false
         }
 
-        if (quest && quest.isComplete && !this.questClaimed) {
+        if (quest && quest.isComplete && !this.questClaimed && !this.claimQuestError) {
             log && console.log('get reward --------->')
             try {
                 let questReward = await this.client.claimReward(quest.id)
                 log && console.log('quest was completed --------->', questReward)
-                if (!questReward?.error) {
+                if (questReward) {
                     //   await this.client.getRewards();
                     this.questClaimed = true
+                    this.claimQuestError = false
+                } else {
+                    this.claimQuestError = true
                 }
             } catch (e) {
                 log && console.log(e)

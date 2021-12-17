@@ -2,7 +2,7 @@ ori.use('event store emitter storage', () => {
     store.origin.watch()
     emitter.click()
     emitter.keyboard()
-    const log = false
+    const log = true
     var playerMonitoringTable
     var proxyMonitoringTable
     let totalDec = {}
@@ -106,7 +106,6 @@ ori.use('event store emitter storage', () => {
     })
 
     event.listen('select_tab', (name) => {
-        
         for (const nav of navs) {
             nav.removeClass('active')
         }
@@ -152,24 +151,24 @@ ori.use('event store emitter storage', () => {
     })
     event.listen('modePlayToggle', () => {
         ipc.send('setting.save', {
-            modePlay: mode_play.checked
+            modePlay: mode_play.checked,
         })
     })
     event.listen('modeTransferToggle', () => {
         ipc.send('setting.save', {
-            modeTransfer: mode_transfer.checked
+            modeTransfer: mode_transfer.checked,
         })
     })
     event.listen('modeCollectSeasonRewardToggle', () => {
         ipc.send('setting.save', {
-            modeCollectSeasonReward: mode_collect_season_reward.checked
+            modeCollectSeasonReward: mode_collect_season_reward.checked,
         })
     })
 
     event.listen('setSeason', () => {
         showNotice('Saved')
         ipc.send('setting.save', {
-            season: season.value
+            season: season.value,
         })
     })
 
@@ -190,7 +189,7 @@ ori.use('event store emitter storage', () => {
             }
             const reg =
                 /^[^:]+\:[^:]+\@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
-                // /(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
+            // /(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\:\d{4,5}$/
             if (!reg.test(vl)) {
                 showNotice('Invalid proxy format')
                 return
@@ -249,7 +248,7 @@ ori.use('event store emitter storage', () => {
             rentalDay: rental_day.value,
             majorAccount: {
                 player: ma_username.value,
-            }
+            },
         })
         showNotice('saved')
     })
@@ -395,17 +394,18 @@ ori.use('event store emitter storage', () => {
         const tableData = data.map((d) => {
             totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
-                id: 'player_'+ d.username,
+                id: 'player_' + d.username,
                 username: d.username,
                 ecr: d.ecr || 0,
                 dec: d.dec.toFixed(3) || 0,
                 power: d.power || 0,
                 rating: d.rating || 0,
                 lastUpdate: new Date().toLocaleTimeString(),
-                quest:
-                    d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
-                        ? `${d.quest}/${d.maxQuest}`
-                        : '--',
+                quest: d.questClaimed
+                    ? '---'
+                    : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                    ? `${d.quest}/${d.maxQuest}`
+                    : '--',
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
                 matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
@@ -448,7 +448,11 @@ ori.use('event store emitter storage', () => {
                     width: '40px',
                     targets: 9,
                     render: function (data, type, row) {
-                        if (['RUNNING','PENDING','DONE','RENTING','COLLECTING','TRANSFERRING'].includes(data.status)) {
+                        if (
+                            ['RUNNING', 'PENDING', 'DONE', 'RENTING', 'COLLECTING', 'TRANSFERRING'].includes(
+                                data.status
+                            )
+                        ) {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
                         </button>`
@@ -460,7 +464,7 @@ ori.use('event store emitter storage', () => {
                     },
                 },
             ],
-            order: []
+            order: [],
         })
         $("th.sorting[aria-controls='player_monitoring_table']").on('click', function () {
             const dataTable = playerMonitoringTable.rows().data().toArray()
@@ -491,16 +495,17 @@ ori.use('event store emitter storage', () => {
         const tableData = data.map((d) => {
             totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
-                id: 'player_'+ d.username,
+                id: 'player_' + d.username,
                 username: d.username,
                 ecr: d.ecr || 0,
                 dec: d.dec.toFixed(3) || 0,
                 power: d.power || 0,
                 rating: d.rating || 0,
-                quest:
-                    d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
-                        ? `${d.quest}/${d.maxQuest}`
-                        : '--',
+                quest: d.questClaimed
+                    ? '---'
+                    : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                    ? `${d.quest}/${d.maxQuest}`
+                    : '--',
                 lastUpdate: new Date().toLocaleTimeString(),
                 status: statusMapping(d.status),
                 stt: { status: d.status, username: d.username },
@@ -514,35 +519,36 @@ ori.use('event store emitter storage', () => {
         }
         $('#total_dec').html(total.toFixed(2))
     })
-   
+
     ipc.on('player_table.player.redraw', (event, d) => {
         log && console.log('player' + d.username + 'rerender')
         log && console.log(d)
         totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
         const newData = {
-            id: 'player_'+ d.username,
+            id: 'player_' + d.username,
             username: d.username,
             ecr: d.ecr || 0,
             dec: d.dec.toFixed(3) || 0,
             power: d.power || 0,
             rating: d.rating || 0,
-            quest:
-                d.questClaimed ? '---' : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined' ? `${d.quest}/${d.maxQuest}` : '--',
+            quest: d.questClaimed
+                ? '---'
+                : typeof d.quest != 'undefined' && typeof d.maxQuest != 'undefined'
+                ? `${d.quest}/${d.maxQuest}`
+                : '--',
             lastUpdate: new Date().toLocaleTimeString(),
             status: statusMapping(d.status),
             stt: { status: d.status, username: d.username },
             matchStatus: matchStatusMapping(d.status != 'RUNNING' ? 'none' : d.matchStatus),
         }
-            playerMonitoringTable
-                .row(`#player_${d.username}`)
-                .data(newData)
+        playerMonitoringTable.row(`#player_${d.username}`).data(newData)
         // if ($(`#player_monitoring_table tr#${d.username}`)[0]) {
         //     playerMonitoringTable
         //         .row($(`#player_monitoring_table tr#${d.username}`)[0])
         //         .data(newData)
         //         .draw(false)
         // }
-        
+
         let total = 0
         for (const [key, value] of Object.entries(totalDec)) {
             total += value

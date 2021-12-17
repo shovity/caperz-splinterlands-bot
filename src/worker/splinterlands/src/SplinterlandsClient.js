@@ -471,7 +471,7 @@ class SplinterLandsClient {
     trxLookup(trx_id, details, callback, timeout, suppressError) {
         if (this._transactions[trx_id]) {
             if (this._transactions[trx_id].status == 'complete') {
-                if (callback) {
+                if (callback(this._transactions[trx_id].data)) {
                     setTimeout(callback(this._transactions[trx_id].data), 5000)
                 }
                 delete this._transactions[trx_id]
