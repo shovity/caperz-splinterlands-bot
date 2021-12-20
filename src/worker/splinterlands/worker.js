@@ -17,7 +17,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
     })
 
     parentPort.postMessage({
-        type: 'CREATE_DELEGATOR',
+        type: 'CREATE_COLLECTOR',
         status: 'test',
         param: {
             x: 1,
