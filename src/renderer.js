@@ -164,6 +164,11 @@ ori.use('event store emitter storage', () => {
             modeTransfer: mode_transfer.checked,
         })
     })
+    event.listen('modeClaimQuestToggle', () => {
+        ipc.send('setting.save', {
+            modeClaimQuest: mode_claim_quest.checked,
+        })
+    })
     event.listen('modeCollectSeasonRewardToggle', () => {
         ipc.send('setting.save', {
             modeCollectSeasonReward: mode_collect_season_reward.checked,
@@ -282,6 +287,7 @@ ori.use('event store emitter storage', () => {
         season.value = data.season || 0
         mode_play.checked = data.modePlay
         mode_transfer.checked = data.modeTransfer
+        mode_claim_quest.checked = data.modeClaimQuest
         mode_collect_season_reward.checked = data.modeCollectSeasonReward
         transfer_keep_dec.value = data.transferKeepDec
         transfer_start_dec.value = data.transferStartDec
@@ -395,7 +401,7 @@ ori.use('event store emitter storage', () => {
         if (!data) {
             return
         }
-
+        totalDec = {}
         const tableData = data.map((d) => {
             totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {
@@ -497,6 +503,7 @@ ori.use('event store emitter storage', () => {
 
     ipc.on('player_table.redraw', (event, data) => {
         log && console.log('table rerender')
+        totalDec = {}
         const tableData = data.map((d) => {
             totalDec[d.username] = isNaN(d.dec) ? 0 : d.dec
             return {

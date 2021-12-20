@@ -912,7 +912,6 @@ class SplinterLandsClient {
     async claimReward(id) {
         // type quest
         // quest id
-        console.log('asbc')
         const prm = new Promise((resolve, reject) => {
             this.broadcastCustomJson(
                 'sm_claim_reward',
@@ -922,7 +921,6 @@ class SplinterLandsClient {
                     quest_id: id,
                 },
                 (result) => {
-                    console.log(result)
                     if (result && !result.error && result.trx_info && result.trx_info.success) {
                         resolve(result)
                     } else {
@@ -1043,7 +1041,7 @@ class SplinterLandsClient {
 
             return res
         } catch (error) {
-            throw error
+            // throw error
         }
     }
     async sendRequestBattle(url, params, method = 'get') {
@@ -1295,8 +1293,8 @@ class SplinterLandsClient {
         let remainingPower = expectedPower - curPower
         let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
         let weight = remainingDec / rentalDay / remainingPower
-        console.log(weight)
-        console.log(remainingPower)
+        log && console.log(weight)
+        log && console.log(remainingPower)
         const res = await this.sendRequest('market/for_rent_grouped', {
             v: Date.now(),
             username: this.user.name,

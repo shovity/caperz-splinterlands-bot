@@ -14,6 +14,7 @@ const log = false
 const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
     matchDetails.rules = encodeURIComponent(matchDetails.rules)
     // matchDetails.rules = matchDetails.rules.
+    //https://nftauto.online/api/v2/splinterlands/teams?rules=${matchDetails.rules}&leaderboard=${matchDetails.leaderboard}&cards=${matchDetails.cards}&active=${matchDetails.active}&mana_cap=${matchDetails.mana_cap}&player=${account}&color=${matchDetails.color}&quest=${matchDetails.quest}&opponent=${opponent}
     matchDetails.player = account
     let params = `rules=${matchDetails.rules}`
     params += `&leaderboard=${matchDetails.leaderboard}`
@@ -56,9 +57,9 @@ const defaultDataForNoTeams = {
 
     red: 'red_1_12_167-4-c::157-4-c:159-1-c',
     blue: 'blue_0_12_437-7-c::168-4-c:169-4-c',
-    green: 'green_0_12_189-4-cc::179-4-c:180-4-c',
-    black: 'black_1_12_156-4-cc::135-4-c:136-4-c',
-    white: 'white_0_12_145-4-c-c::146-4-c:147-4-c',
+    green: 'green_0_12_189-4-c::179-4-c:180-4-c',
+    black: 'black_1_12_156-4-c::135-4-c:136-4-c',
+    white: 'white_0_12_145-4-c::146-4-c:147-4-c',
     gold: 'gold_0_12_224-4-c::190-4-c:191-4-c',
 }
 

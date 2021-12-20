@@ -102,6 +102,7 @@ class WSSplinterlandsClient {
         this.spsToken = spsToken
         this.claimQuestError = false
         this.collectSeasonRewardDone = false
+        this.retryTimeout = null
     }
 
     async Connect(player, token, new_account) {
@@ -213,7 +214,7 @@ class WSSplinterlandsClient {
             log && console.log('get new quest')
             const prm = new Promise((resolve, reject) => {
                 this.client.StartDailyQuest(async (data) => {
-                    if (!!data?.error === false) {
+                    if (data?.trx_info?.result) {
                         // обновление квеста если можно
                         const dt = data.trx_info.result
                         const newQuest = JSON.parse(dt)
@@ -241,7 +242,7 @@ class WSSplinterlandsClient {
             this.questClaimed = false
         }
 
-        if (quest && quest.isComplete && !this.questClaimed && !this.claimQuestError) {
+        if (quest && quest.isComplete && !this.questClaimed && !this.claimQuestError && this.config.modeClaimQuest) {
             log && console.log('get reward --------->')
             try {
                 let questReward = await this.client.claimReward(quest.id)
@@ -278,10 +279,18 @@ class WSSplinterlandsClient {
                 maxQuest: quest?.total,
             })
             if (ECR > this.config.ecr && this.config.modePlay) {
-                // p && console.log("Start ranked match, ECR=", ECR)
+                if (this.retryTimeout) {
+                    clearTimeout(this.retryTimeout)
+                }
+                this.retryTimeout = setTimeout(() => {
+                    this.CheckCondition()
+                },1000*60*7)
                 this.client.findMatch('Ranked')
             } else {
                 //done
+                if (this.retryTimeout) {
+                    clearTimeout(this.retryTimeout)
+                }
                 await this.client.processDone()
                 process.exit()
             }
