@@ -40,7 +40,6 @@ const master = {
         },
         splinterlands: {
             concurrency: 'infinity',
-            // concurrency: 3,
         }
     },
     state: null,
@@ -244,6 +243,28 @@ master.remove = async (account) => {
     const app_setting = settings.data.app_setting
 
     const accountIndex = account_list.findIndex(a => a.username === account)
+
+    if (account_list[accountIndex].status === ACCOUNT_STATUS.PENDING) {
+
+        const priorityQueue = master.priorityQueue.toArray()
+
+        for (let i = 0; i < priorityQueue.length; i++) {   
+            if (priorityQueue[i].element.username === account) {
+                master.priorityQueue.clear()
+                const newPriorityQueue = priorityQueue.filter(e => e.element.username !== account)
+                newPriorityQueue.forEach(e => {
+                    master.priorityQueue.enqueue(e.element)
+                })
+
+                account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
+                await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+
+                break
+            }
+        }
+
+        return
+    }
 
     for (const worker of master.workers) {
         if (worker.id === account_list[accountIndex].workerId) {
