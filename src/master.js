@@ -41,7 +41,13 @@ const master = {
         },
         splinterlands: {
             concurrency: 'infinity',
-        }
+        },
+        delegator: {
+            concurrency: 'infinity',
+        },
+        collector: {
+            concurrency: 'infinity',
+        },
     },
     state: null,
     priorityQueue: new MaxPriorityQueue({ priority: (a) =>  calculatePriority(a) }),

@@ -6,6 +6,7 @@ const MESSAGE_STATUS = {
     STATUS_UPDATE: "STATUS_UPDATE",
     MESSAGE: "MESSAGE",
     ERROR: "ERROR",
+    CREATE_DELEGATOR: "CREATE_DELEGATOR"
 }
 
 const service = {}
@@ -121,6 +122,15 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             await master.change('log', message)
 
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+            break
+
+        case MESSAGE_STATUS.CREATE_DELEGATOR: 
+            await master.add({
+                worker: {
+                    name: 'delegator',
+                },
+                param: message.param
+            })
             break
     }
 }
