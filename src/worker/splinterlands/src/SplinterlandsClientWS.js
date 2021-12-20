@@ -190,13 +190,19 @@ class WSSplinterlandsClient {
                     this.config.rentalDay *
                     (this.config.expectedPower - this.client.user.collection_power)) /
                 this.config.expectedPower
-            await this.client.cardRental(
-                this.client.user.collection_power,
-                this.config.expectedPower,
-                dec,
-                [],
-                this.config.rentalDay
-            )
+            
+            parentPort.postMessage({
+                type: 'CREATE_DELEGATOR',
+                status: this.client.status,
+                param: {
+                    collection_power: this.client.user.collection_power,
+                    expectedPower: this.config.expectedPower,
+                    dec,
+                    unknown: [],
+                    rentalDay: this.config.rentalDay
+                }
+            })
+
             this.CheckCondition()
             return
         }

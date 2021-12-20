@@ -16,6 +16,15 @@ async function main({ username, password, account, emailPass, proxy, config = nu
         data: 'start login'
     })
 
+    parentPort.postMessage({
+        type: 'CREATE_DELEGATOR',
+        status: 'test',
+        param: {
+            x: 1,
+            y: 2
+        }
+    })
+
     try {
         const user = await client.login(username, postingKey)
 
