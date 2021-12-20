@@ -132,6 +132,15 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 param: message.param
             })
             break
+
+        case MESSAGE_STATUS.CREATE_COLLECTOR: 
+            await master.add({
+                worker: {
+                    name: 'collector',
+                },
+                param: message.param
+            })
+            break
     }
 }
 
