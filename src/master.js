@@ -36,7 +36,8 @@ const master = {
     workers: [],
     config: {
         test: {
-            concurrency: 1,
+            // concurrency: 1,
+            concurrency: 'infinity',
         },
         splinterlands: {
             concurrency: 'infinity',
@@ -95,8 +96,6 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
 
     return ecr
 }
-
-
 
 master.change('master_state', {state: master.state})
 
@@ -253,7 +252,7 @@ master.remove = async (account) => {
                 master.priorityQueue.clear()
                 const newPriorityQueue = priorityQueue.filter(e => e.element.username !== account)
                 newPriorityQueue.forEach(e => {
-                    master.priorityQueue.enqueue(e.element)
+                    master.priorityQueue.enqueue(e.element, calculateECR(e.element.lastRewardTime, e.element.ecr))
                 })
 
                 account_list[accountIndex].status = ACCOUNT_STATUS.PAUSED
