@@ -1,11 +1,8 @@
 var steem = require('steem')
 const eosjs_ecc = require('eosjs-ecc')
 const { parentPort } = require('worker_threads')
-const qs = require('qs')
 var md5 = require('md5')
-const HttpsProxyAgent = require('https-proxy-agent')
-const cardByRarity = require('../data/cardByRarity.json')
-const cardsDetail = require('../data/cardsDetails.json')
+const cardsDetail = require('../../worker/splinterlands/data/cardsDetails.json')
 const Config = {
     api_url: 'https://api2.splinterlands.com',
     battle_url: 'https://battle.splinterlands.com',
@@ -27,7 +24,7 @@ const Config = {
     splinterHosts: ['https://steemmonsters.com/', 'https://api2.splinterlands.com/'],
 }
 
-const requester = require('../../../service/requester')
+const requester = require('../requester')
 
 const log = false
 
@@ -160,11 +157,15 @@ class SplinterLandsClient {
             this.config.modeTransfer &&
             this.config.majorAccount.player != this.user.name.toLowerCase()
         ) {
-            await this.transferCard()
+            await this.sendCardToMajorAccount()
+        }
+        if (this.config.dlgMinPower) {
+            this.createCollector()
         }
         await this.UpdatePlayerInfo()
         await this.updatePlayerInfo()
         let player = this.user.name.toLowerCase() || ''
+
         parentPort.postMessage({
             type: TYPE.STATUS_UPDATE,
             status: STATUS.DONE,
@@ -173,6 +174,37 @@ class SplinterLandsClient {
         return true
     }
 
+    async createCollector() {
+        const delegatedCards = []
+        let dlgPw = 0
+        const result = await this.sendRequest(`cards/collection/${this.user.name}`, {
+            username: this.user.name,
+            token: this.token,
+        })
+
+        if (result) {
+            result.cards
+                .filter((c) => {
+                    if (c.delegated_to && c.player === this.config.majorAccount?.player && c.delegated_to == this.user.name) {
+                        return true
+                    }
+                })
+                .forEach((item) => {
+                    dlgPw += this.calculateCP(item)
+                    delegatedCards.push(item.uid)
+                })
+        }
+        parentPort.postMessage({
+            type: 'CREATE_COLLECTOR',
+            param: {
+                cards: delegatedCards,
+                proxy: this.proxy,
+                power: this.user.collection_power - dlgPw,
+                player: this.user.name
+            },
+            config: this.config,
+        })
+    }
     async GetDetailEnemyFound(battle_queue) {
         const result = await this.sendRequest('players/details', {
             name: battle_queue.opponent_player,
@@ -1434,7 +1466,7 @@ class SplinterLandsClient {
             log && console.log(error)
         }
     }
-    async transferCard() {
+    async sendCardToMajorAccount() {
         try {
             parentPort.postMessage({
                 type: 'INFO_UPDATE',
@@ -1478,6 +1510,135 @@ class SplinterLandsClient {
             log && console.log(error)
         }
     }
+
+    async delegatePower(player, power, currentPower) {
+        let remainingPw = power
+        let dlgPw = 0
+        try {
+            const result = await this.sendRequest(`cards/collection/${this.user.name}`, {
+                username: this.user.name,
+                token: this.token,
+            })
+            let formattedCards = []
+            let cards = []
+            result.cards.forEach((e) => {
+                if (e.delegated_to && e.player === this.user.name && e.player !== e.delegated_to) {
+                    return null
+                }
+
+                if (e.unlock_date && new Date(e.unlock_date) >= Date.now()) {
+                    return null
+                }
+
+                if (
+                    e.player != e.last_used_player &&
+                    e.last_used_date &&
+                    Date.now() - new Date(e.last_used_date) < 1000 * 60 * 60 * 24
+                ) {
+                    if (
+                        e.last_transferred_date &&
+                        Date.now() - new Date(e.last_used_date) > Date.now() - new Date(e.last_transferred_date)
+                    ) {
+                        return null
+                    }
+                }
+
+                if (this.user.name == e.player) {
+                    let pw = this.calculateCP(e)
+                    if (pw > power) {
+                        return null
+                    }
+                    formattedCards.push({
+                        ...e,
+                        power: this.calculateCP(e),
+                    })
+                }
+            })
+            formattedCards = formattedCards.sort((a, b) => {
+                return b.power - a.power
+            })
+
+            formattedCards.forEach((e) => {
+                if (remainingPw <= 0 || e.power > remainingPw) {
+                    return
+                }
+                cards.push(e.uid)
+                remainingPw -= e.power
+                dlgPw += e.power
+            })
+
+            if (cards.length == 0) {
+                return null
+            }
+            log && console.log(cards)
+            const prm = new Promise((resolve, reject) => {
+                this.broadcastCustomJson(
+                    'sm_delegate_cards',
+                    '',
+                    {
+                        to: player,
+                        cards: cards,
+                    },
+                    (result) => {
+                        console.log('as', result)
+                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                            resolve(result)
+                        } else {
+                            resolve(null)
+                        }
+                    }
+                )
+            })
+            const r = await prm
+            if (r) {
+                parentPort.postMessage({
+                    type: 'INFO_UPDATE',
+                    player: player,
+                    power: dlgPw + currentPower
+                })
+            }
+            return r
+        } catch (error) {
+            log && console.log(error)
+        }
+    }
+    async undelegatePower(cards, power, player) {
+        try {
+            if (cards.length == 0) {
+                return null
+            }
+            console.log(cards)
+            const prm = new Promise((resolve, reject) => {
+                this.broadcastCustomJson(
+                    'sm_undelegate_cards',
+                    '',
+                    {
+                        cards: cards,
+                    },
+                    (result) => {
+                        console.log('as', result)
+                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                            resolve(result)
+                        } else {
+                            resolve(null)
+                        }
+                    }
+                )
+            })
+            const r = await prm
+            if (r) {
+                parentPort.postMessage({
+                    type: 'INFO_UPDATE',
+                    player: player,
+                    power: power,
+                })
+            }
+            return r
+        } catch (error) {
+            log && console.log(error)
+        }
+    }
+
     async collectSeasonReward(season) {
         try {
             parentPort.postMessage({

@@ -1,5 +1,5 @@
-const SplinterLandsClient = require('./src/SplinterlandsClient')
-const WSSplinterlandsClient = require('./src/SplinterlandsClientWS')
+const SplinterLandsClient = require('../../service/splinterlands/SplinterlandsClient')
+const WSSplinterlandsClient = require('../../service/splinterlands/SplinterlandsClientWS')
 const { parentPort } = require('worker_threads')
 
 const defaultConfig = {
@@ -16,14 +16,6 @@ async function main({ username, password, account, emailPass, proxy, config = nu
         data: 'start login'
     })
 
-    parentPort.postMessage({
-        type: 'CREATE_COLLECTOR',
-        status: 'test',
-        param: {
-            x: 1,
-            y: 2
-        }
-    })
 
     try {
         const user = await client.login(username, postingKey)

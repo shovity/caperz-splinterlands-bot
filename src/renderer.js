@@ -251,13 +251,16 @@ ori.use('event store emitter storage', () => {
             botPerIp: botPerIp.value,
             proxies: proxyArray,
             useDefaultProxy: useDproxy.checked,
-            expectedPower: expected_power.value,
-            maxDec: max_dec.value,
+            dlgMinPower: adc_min_power.value,
+            expectedPower: acr_expected_power.value,
+            maxDec: acr_max_dec.value,
             transferKeepDec: transfer_keep_dec.value,
             transferStartDec: transfer_start_dec.value,
-            rentalDay: rental_day.value,
+            rentalDay: acr_rental_day.value,
             majorAccount: {
                 player: ma_username.value,
+                postingKey: ma_posting_key.value,
+                masterKey: ma_master_key.value,
             },
         })
         showNotice('saved')
@@ -282,8 +285,9 @@ ori.use('event store emitter storage', () => {
         start_quest_ecr.value = data.startQuestEcr
         use_default_proxy.checked = data.useDefaultProxy
         bot_per_ip.value = data.botPerIp
-        expected_power.value = data.expectedPower
-        max_dec.value = data.maxDec
+        adc_min_power.value = data.dlgMinPower
+        acr_expected_power.value = data.expectedPower
+        acr_max_dec.value = data.maxDec
         season.value = data.season || 0
         mode_play.checked = data.modePlay
         mode_transfer.checked = data.modeTransfer
@@ -291,8 +295,10 @@ ori.use('event store emitter storage', () => {
         mode_collect_season_reward.checked = data.modeCollectSeasonReward
         transfer_keep_dec.value = data.transferKeepDec
         transfer_start_dec.value = data.transferStartDec
-        rental_day.value = data.rentalDay
+        acr_rental_day.value = data.rentalDay
         ma_username.value = data.majorAccount?.player || ''
+        ma_posting_key.value = data.majorAccount?.postingKey || ''
+        ma_master_key.value = data.majorAccount?.masterKey || ''
         data.proxies.forEach((proxy) => {
             let row = proxy_table.insertRow(1)
             let cell1 = document.createElement('th')

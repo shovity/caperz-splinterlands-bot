@@ -66,7 +66,7 @@
         <div tab="monitoring" >
             <div class="container tab-header">
                 <div class="d-flex justify-content-between">
-                    <h3 style="margin-right: 16px;">Dashboard</h3>
+                    <h4 style="margin-right: 16px;">Dashboard</h4>
                     <div class="d-flex align-items-center">
                         <h6 style="margin: 0px;margin-right: 16px;">Total DEC: <span id="total_dec">0</span></h6>
                             <button id="startButton" class="btn btn-primary active" click-emit="account.start_all">
@@ -168,7 +168,7 @@
             <div class="container mt-3">
                 <div class="tab-header section">
                     <div class="d-flex">
-                        <h3>Add Player</h3>
+                        <h4>Add Player</h4>
                     </div>
                     <div class="row">
                         <div class="col-md-3 mb-3">
@@ -191,7 +191,7 @@
                 </div>
                 
                 <HR>
-                <h3>Player List</h3>
+                <h4>Player List</h4>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="table" id="account_table">
@@ -214,13 +214,13 @@
         <div tab="settings" id="setting" class="d-none">
             <div class="container tab-header">
                 <div class="d-flex justify-content-between">
-                    <h3>Settings</h3>
+                    <h4>Settings</h4>
                     <button class="btn btn-primary active" click-emit="setting.save">Save settings</button>
                 </div>
             </div>
             <div class="d-flex">
                 <div class="container mt-3 section">
-                    <h3>Game Settings</h3>
+                    <h4>Game Settings</h4>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="ecr">Stop at ECR</label>
@@ -233,57 +233,75 @@
                     </div>
                 </div>
                 <div class="container mt-3 section">
-                    <h3>Auto Card Rental</h3>
+                    <h4>Auto Card Rental</h4>
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="power">Expected Power</label>
-                            <input type="number" class="form-control" id="expected_power" min="1">
+                            <input type="number" class="form-control" id="acr_expected_power" min="1">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="max_dec">Max DEC per day</label>
-                            <input type="number" class="form-control" id="max_dec" placeholder="Maximum dec pay for card rental per day">
+                            <label for="acr_max_dec">Max DEC per day</label>
+                            <input type="number" class="form-control" id="acr_max_dec" placeholder="Maximum dec pay for card rental per day">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="rental_day">Rental days</label>
-                            <input type="number" class="form-control" id="rental_day" placeholder="Days for rental">
+                            <label for="acr_rental_day">Rental days</label>
+                            <input type="number" class="form-control" id="acr_rental_day" placeholder="Days for rental">
                         </div>
                     </div>
                 </div>
             </div>
             <HR>
-            <div class="d-flex">
-                <div class="container mt-3 w-25 section">
-                    <h3>Major Account</h3>
+            <div>
+                <div class="container mt-3 section">
+                    <h4>Major Account</h4>
                     <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <label for="master_key">Player name</label>
+                        <div class="col-md-4 mb-3">
+                            <label for="ma_username">Player name</label>
                             <input class="form-control" id="ma_username">
                         </div>
-                        <div class="col-md-3 mb-3 d-none">
-                            <label for="master_key">Master Key</label>
+                        <div class="col-md-4 mb-3">
+                            <label for="ma_posting_key">Posting Key</label>
+                            <input type="password" class="form-control" id="ma_posting_key">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ma_master_key">Master Key</label>
                             <input type="password" class="form-control" id="ma_master_key">
                         </div>
+                        
                     </div>
                     
                 </div>
-                <div class="container mt-3 w-75 section">
-                    <h3>Auto Transfer</h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="transfer_keep_dec">Hold DEC</label>
-                            <input type="number" class="form-control" id="transfer_keep_dec">
+                <div class="d-flex">
+                    <div class="container mt-3 section">
+                        <h4>Auto Delegate Card</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="adc_min_power">Minium power</label>
+                                <input type="number" class="form-control" id="adc_min_power">
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="transfer_start_dec">Transfer at DEC</label>
-                            <input type="number" class="form-control" id="transfer_start_dec">
+                    </div>
+                    <div class="container mt-3 section">
+                        <h4>Auto Transfer DEC to major account</h4>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="transfer_keep_dec">Hold DEC</label>
+                                <input type="number" class="form-control" id="transfer_keep_dec">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="transfer_start_dec">Transfer at DEC</label>
+                                <input type="number" class="form-control" id="transfer_start_dec">
+                            </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
             <HR>
                 <div class="d-flex">
                     <div class="container w-25 section">
-                        <h3>Bot</h3>
+                        <h4>Bot</h4>
                         <div class="row">
                             <div class="mb-3">
                                 <label for="bot_per_ip" class="mb-3">Number of bot per proxy (default 5)</label>
@@ -292,7 +310,7 @@
                         </div>
                     </div>
                     <div class="container w-75 section">
-                        <h3>Proxy </h3>
+                        <h4>Proxy </h4>
                         <input type="checkbox" id="use_default_proxy" name="use_default_proxy" checked>
                         <label for="use_default_proxy" class="mb-3">Use default proxy</label><br>
                         <div class="row mb-3">
@@ -317,7 +335,7 @@
            
             <HR>
             <div class="container">
-                <h3>Proxy List</h3>
+                <h4>Proxy List</h4>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="table" id="proxy_table">

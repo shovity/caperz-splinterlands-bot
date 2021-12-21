@@ -1,6 +1,5 @@
 const WebSocket = require('ws')
-const ask = require('../possibleTeams')
-const HttpsProxyAgent = require('https-proxy-agent')
+const ask = require('../../worker/splinterlands/possibleTeams')
 const { parentPort } = require('worker_threads')
 
 const MATCH_STATUS = {
@@ -55,7 +54,7 @@ const getCardIdFromString = (str) => {
     return rs
 }
 
-const basicCards = require('../data/basicCards.js')
+const basicCards = require('../../worker/splinterlands/data/basicCards.js')
 let baseCards = basicCards.map((card) => getCardIdFromString(card).id)
 
 function sleep(ms) {
@@ -173,6 +172,23 @@ class WSSplinterlandsClient {
         log && console.log('Power: ', this.client.user.collection_power)
         log && console.log('Quest: ', quest)
         if (
+            this.config.dlgMinPower &&
+            this.config.majorAccount?.player &&
+            this.config.majorAccount?.postingKey &&
+            this.client.user.collection_power < this.config.expectedPower
+        ) {
+            parentPort.postMessage({
+                type: 'CREATE_DELEGATOR',
+                status: this.client.status,
+                param: {
+                    player: this.client.user.name,
+                    pw: this.config.expectedPower - this.client.user.collection_power,
+                    currentPower: this.client.user.collection_power,
+                    proxy: this.proxy,
+                },
+            })
+        }
+        if (
             this.client.masterKey &&
             this.config.expectedPower &&
             this.config.maxDec &&
@@ -190,19 +206,14 @@ class WSSplinterlandsClient {
                     this.config.rentalDay *
                     (this.config.expectedPower - this.client.user.collection_power)) /
                 this.config.expectedPower
-            
-            parentPort.postMessage({
-                type: 'CREATE_DELEGATOR',
-                status: this.client.status,
-                param: {
-                    collection_power: this.client.user.collection_power,
-                    expectedPower: this.config.expectedPower,
-                    dec,
-                    unknown: [],
-                    rentalDay: this.config.rentalDay
-                }
-            })
 
+            await this.client.cardRental(
+                this.client.user.collection_power,
+                this.config.expectedPower,
+                dec,
+                [],
+                this.config.rentalDay
+            )
             this.CheckCondition()
             return
         }
@@ -290,7 +301,7 @@ class WSSplinterlandsClient {
                 }
                 this.retryTimeout = setTimeout(() => {
                     this.CheckCondition()
-                },1000*60*7)
+                }, 1000 * 60 * 7)
                 this.client.findMatch('Ranked')
             } else {
                 //done

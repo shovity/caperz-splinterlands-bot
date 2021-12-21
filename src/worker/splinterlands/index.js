@@ -1,5 +1,5 @@
-const SplinterLandsClient = require('./src/SplinterlandsClient');
-const WSSplinterlandsClient = require('./src/SplinterlandsClientWS');
+const SplinterLandsClient = require('../../service/splinterlands/SplinterlandsClient');
+const WSSplinterlandsClient = require('../../service/splinterlands/SplinterlandsClientWS');
 
 function getFormatedTime() {
   var d = new Date();

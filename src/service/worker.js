@@ -130,7 +130,8 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 worker: {
                     name: 'delegator',
                 },
-                param: message.param
+                param: message.param,
+                config: app_setting
             })
             break
 
@@ -139,7 +140,8 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 worker: {
                     name: 'collector',
                 },
-                param: message.param
+                param: message.param,
+                config: app_setting
             })
             break
     }
