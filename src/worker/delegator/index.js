@@ -12,14 +12,14 @@ async function main(wokerData) {
             // console.log('success login', user.name, client.getEcr(), client.getBalance('DEC'))
             await client.updateSettings()
             const res = await client.delegatePower(wokerData.param?.player, wokerData.param?.pw, workerData.param.currentPower)
-            if (res) {
-
-            } else {
-
-            }
+            
+            parentPort.postMessage({
+                type: 'DONE',
+                player: wokerData.param?.player,
+            })
         }
     } catch (error) {
-        console.log(error)
+        console.error('delegating', error)
     }
 }
 

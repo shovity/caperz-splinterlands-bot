@@ -27,6 +27,8 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_light_yellow'>Claiming SSR</span>"
             case 'PROXY_ERROR':
                 return "<span class='status_red'>Proxy error</span>"
+            case 'DELEGATING_ERROR':
+                return "<span class='status_red'>Delegating error</span>"
             case 'MULTI_REQUEST_ERROR':
                 return "<span class='status_red'>Multi request</span>"
             case 'ERROR':
@@ -37,6 +39,8 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_yellow'>Renting</span>"
             case 'NOT IN WHITELIST':
                 return "<span class='status_black'>Not in whitelist</span>"
+            case 'DELEGATING': 
+                return "<span class='status_yellow'>Delegating</span>"
             default:
                 return "<span class='status_gray'>None</span>"
         }

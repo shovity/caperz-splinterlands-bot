@@ -17,13 +17,49 @@ service.handleMessage = (worker, message, master) => {
         case 'splinterlands':
             service.splinterlandMessageHandler(worker, message, master)
             break
+
+        case 'delegator':
+            service.delegatorMessageHandler(worker, message, master)
+            break
+
+        case 'collector':
+            service.collectorMesssageHandler(worker, message, master)
+            break
     }
+}
+
+service.collectorMesssageHandler = async (worker, message, master) => {
+    const account_list = settings.data.account_list
+
+    const accountIndex = account_list.findIndex(a => a.username === message.player)
+
+    account_list[accountIndex].power = message.newPower
+    await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+
+    worker.instance.terminate()
+}
+
+service.delegatorMessageHandler = async (worker, message, master) => {
+    const account_list = settings.data.account_list
+
+    const accountIndex = account_list.findIndex(a => a.username === message.player)
+
+    if (message.type === 'DONE' && account_list[accountIndex].status === 'DELEGATING') {
+        const proxyIp = account_list[accountIndex].proxy
+        master.handleAddAccount(account_list[accountIndex], proxyIp)
+    } else if (message.type === 'ERROR') {
+        account_list[accountIndex].status = 'DELEGATING_ERROR'
+
+        await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+    }
+
+    worker.instance.terminate()
 }
 
 service.splinterlandMessageHandler = async (worker, message, master) => {
     const account_list = settings.data.account_list
     const app_setting = settings.data.app_setting
-    const accountIndex = account_list.findIndex(a => a.username === message.player)
+    const accountIndex = account_list.findIndex(a => a.username === message.player || a.username === message.param?.player)
 
     switch (message.type) {
         case MESSAGE_STATUS.INFO_UPDATE:
@@ -125,7 +161,9 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
             break
 
-        case MESSAGE_STATUS.CREATE_DELEGATOR: 
+        case MESSAGE_STATUS.CREATE_DELEGATOR:
+            worker.instance.terminate()
+
             await master.add({
                 worker: {
                     name: 'delegator',
@@ -133,6 +171,11 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 param: message.param,
                 config: app_setting
             })
+
+            account_list[accountIndex].status = 'DELEGATING'
+
+            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+
             break
 
         case MESSAGE_STATUS.CREATE_COLLECTOR: 

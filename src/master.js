@@ -43,10 +43,10 @@ const master = {
             concurrency: 'infinity',
         },
         delegator: {
-            concurrency: 'infinity',
+            concurrency: 1,
         },
         collector: {
-            concurrency: 'infinity',
+            concurrency: 1,
         },
     },
     state: null,
@@ -105,7 +105,7 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
 
 master.change('master_state', {state: master.state})
 
-master.handleAddAccount = async (account) => {
+master.handleAddAccount = async (account, proxyIp) => {
     let account_list = settings.data.account_list
     const accountIndex = account_list.findIndex(a => a.username === account.username)
     const app_setting = settings.data.app_setting
@@ -120,7 +120,12 @@ master.handleAddAccount = async (account) => {
         return
     }
 
+
     const proxyIndex = app_setting.proxies.findIndex(p => {
+        if (proxyIp) {
+            return p.ip === proxyIp
+        }
+
         if (p.ip === 'Default IP') {
             if (app_setting.useDefaultProxy) {
                 return p.count < app_setting.botPerIp
@@ -176,7 +181,9 @@ master.handleAddAccount = async (account) => {
 
         account_list[accountIndex].workerId = worker.id
 
-        app_setting.proxies[proxyIndex].count++
+        if (!proxyIp) {
+            app_setting.proxies[proxyIndex].count++
+        }
     } else {
         account_list[accountIndex].status = ACCOUNT_STATUS.PENDING
 

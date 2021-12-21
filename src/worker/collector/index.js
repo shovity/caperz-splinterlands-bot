@@ -12,11 +12,11 @@ async function main(wokerData) {
             // console.log('success login', user.name, client.getEcr(), client.getBalance('DEC'))
             await client.updateSettings()
             const res = await client.undelegatePower(wokerData.param?.cards, wokerData.param?.power, workerData.param?.player)
-            if (res) {
-
-            } else {
-                
-            }
+            parentPort.postMessage({
+                type: 'DONE',
+                player: workerData.param?.player,
+                newPower: wokerData.param?.power,
+            })
         }
     } catch (error) {
         console.log(error)
