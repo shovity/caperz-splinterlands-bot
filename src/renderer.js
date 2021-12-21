@@ -459,7 +459,7 @@ ori.use('event store emitter storage', () => {
                 { width: '60px', targets: 5 },
                 { width: '100px', targets: 6 },
                 { width: '90px', targets: 7 },
-                { width: '100px', targets: 8 },
+                { width: '110px', targets: 8 },
                 {
                     orderable: false,
                     width: '40px',
