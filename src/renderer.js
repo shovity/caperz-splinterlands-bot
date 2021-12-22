@@ -163,6 +163,16 @@ ori.use('event store emitter storage', () => {
             modePlay: mode_play.checked,
         })
     })
+    event.listen('modeRentalToggle', () => {
+        ipc.send('setting.save', {
+            modeRental: mode_rental.checked,
+        })
+    })
+    event.listen('modeDelegateToggle', () => {
+        ipc.send('setting.save', {
+            modeDelegate: mode_delegate.checked,
+        })
+    })
     event.listen('modeTransferToggle', () => {
         ipc.send('setting.save', {
             modeTransfer: mode_transfer.checked,
@@ -294,6 +304,8 @@ ori.use('event store emitter storage', () => {
         acr_max_dec.value = data.maxDec
         season.value = data.season || 0
         mode_play.checked = data.modePlay
+        mode_rental.checked = data.modeRental
+        mode_delegate.checked = data.modeDelegate
         mode_transfer.checked = data.modeTransfer
         mode_claim_quest.checked = data.modeClaimQuest
         mode_collect_season_reward.checked = data.modeCollectSeasonReward

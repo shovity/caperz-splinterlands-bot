@@ -171,6 +171,7 @@ class WSSplinterlandsClient {
             this.initialDec = this.client.getBalance('DEC') || 0
         }
         if (
+            this.config.modeDelegate &&
             this.config.dlgMinPower &&
             this.config.majorAccount?.player &&
             this.config.majorAccount?.postingKey &&
@@ -191,6 +192,7 @@ class WSSplinterlandsClient {
         }
         if (
             this.client.masterKey &&
+            this.config.modeRental &&
             this.config.expectedPower &&
             this.config.maxDec &&
             this.config.maxDec > this.initialDec - this.client.getBalance('DEC')&&
@@ -220,9 +222,9 @@ class WSSplinterlandsClient {
             return
         }
         if (this.config.modeCollectSeasonReward && !this.collectSeasonRewardDone) {
+            this.collectSeasonRewardDone = true
             try {
                 await this.client.collectSeasonReward(this.config.season)
-                this.collectSeasonRewardDone = true
             } catch (error) {
                 log && console.log('err', error)
             }
@@ -303,7 +305,7 @@ class WSSplinterlandsClient {
                 }
                 this.retryTimeout = setTimeout(() => {
                     this.CheckCondition()
-                }, 1000 * 60 * 7)
+                }, 1000 * 60 * 5)
                 this.client.findMatch('Ranked')
             } else {
                 //done
