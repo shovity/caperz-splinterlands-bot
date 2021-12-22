@@ -46,7 +46,8 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
     if (message.type === 'DONE' && account_list[accountIndex].status === 'DELEGATING') {
         const proxyIp = account_list[accountIndex].proxy
-        master.handleAddAccount(account_list[accountIndex], proxyIp)
+        const delegated = 1
+        master.handleAddAccount(account_list[accountIndex], proxyIp, delegated)
     } else if (message.type === 'ERROR') {
         account_list[accountIndex].status = 'DELEGATING_ERROR'
 

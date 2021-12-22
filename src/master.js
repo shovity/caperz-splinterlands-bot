@@ -105,7 +105,7 @@ const calculateECR = (lastRewardTime = 0, ecr) => {
 
 master.change('master_state', {state: master.state})
 
-master.handleAddAccount = async (account, proxyIp) => {
+master.handleAddAccount = async (account, proxyIp, delegated=0) => {
     let account_list = settings.data.account_list
     const accountIndex = account_list.findIndex(a => a.username === account.username)
     const app_setting = settings.data.app_setting
@@ -175,6 +175,7 @@ master.handleAddAccount = async (account, proxyIp) => {
             masterKey: account.masterKey,
             token: account.token,
             proxy,
+            delegated,
             config,
             spsToken: user.token
         })
