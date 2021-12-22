@@ -185,7 +185,11 @@ class SplinterLandsClient {
         if (result) {
             result.cards
                 .filter((c) => {
-                    if (c.delegated_to && c.player === this.config.majorAccount?.player && c.delegated_to == this.user.name) {
+                    if (
+                        c.delegated_to &&
+                        c.player === this.config.majorAccount?.player &&
+                        c.delegated_to == this.user.name
+                    ) {
                         return true
                     }
                 })
@@ -200,7 +204,7 @@ class SplinterLandsClient {
                 cards: delegatedCards,
                 proxy: this.proxy,
                 power: this.user.collection_power - dlgPw,
-                player: this.user.name
+                player: this.user.name,
             },
             config: this.config,
         })
@@ -1324,8 +1328,8 @@ class SplinterLandsClient {
         let remainingPower = expectedPower - curPower
         let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
         let weight = remainingDec / rentalDay / remainingPower
-        log && console.log(weight)
-        log && console.log(remainingPower)
+        log && console.log('weight ',weight)
+        log && console.log('remainingPower', remainingPower)
         const res = await this.sendRequest('market/for_rent_grouped', {
             v: Date.now(),
             username: this.user.name,
@@ -1347,7 +1351,7 @@ class SplinterLandsClient {
                 if (e.weight > weight) {
                     return false
                 }
-                if (e.power > remainingPower + 100) {
+                if (e.power > remainingPower + 200) {
                     return false
                 }
                 return true
@@ -1355,18 +1359,9 @@ class SplinterLandsClient {
             .sort((a, b) => {
                 return b.power - a.power
             })
-        const buyList = []
-        data.forEach((e) => {
-            if (remainingPower <= 0) {
-                return
-            }
-            if (e.power <= remainingPower + 100) {
-                log && console.log('card to buy', e)
-                buyList.push(e)
-                remainingPower -= e.power
-            }
-        })
-        const buyCard = async (card) => {
+
+        const getCardMarketIdArray = async (card) => {
+            let result = []
             const res = await this.sendRequest('market/for_rent_by_card', {
                 card_detail_id: card.card_detail_id,
                 gold: card.gold,
@@ -1381,20 +1376,23 @@ class SplinterLandsClient {
             if (res[0].buy_price / card.power > weight) {
                 blackList.push(card.formated)
                 retry = true
-                return 0
+                return []
             }
-            gainedPower += card.power
-            remainingDec -= +res[0].buy_price * rentalDay
-            log && console.log('price ', res[0].buy_price)
-            return res[0].market_id
+            log && console.log('card power',card.power)
+            res.every((c) => {
+                if (c.buy_price / card.power > weight || gainedPower + card.power > remainingPower + 200) {
+                    return false
+                } else {
+                    result.push(c.market_id)
+                    gainedPower += card.power
+                    log && console.log('price', c.buy_price)
+                    return true
+                }
+            })
+            return result
         }
 
-        const marketIdArray = await Promise.all(
-            buyList.map((e) => {
-                log && console.log('card', e)
-                return buyCard(e)
-            })
-        )
+        const marketIdArray = await getCardMarketIdArray(data[0])
         const ids = marketIdArray.filter((e) => e != 0)
         if (ids.length > 0) {
             const prm = new Promise((resolve, reject) => {
@@ -1593,7 +1591,7 @@ class SplinterLandsClient {
                 parentPort.postMessage({
                     type: 'INFO_UPDATE',
                     player: player,
-                    power: dlgPw + currentPower
+                    power: dlgPw + currentPower,
                 })
             }
             return r
@@ -1682,25 +1680,24 @@ class SplinterLandsClient {
     async sendOpponentHistory(player, token) {
         try {
             const res = await this.sendRequest(`battle/history2`, {
-                player: player, 
-                limit: 50
+                player: player,
+                limit: 50,
             })
             if (res.battles) {
                 const battles = res.battles
                 const r = await requester.post(
                     'http://103.161.39.188:3332/api/v2/teams',
                     {
-                        battles: battles
+                        battles: battles,
                     },
                     {
                         header: {
-                            token: token
-                        }
+                            token: token,
+                        },
                     }
                 )
             }
-        }
-        catch (error) {
+        } catch (error) {
             log && console.log(error)
         }
     }
