@@ -187,6 +187,7 @@ class WSSplinterlandsClient {
                     proxy: this.proxy,
                 },
             })
+            return
         }
         if (
             this.client.masterKey &&
