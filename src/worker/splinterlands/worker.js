@@ -7,7 +7,7 @@ const defaultConfig = {
     questECR: 60,
 }
 
-async function main({ username, password, account, emailPass, proxy, config = null, postingKey, masterKey , spsToken }) {
+async function main({ username, password, account, emailPass, proxy, config = null, postingKey, masterKey , spsToken, delegated }) {
 
     config = config || defaultConfig
     const client = new SplinterLandsClient(proxy, config, masterKey)
@@ -40,7 +40,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
                 }
             }
     
-            const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config, spsToken)
+            const WSApi = new WSSplinterlandsClient(client, proxy, getUserQuestNew, config, spsToken, delegated)
             WSApi.Connect(user.name, user.token)
         }
     } catch (e) {

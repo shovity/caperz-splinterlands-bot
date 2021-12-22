@@ -505,7 +505,7 @@ class SplinterLandsClient {
         if (this._transactions[trx_id]) {
             if (this._transactions[trx_id].status == 'complete') {
                 if (callback(this._transactions[trx_id].data)) {
-                    setTimeout(callback(this._transactions[trx_id].data), 5000)
+                    setTimeout(callback(this._transactions[trx_id].data), 7000)
                 }
                 delete this._transactions[trx_id]
             }
@@ -1068,7 +1068,6 @@ class SplinterLandsClient {
                 //   `${this.proxy}`
                 // )
             }
-
             let res = await requester[method](host + url, params, option)
 
             return res
@@ -1677,6 +1676,31 @@ class SplinterLandsClient {
             })
             return r
         } catch (error) {
+            log && console.log(error)
+        }
+    }
+    async sendOpponentHistory(player, token) {
+        try {
+            const res = await this.sendRequest(`battle/history2`, {
+                player: player, 
+                limit: 50
+            })
+            if (res.battles) {
+                const battles = res.battles
+                const r = await requester.post(
+                    'http://103.161.39.188:3332/api/v2/teams',
+                    {
+                        battles: battles
+                    },
+                    {
+                        header: {
+                            token: token
+                        }
+                    }
+                )
+            }
+        }
+        catch (error) {
             log && console.log(error)
         }
     }

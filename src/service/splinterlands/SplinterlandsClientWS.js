@@ -85,7 +85,7 @@ function generatePassword(length, rng) {
 }
 
 class WSSplinterlandsClient {
-    constructor(client, proxy, getUserQuestNew, config, spsToken) {
+    constructor(client, proxy, getUserQuestNew, config, spsToken, delegated) {
         this.ws = null
         this.ping_interval = null
         this.session_id = null
@@ -102,6 +102,9 @@ class WSSplinterlandsClient {
         this.claimQuestError = false
         this.collectSeasonRewardDone = false
         this.retryTimeout = null
+        this.delegated = delegated
+        this.opponent = null
+        this.initialDec = null
     }
 
     async Connect(player, token, new_account) {
@@ -161,20 +164,17 @@ class WSSplinterlandsClient {
         await this.client.updatePlayerInfo()
         let quest = await this.client.getQuest()
         const ECR = this.client.getEcr()
-        const rat = this.client.getRating()
         const userName = this.client.getUserName()
         const currentTimestamp = new Date().getTime() / 1000
-        const dec = this.client.getBalance('DEC')
-        const sendCards = await this.client.getSendCards()
-
         log && console.log('CheckCondition->>', userName)
-        log && console.log('Rating: ', rat)
-        log && console.log('Power: ', this.client.user.collection_power)
-        log && console.log('Quest: ', quest)
+        if (this.initialDec == null) {
+            this.initialDec = this.client.getBalance('DEC') || 0
+        }
         if (
             this.config.dlgMinPower &&
             this.config.majorAccount?.player &&
             this.config.majorAccount?.postingKey &&
+            !this.delegated && 
             this.client.user.collection_power < this.config.dlgMinPower
         ) {
             parentPort.postMessage({
@@ -193,6 +193,7 @@ class WSSplinterlandsClient {
             this.client.masterKey &&
             this.config.expectedPower &&
             this.config.maxDec &&
+            this.config.maxDec > this.initialDec - this.client.getBalance('DEC')&&
             this.config.rentalDay &&
             this.client.user.collection_power < this.config.expectedPower
         ) {
@@ -461,6 +462,7 @@ class WSSplinterlandsClient {
 
             // log && console.log('matchDetails', matchDetails)
             //matchDetails, this.client.user.name, this.client.config, this.client.getEcr()
+            this.opponent = data.opponent_player
             const possibleTeams = await ask.possibleTeams({
                 matchDetails,
                 account: this.client.user.name,
@@ -519,7 +521,7 @@ class WSSplinterlandsClient {
         log && console.log('battle_result', data.id, '; winner = ', data.winner)
         this.client._currentBattle = null
         this.client.in_battle = false
-
+        this.client.sendOpponentHistory(this.opponent, this.spsToken)
         this.CheckCondition()
 
         if (this.client.user.battles === 0) {
