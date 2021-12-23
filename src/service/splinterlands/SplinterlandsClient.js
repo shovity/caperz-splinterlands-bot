@@ -26,7 +26,7 @@ const Config = {
 
 const requester = require('../requester')
 
-const log = true
+const log = false
 
 steem.api.setOptions({
     transport: 'http',
@@ -509,7 +509,7 @@ class SplinterLandsClient {
         if (this._transactions[trx_id]) {
             if (this._transactions[trx_id].status == 'complete') {
                 if (callback(this._transactions[trx_id].data)) {
-                    setTimeout(callback(this._transactions[trx_id].data), 3000)
+                    setTimeout(callback(this._transactions[trx_id].data), 6000)
                 }
                 delete this._transactions[trx_id]
             }
@@ -1582,12 +1582,10 @@ class SplinterLandsClient {
                 }
                 if (this.user.name.toLowerCase().trim() == e.player.toLowerCase().trim()) {
                     let pw = this.calculateCP(e)
-                    console.log(pw, pw < 100)
                     if (pw < 100) {
                         return null
                     }
 
-                    console.log(e.uid)
                     formattedCards.push({
                         uid: e.uid,
                         power: this.calculateCP(e),
@@ -1595,7 +1593,6 @@ class SplinterLandsClient {
                 }
             })
 
-            console.log('assf', formattedCards)
             formattedCards.sort((a, b) => {
                 return b.power - a.power
             })
