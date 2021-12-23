@@ -205,7 +205,7 @@ class WSSplinterlandsClient {
                 player: this.client.user.name,
                 matchStatus: MATCH_STATUS.NONE,
             })
-            let dec = this.initialDec - this.client.getBalance('DEC') 
+            let dec = this.config.maxDec - (this.initialDec - this.client.getBalance('DEC'))
 
             await this.client.cardRental(
                 this.client.user.collection_power,

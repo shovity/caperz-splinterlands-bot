@@ -1361,6 +1361,9 @@ class SplinterLandsClient {
             })
 
         const getCardMarketIdArray = async (card) => {
+            if (!card) {
+                return []
+            }
             let result = []
             const res = await this.sendRequest('market/for_rent_by_card', {
                 card_detail_id: card.card_detail_id,
