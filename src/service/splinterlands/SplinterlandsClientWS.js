@@ -125,7 +125,6 @@ class WSSplinterlandsClient {
         this.token = token
         this.player = player
         if (!this.session_id) this.session_id = generatePassword(10)
-        log && console.log(Config.ws_url)
         const config = {
             origin: 'https://splinterlands.com',
         }
@@ -265,20 +264,17 @@ class WSSplinterlandsClient {
                 let questReward = await this.client.claimReward(quest.id)
                 log && console.log('quest was completed --------->', questReward)
                 if (questReward) {
-                    //   await this.client.getRewards();
                     this.questClaimed = true
                     this.claimQuestError = false
                 } else {
                     this.claimQuestError = true
                 }
             } catch (e) {
-                log && console.log(e)
+                log && console.log('error',e)
             }
         }
 
         if (quest || ECR > this.config.ecr) {
-            //ecr: 70, // stop auto when ecr = 70%
-            //     questECR: 75,
             if (!(quest?.completed === quest?.total) && ECR <= this.config.questECR) {
                 // start Quest
                 this.startQuest = true
@@ -286,9 +282,6 @@ class WSSplinterlandsClient {
                 this.startQuest = false
             }
 
-            // if (!(quest?.completed === quest?.total) || ECR > this.config.ecr) {
-            // console.log('ECR', ECR)
-            // console.log(this.config.ecr)
             this.client.updatePlayerInfo({
                 matchStatus: MATCH_STATUS.MATCHING,
                 questClaimed: this.questClaimed,
@@ -330,13 +323,9 @@ class WSSplinterlandsClient {
     }
 
     OnError(e) {
-        // log && console.log("Socket error...");
-        // log && console.log(e)
     }
 
     OnClose(e) {
-        // log && console.log("Socket closed...", this.player);
-        // log && console.log('close', this.ws.readyState);
         if (this.player) setTimeout(() => this.Connect(this.player, this.token), 1e3)
     }
 
@@ -411,9 +400,6 @@ class WSSplinterlandsClient {
             const ecr = await this.client.getEcr()
             const myCardsUID = await this.client.getPlayerCardsUID()
             const quest = await this.client.getQuest()
-            // log && console.log('this.client.user.league', this.client.user.league)
-
-            // log && console.log(myCardsUID)
             let leaderboard = 0
             if (this.client.user.league) {
                 leaderboard = Math.floor((this.client.user.league - 1) / 3)
@@ -458,8 +444,6 @@ class WSSplinterlandsClient {
                 }
             }
 
-            // log && console.log('matchDetails', matchDetails)
-            //matchDetails, this.client.user.name, this.client.config, this.client.getEcr()
             this.opponent = data.opponent_player
             const possibleTeams = await ask.possibleTeams({
                 matchDetails,
@@ -473,8 +457,6 @@ class WSSplinterlandsClient {
             if (possibleTeams && possibleTeams.length) {
                 log && console.log('Possible Teams: ', possibleTeams.length)
                 let teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest)
-                //teamToPlay = { summoner, cards: arr, color: team[team.length - 1]};
-
                 const monstersSliced = teamToPlay.cards
 
                 const summoner = `starter-${teamToPlay.summoner}-${generatePassword(5)}`
@@ -491,8 +473,6 @@ class WSSplinterlandsClient {
                         }
                     }
                 })
-
-                // let uidStarter = `starter-${card_details.id}-${generatePassword(5)}`
 
                 log && console.log('current ECR', this.client.getEcr())
                 //TODO Submit Team

@@ -26,7 +26,7 @@ const Config = {
 
 const requester = require('../requester')
 
-const log = false
+const log = true
 
 steem.api.setOptions({
     transport: 'http',
@@ -1292,7 +1292,7 @@ class SplinterLandsClient {
             return result
         }
     }
-    calculateCP(card) {
+    calculateCPOld(card) {
         const details = cardsDetail.find((o) => o.id === card.card_detail_id)
         const SM_dec = {
             gold_burn_bonus_2: 25,
@@ -1319,7 +1319,56 @@ class SplinterLandsClient {
         if (card.edition == 2) dec *= SM_dec.promo_burn_bonus
         var total_dec = dec
         if (details.tier >= 7) total_dec = total_dec / 2
+        return +total_dec
+    }
+
+    calculateCP(card) {
+        const details = cardsDetail.find((o) => o.id === card.card_detail_id)
+        var alpha_bcx = 0,
+            alpha_dec = 0
+        var xp = Math.max(card.xp - card.alpha_xp, 0)
+        let burn_rate =
+            card.edition == 4 || details.tier >= 4
+                ? this.settings.dec.untamed_burn_rate[details.rarity - 1]
+                : this.settings.dec.burn_rate[details.rarity - 1]
+        if (card.alpha_xp) {
+            var alpha_bcx_xp = this.settings[card.gold ? 'gold_xp' : 'alpha_xp'][details.rarity - 1]
+            alpha_bcx = Math.max(card.gold ? card.alpha_xp / alpha_bcx_xp : card.alpha_xp / alpha_bcx_xp, 1)
+            alpha_dec = burn_rate * alpha_bcx * this.settings.dec.alpha_burn_bonus
+            if (card.gold) alpha_dec *= this.settings.dec.gold_burn_bonus
+        }
+        var xp_property =
+            card.edition == 0 || (card.edition == 2 && details.id < 100)
+                ? card.gold
+                    ? 'gold_xp'
+                    : 'alpha_xp'
+                : card.gold
+                ? 'beta_gold_xp'
+                : 'beta_xp'
+        var bcx_xp = this.settings[xp_property][details.rarity - 1]
+        var bcx = Math.max(card.gold ? xp / bcx_xp : (xp + bcx_xp) / bcx_xp, 1)
+        if (card.edition == 4 || details.tier >= 4) bcx = card.xp
+        if (card.alpha_xp) bcx--
+        var dec = burn_rate * bcx
+        if (card.gold) {
+            const gold_burn_bonus_prop = details.tier >= 7 ? 'gold_burn_bonus_2' : 'gold_burn_bonus'
+            dec *= this.settings.dec[gold_burn_bonus_prop]
+        }
+        if (card.edition == 0) dec *= this.settings.dec.alpha_burn_bonus
+        if (card.edition == 2) dec *= this.settings.dec.promo_burn_bonus
+        var total_dec = dec + alpha_dec
+        if (card.xp >= this.getMaxXp(details, card.edition, card.gold)) total_dec *= this.settings.dec.max_burn_bonus
+        if (details.tier >= 7) total_dec = total_dec / 2
         return total_dec
+    }
+    getMaxXp(details, edition, gold) {
+        let rarity = details.rarity;
+        let tier = details.tier;
+        if (edition == 4 || tier >= 4) {
+            let rates = gold ? this.settings.combine_rates_gold[rarity - 1] : this.settings.combine_rates[rarity - 1];
+            return rates[rates.length - 1]
+        } else
+            return this.settings.xp_levels[rarity - 1][this.settings.xp_levels[rarity - 1].length - 1]
     }
     async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1) {
         let retry = false
@@ -1328,7 +1377,7 @@ class SplinterLandsClient {
         let remainingPower = expectedPower - curPower
         let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
         let weight = remainingDec / rentalDay / remainingPower
-        log && console.log('weight ',weight)
+        log && console.log('weight ', weight)
         log && console.log('remainingPower', remainingPower)
         const res = await this.sendRequest('market/for_rent_grouped', {
             v: Date.now(),
@@ -1387,7 +1436,7 @@ class SplinterLandsClient {
                 retry = true
                 return []
             }
-            log && console.log('card power',card.power)
+            log && console.log('card power', card.power)
             res.every((c) => {
                 if (c.buy_price / card.power > weight || gainedPower + card.power > remainingPower + 200) {
                     return false
@@ -1415,7 +1464,7 @@ class SplinterLandsClient {
                     },
                     (result) => {
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
-                            setTimeout(resolve(result),5000)
+                            resolve(result)
                         } else {
                             resolve(null)
                         }
@@ -1528,55 +1577,60 @@ class SplinterLandsClient {
             let formattedCards = []
             let cards = []
             result.cards.forEach((e) => {
-                if (e.delegated_to && e.player === this.user.name && e.player !== e.delegated_to) {
+                if (e.delegated_to != null) {
                     return null
                 }
-
-                if (e.unlock_date && new Date(e.unlock_date) >= Date.now()) {
-                    return null
-                }
-
-                if (
-                    e.player != e.last_used_player &&
-                    e.last_used_date &&
-                    Date.now() - new Date(e.last_used_date) < 1000 * 60 * 60 * 24
-                ) {
-                    if (
-                        e.last_transferred_date &&
-                        Date.now() - new Date(e.last_used_date) > Date.now() - new Date(e.last_transferred_date)
-                    ) {
-                        return null
-                    }
-                }
-
-                if (this.user.name == e.player) {
+                if (this.user.name.toLowerCase().trim() == e.player.toLowerCase().trim()) {
                     let pw = this.calculateCP(e)
-                    if (pw > power) {
+                    console.log(pw, pw < 100)
+                    if (pw < 100) {
                         return null
                     }
+
+                    console.log(e.uid)
                     formattedCards.push({
-                        ...e,
+                        uid: e.uid,
                         power: this.calculateCP(e),
                     })
                 }
             })
-            formattedCards = formattedCards.sort((a, b) => {
+
+            console.log('assf', formattedCards)
+            formattedCards.sort((a, b) => {
                 return b.power - a.power
             })
-
-            formattedCards.forEach((e) => {
+            formattedCards.every((e) => {
                 if (remainingPw <= 0 || e.power > remainingPw) {
-                    return
+                    return false
                 }
                 cards.push(e.uid)
                 remainingPw -= e.power
                 dlgPw += e.power
+                return true
             })
+
+            if (remainingPw > 0) {
+                formattedCards.sort((a, b) => {
+                    return a.power - b.power
+                })
+
+                formattedCards.every((e) => {
+                    if (remainingPw <= 0) {
+                        return false
+                    }
+                    if (!cards.includes(e.uid)) {
+                        cards.push(e.uid)
+                        remainingPw -= e.power
+                        dlgPw += e.power
+                    }
+                    return true
+                })
+            }
 
             if (cards.length == 0) {
                 return null
             }
-            log && console.log(cards)
+            log && console.log('card for delegate', cards)
             const prm = new Promise((resolve, reject) => {
                 this.broadcastCustomJson(
                     'sm_delegate_cards',
@@ -1603,6 +1657,7 @@ class SplinterLandsClient {
                     power: dlgPw + currentPower,
                 })
             }
+            console.log('asjcb')
             return r
         } catch (error) {
             log && console.log(error)
