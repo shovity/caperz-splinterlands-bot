@@ -509,7 +509,7 @@ class SplinterLandsClient {
         if (this._transactions[trx_id]) {
             if (this._transactions[trx_id].status == 'complete') {
                 if (callback(this._transactions[trx_id].data)) {
-                    setTimeout(callback(this._transactions[trx_id].data), 7000)
+                    setTimeout(callback(this._transactions[trx_id].data), 3000)
                 }
                 delete this._transactions[trx_id]
             }

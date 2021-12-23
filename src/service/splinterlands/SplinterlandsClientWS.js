@@ -195,7 +195,7 @@ class WSSplinterlandsClient {
             this.config.modeRental &&
             this.config.expectedPower &&
             this.config.maxDec &&
-            this.config.maxDec > this.initialDec - this.client.getBalance('DEC')&&
+            this.config.maxDec > this.initialDec - this.client.getBalance('DEC') &&
             this.config.rentalDay &&
             this.client.user.collection_power < this.config.expectedPower
         ) {
@@ -205,11 +205,7 @@ class WSSplinterlandsClient {
                 player: this.client.user.name,
                 matchStatus: MATCH_STATUS.NONE,
             })
-            let dec =
-                (this.config.maxDec *
-                    this.config.rentalDay *
-                    (this.config.expectedPower - this.client.user.collection_power)) /
-                this.config.expectedPower
+            let dec = this.initialDec - this.client.getBalance('DEC') 
 
             await this.client.cardRental(
                 this.client.user.collection_power,
