@@ -1335,6 +1335,9 @@ class SplinterLandsClient {
             username: this.user.name,
             token: this.token,
         })
+        if (!res) {
+            return
+        }
         const data = res
             .map((e) => {
                 return {
