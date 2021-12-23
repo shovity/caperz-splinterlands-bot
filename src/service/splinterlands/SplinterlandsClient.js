@@ -1373,6 +1373,9 @@ class SplinterLandsClient {
                 username: this.user.name,
                 token: this.token,
             })
+            if (!res) {
+                return []
+            }
             res.sort((a, b) => {
                 return +a.buy_price - +b.buy_price
             })
@@ -1409,7 +1412,7 @@ class SplinterLandsClient {
                     },
                     (result) => {
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
-                            resolve(result)
+                            setTimeout(resolve(result),5000)
                         } else {
                             resolve(null)
                         }
