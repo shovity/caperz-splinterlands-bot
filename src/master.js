@@ -520,6 +520,7 @@ master.updateOpeningPlayerInfo = async () => {
             proxyIndex = proxyIndex < app_setting.proxies.length - 1 ? proxyIndex + 1 : 0
             accountBalances = await utils.getBalances(account_list[i].username, proxy)
             accountDetails = await utils.getDetails(account_list[i].username, proxy)
+            accountQuestDetails = await utils.getQuestDetails(account_list[i].username, proxy)
         } catch (error) {
             console.error('updateOpeningPlayerInfo get balances error', error)
             continue
@@ -551,6 +552,11 @@ master.updateOpeningPlayerInfo = async () => {
         if (accountDetails) {
             newAccount.rating = accountDetails.rating
             newAccount.power = accountDetails.collection_power
+        }
+        if (accountQuestDetails.length) {
+            newAccount.quest = accountQuestDetails[0].completed_items
+            newAccount.maxQuest = accountQuestDetails[0].total_items
+            newAccount.questClaimed = accountQuestDetails[0].claim_date != null
         }
 
         updateList.push(newAccount)

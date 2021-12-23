@@ -169,6 +169,15 @@ utils.getDetails = async (username, proxy) => {
 
     return await sendRequest('players/details', params, method, proxy)
 }
+utils.getQuestDetails = async (username, proxy) => {
+    const params = {
+        username: username,
+    }
+
+    const method = 'get'
+
+    return await sendRequest('players/quests', params, method, proxy)
+}
 
 utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {
     for (let i = 0; i < array.length; i++) {
