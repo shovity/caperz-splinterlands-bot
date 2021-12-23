@@ -209,12 +209,9 @@ master.start = async (worker) => {
     })
 
     worker.instance.on('exit', () => {
-        console.log(worker.name, 'exit')
         const workers = master.workers.filter(w => w.name === worker.name && w.status === 'pending')
-        console.log(workers)
         for (i = 0; i < workers.length; i++) {
             if (workerService.checkWorkerRunable(workers[i], master)) {
-                console.log('runable', console.log(workers[i].name))
                 master.start(workers[i])
             } else {
                 console.log('unrunable', workers[i].name)
