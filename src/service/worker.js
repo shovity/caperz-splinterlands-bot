@@ -36,6 +36,8 @@ service.collectorMesssageHandler = async (worker, message, master) => {
     account_list[accountIndex].power = message.newPower
     await master.changePath('account_list', [{ ...account_list[accountIndex] }])
 
+    service.beforeTerminateWorker(worker, master)
+
     worker.instance.terminate()
 }
 
@@ -53,6 +55,8 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
         await master.changePath('account_list', [{ ...account_list[accountIndex] }])
     }
+
+    service.beforeTerminateWorker(worker, master)
 
     worker.instance.terminate()
 }
@@ -206,6 +210,16 @@ service.checkWorkerRunable = (worker, master) => {
     } else {
         return false
     }
+}
+
+service.beforeTerminateWorker = (worker, master) => {
+    master.workers = master.workers.map(w => {
+        if (w.id === worker.id) {
+            w.status = 'stopped'
+        }
+
+        return w
+    })
 }
 
 
