@@ -174,7 +174,7 @@ class WSSplinterlandsClient {
             this.config.dlgMinPower &&
             this.config.majorAccount?.player &&
             this.config.majorAccount?.postingKey &&
-            !this.delegated && 
+            !this.delegated &&
             this.client.user.collection_power < this.config.dlgMinPower
         ) {
             parentPort.postMessage({
@@ -206,13 +206,15 @@ class WSSplinterlandsClient {
             })
             let dec = this.config.maxDec - (this.initialDec - this.client.getBalance('DEC'))
 
-            await this.client.cardRental(
+            let r = await this.client.cardRental(
                 this.client.user.collection_power,
                 this.config.expectedPower,
                 dec,
                 [],
                 this.config.rentalDay
             )
+            await this.client.UpdatePlayerInfo()
+            await this.client.updatePlayerInfo()
             this.CheckCondition()
             return
         }
@@ -270,7 +272,7 @@ class WSSplinterlandsClient {
                     this.claimQuestError = true
                 }
             } catch (e) {
-                log && console.log('error',e)
+                log && console.log('error', e)
             }
         }
 
@@ -322,8 +324,7 @@ class WSSplinterlandsClient {
             })
     }
 
-    OnError(e) {
-    }
+    OnError(e) {}
 
     OnClose(e) {
         if (this.player) setTimeout(() => this.Connect(this.player, this.token), 1e3)

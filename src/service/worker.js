@@ -32,7 +32,9 @@ service.collectorMesssageHandler = async (worker, message, master) => {
     const account_list = settings.data.account_list
 
     const accountIndex = account_list.findIndex(a => a.username === message.player)
-
+    if (typeof account_list[accountIndex] == 'undefined') {
+        console.log('log 124', message.player)
+    }
     account_list[accountIndex].power = message.newPower
     await master.changePath('account_list', [{ ...account_list[accountIndex] }])
 

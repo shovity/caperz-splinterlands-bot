@@ -159,9 +159,7 @@ class SplinterLandsClient {
         ) {
             await this.sendCardToMajorAccount()
         }
-        if (this.config.dlgMinPower) {
-            this.createCollector()
-        }
+        this.createCollector()
         await this.UpdatePlayerInfo()
         await this.updatePlayerInfo()
         let player = this.user.name.toLowerCase() || ''
@@ -186,6 +184,7 @@ class SplinterLandsClient {
             result.cards
                 .filter((c) => {
                     if (
+                        this.config.majorAccount?.postingKey && 
                         c.delegated_to &&
                         c.player === this.config.majorAccount?.player &&
                         c.delegated_to == this.user.name
@@ -1362,13 +1361,12 @@ class SplinterLandsClient {
         return total_dec
     }
     getMaxXp(details, edition, gold) {
-        let rarity = details.rarity;
-        let tier = details.tier;
+        let rarity = details.rarity
+        let tier = details.tier
         if (edition == 4 || tier >= 4) {
-            let rates = gold ? this.settings.combine_rates_gold[rarity - 1] : this.settings.combine_rates[rarity - 1];
+            let rates = gold ? this.settings.combine_rates_gold[rarity - 1] : this.settings.combine_rates[rarity - 1]
             return rates[rates.length - 1]
-        } else
-            return this.settings.xp_levels[rarity - 1][this.settings.xp_levels[rarity - 1].length - 1]
+        } else return this.settings.xp_levels[rarity - 1][this.settings.xp_levels[rarity - 1].length - 1]
     }
     async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1) {
         let retry = false
@@ -1452,6 +1450,7 @@ class SplinterLandsClient {
 
         const marketIdArray = await getCardMarketIdArray(data[0])
         const ids = marketIdArray.filter((e) => e != 0)
+        let r
         if (ids.length > 0) {
             const prm = new Promise((resolve, reject) => {
                 this.broadcastCustomJson(
@@ -1471,7 +1470,7 @@ class SplinterLandsClient {
                     }
                 )
             })
-            const r = await prm
+            r = await prm
         }
         if (retry) {
             await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay)
@@ -1484,7 +1483,7 @@ class SplinterLandsClient {
             matchStatus: 'NONE',
         })
         log && console.log('done ne')
-        return
+        return r
     }
     async transferDEC(dec) {
         try {
@@ -1597,7 +1596,7 @@ class SplinterLandsClient {
                 return b.power - a.power
             })
             formattedCards.every((e) => {
-                if (remainingPw <= 0 || e.power > remainingPw) {
+                if (remainingPw <= 0 || remainingPw - e.power < 0) {
                     return false
                 }
                 cards.push(e.uid)
@@ -1665,7 +1664,6 @@ class SplinterLandsClient {
             if (cards.length == 0) {
                 return null
             }
-            console.log(cards)
             const prm = new Promise((resolve, reject) => {
                 this.broadcastCustomJson(
                     'sm_undelegate_cards',
@@ -1684,13 +1682,11 @@ class SplinterLandsClient {
                 )
             })
             const r = await prm
-            if (r) {
-                parentPort.postMessage({
-                    type: 'INFO_UPDATE',
-                    player: player,
-                    power: power,
-                })
-            }
+            parentPort.postMessage({
+                type: 'INFO_UPDATE',
+                player: player,
+                power: power,
+            })
             return r
         } catch (error) {
             log && console.log(error)

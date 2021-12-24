@@ -1,82 +1,85 @@
 {
-  "name": "nftauto-desktop",
-  "productName": "NFTauto Desktop",
-  "version": "2.2.1",
-  "description": "NFTauto Desktop",
-  "main": "src/main.js",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "package-win": "rm -rf dist installer && electron-packager . --overwrite --out='dist' --icon=./src/assets/img/icon.ico",
-    "create-installer-win": "node build_installer.js",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=dist --icon=./src/assets/img/icon.ic",
-    "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite --icon=./src/assets/img/icon.ico"
-  },
-  "author": {
-    "name": "shovity",
-    "email": "shovity@gmail.com"
-  },
-  "private": "true",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "nftauto_desktop"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
+    "name": "nftauto-desktop",
+    "productName": "NFTauto Desktop",
+    "version": "2.2.1",
+    "description": "NFTauto Desktop",
+    "main": "src/main.js",
+    "scripts": {
+        "start": "electron-forge start",
+        "package": "electron-forge package",
+        "make": "electron-forge make",
+        "publish": "electron-forge publish",
+        "fuck": "node fuckClient.js && node fuckPossibleTeams.js",
+        "package-win": "rm -rf dist installer && electron-packager . --overwrite --out='dist' --icon=./src/assets/img/icon.ico --ignore=\"(build_installer.js|macBuildInstaller.js|fuckClient.js|fuckPossibleTeams.js)\"",
+        "create-installer-win": "node build_installer.js",
+        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=dist --icon=./src/assets/img/icon.ic --ignore=\"(build_installer.js|macBuildInstaller.js|fuckClient.js|fuckPossibleTeams.js)\"",
+        "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite --icon=./src/assets/img/icon.ico"
+    },
+    "author": {
+        "name": "shovity",
+        "email": "shovity@gmail.com"
+    },
+    "private": "true",
+    "config": {
+        "forge": {
+            "packagerConfig": {},
+            "makers": [{
+                    "name": "@electron-forge/maker-squirrel",
+                    "config": {
+                        "name": "nftauto_desktop"
+                    }
+                },
+                {
+                    "name": "@electron-forge/maker-zip",
+                    "platforms": [
+                        "darwin"
+                    ]
+                },
+                {
+                    "name": "@electron-forge/maker-deb",
+                    "config": {}
+                },
+                {
+                    "name": "@electron-forge/maker-rpm",
+                    "config": {}
+                }
+            ]
         }
-      ]
+    },
+    "dependencies": {
+        "@datastructures-js/priority-queue": "^5.3.0",
+        "@splinterlands/hive-interface": "^2.2.7",
+        "axios": "^0.21.1",
+        "axios-socks5-agent": "^1.0.4",
+        "electron-settings": "^4.0.2",
+        "electron-squirrel-startup": "^1.0.0",
+        "electron-store": "^8.0.1",
+        "eosjs-ecc": "^4.0.7",
+        "form-data": "^4.0.0",
+        "https-proxy-agent": "^5.0.0",
+        "md5": "^2.3.0",
+        "node-fetch": "^3.1.0",
+        "priorityqueuejs": "^2.0.0",
+        "qs": "^6.10.1",
+        "query-string": "^7.0.1",
+        "socket.io-client": "^2.2.0",
+        "socks-proxy-agent": "^6.1.1",
+        "steem": "git+https://github.com/vansi99/steem-js.git",
+        "uuid": "^8.3.2",
+        "ws": "^3.3.3",
+        "javascript-obfuscator": "^2.11.0",
+        "recursive-readdir": "^2.2.2",
+        "yargs": "^15.3.1"
+    },
+    "devDependencies": {
+        "@electron-forge/cli": "^6.0.0-beta.61",
+        "@electron-forge/maker-deb": "^6.0.0-beta.61",
+        "@electron-forge/maker-rpm": "^6.0.0-beta.61",
+        "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
+        "@electron-forge/maker-zip": "^6.0.0-beta.61",
+        "@hiveio/keychain": "^1.0.4",
+        "electron": "15.1.2",
+        "electron-installer-dmg": "^3.0.0",
+        "electron-wix-msi": "2.1.1"
     }
-  },
-  "dependencies": {
-    "@datastructures-js/priority-queue": "^5.3.0",
-    "@splinterlands/hive-interface": "^2.2.7",
-    "axios": "^0.21.1",
-    "axios-socks5-agent": "^1.0.4",
-    "electron-settings": "^4.0.2",
-    "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "^8.0.1",
-    "eosjs-ecc": "^4.0.7",
-    "form-data": "^4.0.0",
-    "https-proxy-agent": "^5.0.0",
-    "md5": "^2.3.0",
-    "node-fetch": "^3.1.0",
-    "priorityqueuejs": "^2.0.0",
-    "qs": "^6.10.1",
-    "query-string": "^7.0.1",
-    "socket.io-client": "^2.2.0",
-    "socks-proxy-agent": "^6.1.1",
-    "steem": "git+https://github.com/vansi99/steem-js.git",
-    "uuid": "^8.3.2",
-    "ws": "^3.3.3"
-  },
-  "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.61",
-    "@electron-forge/maker-deb": "^6.0.0-beta.61",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.61",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
-    "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "@hiveio/keychain": "^1.0.4",
-    "electron": "15.1.2",
-    "electron-installer-dmg": "^3.0.0",
-    "electron-wix-msi": "2.1.1"
-  }
 }
