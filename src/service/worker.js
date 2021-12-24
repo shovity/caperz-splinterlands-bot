@@ -41,6 +41,8 @@ service.collectorMesssageHandler = async (worker, message, master) => {
     service.beforeTerminateWorker(worker, master)
 
     worker.instance.terminate()
+
+    await master.dequeue()
 }
 
 service.delegatorMessageHandler = async (worker, message, master) => {
@@ -136,7 +138,6 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                     await master.change('app_setting', { app_setting })
                 }
 
-                await master.dequeue()
                 worker.instance.terminate()                
             }
             break
