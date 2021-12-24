@@ -607,7 +607,9 @@ class SplinterLandsClient {
 
     async UpdatePlayerInfo() {
         if (!this.user) return
-
+        const balances = await this.sendRequestUrl(`https://api2.splinterlands.com/players/balances`, {
+            username: this.user.name,
+        })
         const res = await this.sendRequestUrl(`https://api2.splinterlands.com/players/details`, {
             name: this.user.name,
         })
@@ -616,8 +618,13 @@ class SplinterLandsClient {
         })
 
         this.user = Object.assign(this.user, res)
+        
         if (quest) {
             this.user.quest = quest[0]
+        }
+
+        if (balances) {
+            this.user.balances = balances
         }
 
         return
@@ -1368,7 +1375,7 @@ class SplinterLandsClient {
             return rates[rates.length - 1]
         } else return this.settings.xp_levels[rarity - 1][this.settings.xp_levels[rarity - 1].length - 1]
     }
-    async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1) {
+    async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1, initialDec) {
         let retry = false
         let blackList = bl
         let gainedPower = 0
@@ -1473,7 +1480,7 @@ class SplinterLandsClient {
             r = await prm
         }
         if (retry) {
-            await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay)
+            await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay, initialDec)
             return
         }
         parentPort.postMessage({

@@ -211,10 +211,9 @@ class WSSplinterlandsClient {
                 this.config.expectedPower,
                 dec,
                 [],
-                this.config.rentalDay
+                this.config.rentalDay,
+                this.initialDec
             )
-            await this.client.UpdatePlayerInfo()
-            await this.client.updatePlayerInfo()
             this.CheckCondition()
             return
         }
