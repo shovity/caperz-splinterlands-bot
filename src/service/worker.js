@@ -1,13 +1,12 @@
 const settings = require('../settings')
 
-
 const MESSAGE_STATUS = {
-    INFO_UPDATE: "INFO_UPDATE",
-    STATUS_UPDATE: "STATUS_UPDATE",
-    MESSAGE: "MESSAGE",
-    ERROR: "ERROR",
-    CREATE_DELEGATOR: "CREATE_DELEGATOR",
-    CREATE_COLLECTOR: "CREATE_COLLECTOR"
+    INFO_UPDATE: 'INFO_UPDATE',
+    STATUS_UPDATE: 'STATUS_UPDATE',
+    MESSAGE: 'MESSAGE',
+    ERROR: 'ERROR',
+    CREATE_DELEGATOR: 'CREATE_DELEGATOR',
+    CREATE_COLLECTOR: 'CREATE_COLLECTOR',
 }
 
 const service = {}
@@ -31,9 +30,13 @@ service.handleMessage = (worker, message, master) => {
 service.collectorMesssageHandler = async (worker, message, master) => {
     const account_list = settings.data.account_list
 
-    const accountIndex = account_list.findIndex(a => a.username === message.player)
+    const accountIndex = account_list.findIndex((a) => a.username === message.player)
     if (typeof account_list[accountIndex] == 'undefined') {
         console.log('log 124', message.player)
+        service.beforeTerminateWorker(worker, master)
+        worker.instance.terminate()
+        await master.dequeue()
+        return
     }
     account_list[accountIndex].power = message.newPower
     await master.changePath('account_list', [{ ...account_list[accountIndex] }])
@@ -48,7 +51,7 @@ service.collectorMesssageHandler = async (worker, message, master) => {
 service.delegatorMessageHandler = async (worker, message, master) => {
     const account_list = settings.data.account_list
 
-    const accountIndex = account_list.findIndex(a => a.username === message.player)
+    const accountIndex = account_list.findIndex((a) => a.username === message.player)
 
     if (message.type === 'DONE' && account_list[accountIndex].status === 'DELEGATING') {
         const proxyIp = account_list[accountIndex].proxy
@@ -68,11 +71,12 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 service.splinterlandMessageHandler = async (worker, message, master) => {
     const account_list = settings.data.account_list
     const app_setting = settings.data.app_setting
-    const accountIndex = account_list.findIndex(a => a.username === message.player || a.username === message.param?.player)
+    const accountIndex = account_list.findIndex(
+        (a) => a.username === message.player || a.username === message.param?.player
+    )
 
     switch (message.type) {
         case MESSAGE_STATUS.INFO_UPDATE:
-
             if (accountIndex === -1) {
                 return worker.instance.terminate()
             }
@@ -119,8 +123,7 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
             break
 
-        case MESSAGE_STATUS.STATUS_UPDATE: 
-
+        case MESSAGE_STATUS.STATUS_UPDATE:
             if (accountIndex === -1) {
                 return worker.instance.terminate()
             }
@@ -132,13 +135,13 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             if (message.status === 'DONE') {
                 let proxy = account_list[accountIndex].proxy
 
-                const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
+                const proxyIndex = app_setting.proxies.findIndex((p) => p.ip === proxy)
                 if (proxyIndex >= 0) {
                     app_setting.proxies[proxyIndex].count--
                     await master.change('app_setting', { app_setting })
                 }
 
-                worker.instance.terminate()                
+                worker.instance.terminate()
             }
             break
 
@@ -147,11 +150,11 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             break
 
         case MESSAGE_STATUS.ERROR:
-            worker.instance.terminate()                
+            worker.instance.terminate()
 
             let proxy = account_list[accountIndex].proxy
 
-            const proxyIndex = app_setting.proxies.findIndex(p => p.ip === proxy)
+            const proxyIndex = app_setting.proxies.findIndex((p) => p.ip === proxy)
             if (proxyIndex >= 0) {
                 app_setting.proxies[proxyIndex].count--
                 await master.change('app_setting', { app_setting })
@@ -177,7 +180,7 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                     name: 'delegator',
                 },
                 param: message.param,
-                config: app_setting
+                config: app_setting,
             })
 
             account_list[accountIndex].status = 'DELEGATING'
@@ -186,13 +189,13 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
             break
 
-        case MESSAGE_STATUS.CREATE_COLLECTOR: 
+        case MESSAGE_STATUS.CREATE_COLLECTOR:
             await master.add({
                 worker: {
                     name: 'collector',
                 },
                 param: message.param,
-                config: app_setting
+                config: app_setting,
             })
             break
     }
@@ -204,7 +207,7 @@ service.checkWorkerRunable = (worker, master) => {
     }
 
     const config = master.config[worker.name]
-    const numberOfRunning = master.workers.filter(e => e.status === 'running' && e.name === worker.name).length
+    const numberOfRunning = master.workers.filter((e) => e.status === 'running' && e.name === worker.name).length
 
     if (config.concurrency === 'infinity') {
         return true
@@ -216,7 +219,7 @@ service.checkWorkerRunable = (worker, master) => {
 }
 
 service.beforeTerminateWorker = (worker, master) => {
-    master.workers = master.workers.map(w => {
+    master.workers = master.workers.map((w) => {
         if (w.id === worker.id) {
             w.status = 'stopped'
         }
@@ -224,6 +227,5 @@ service.beforeTerminateWorker = (worker, master) => {
         return w
     })
 }
-
 
 module.exports = service

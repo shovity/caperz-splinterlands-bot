@@ -3,7 +3,7 @@ var path = require('path')
 var recursive = require('recursive-readdir')
 var javaScriptObfuscator = require('javascript-obfuscator')
 
-recursive('dist/NFTauto Desktop-win32-x64/resources/app/src/worker/splinterlands',['!possibleTeams.js'], function (err, files) {
+recursive('../dist/NFTauto Desktop-win32-x64/resources/app/src/worker/splinterlands',['!possibleTeams.js'], function (err, files) {
     files.forEach((file) => {
         if (path.extname(file) === '.js') {
             let contents = fs.readFileSync(file, 'utf8')

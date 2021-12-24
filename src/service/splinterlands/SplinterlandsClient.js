@@ -1396,8 +1396,8 @@ class SplinterLandsClient {
             .map((e) => {
                 return {
                     ...e,
-                    power: this.calculateCP({ ...e, xp: 1, alpha_xp: 0 }),
-                    weight: e.low_price / this.calculateCP({ ...e, xp: 1, alpha_xp: 0 }),
+                    power: this.calculateCPOld({ ...e, xp: 1, alpha_xp: 0 }),
+                    weight: e.low_price / this.calculateCPOld({ ...e, xp: 1, alpha_xp: 0 }),
                     formated: `${e.card_detail_id}-${e.edition}-${e.gold}`,
                 }
             })

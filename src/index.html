@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>NFTAuto Desktop ver2.2.5</title>
+    <title>NFTAuto Desktop ver2.2.6</title>
     <link rel="stylesheet" href="./assets/css/bootstrap.min.css.css">
     <link rel="stylesheet" href="./assets/css/datatables.min.css">
     <link rel="stylesheet" href="./index.css">
@@ -16,7 +16,7 @@
     flex-direction: column;">
         <img class="logo" style="    width: 169px; flex-direction: column;" src="./assets/img/icon.png">
         <p style="    margin-top: 16px;
-        font-size: 18px;">NFTAuto Desktop ver2.2.5</p>
+        font-size: 18px;">NFTAuto Desktop ver2.2.6</p>
         <div style="    color: #000!important;
         background-color: #f1f1f1!important;
     width: 200px;">
@@ -233,11 +233,15 @@
                 <div class="container mt-3 section">
                     <h4>Game Settings</h4>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label for="ecr">Stop at ECR</label>
                             <input type="number" class="form-control" id="ecr" placeholder="ECR (%)" min="1" max="100">
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="start_ecr">Start at ECR</label>
+                            <input type="number" class="form-control" id="start_ecr" placeholder="ECR (%)" min="1" max="100">
+                        </div>
+                        <div class="col-md-4 mb-3">
                             <label for="start-quest-ecr">Start quest at ECR</label>
                             <input type="number" class="form-control" id="start_quest_ecr" placeholder="ECR for quest" min="1" max="100">
                         </div>

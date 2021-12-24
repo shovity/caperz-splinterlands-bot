@@ -542,7 +542,7 @@ master.updateOpeningPlayerInfo = async () => {
             newAccount.lastRewardTime = lastRewardTime
 
             if (
-                newAccount.ecr >= settings.data.app_setting.ecr && 
+                newAccount.ecr >= settings.data.app_setting.start_ecr && 
                 newAccount.status === ACCOUNT_STATUS.WAITING_ECR
             ) {
                 newAccount.status = ACCOUNT_STATUS.NONE

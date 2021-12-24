@@ -245,9 +245,6 @@ ori.use('event store emitter storage', () => {
     })
 
     event.listen('setting.save', () => {
-        let ecr = document.getElementById('ecr')
-        let startQuestEcr = document.getElementById('start_quest_ecr')
-        let botPerIp = document.getElementById('bot_per_ip')
         let proxyTable = document.getElementById('proxy_table')
         let useDproxy = document.getElementById('use_default_proxy')
         let proxyArray = []
@@ -261,8 +258,9 @@ ori.use('event store emitter storage', () => {
         }
         ipc.send('setting.save', {
             ecr: ecr.value,
-            startQuestEcr: startQuestEcr.value,
-            botPerIp: botPerIp.value,
+            startQuestEcr: start_quest_ecr.value,
+            startEcr: start_ecr.value,
+            botPerIp: bot_per_ip.value,
             proxies: proxyArray,
             useDefaultProxy: useDproxy.checked,
             dlgMinPower: adc_min_power.value,
@@ -295,8 +293,9 @@ ori.use('event store emitter storage', () => {
             data: tableData,
             columns: [{ data: 'ip' }, { data: 'botUsage' }],
         })
-        ecr.value = data.ecr
-        start_quest_ecr.value = data.startQuestEcr
+        ecr.value = data.ecr || 0
+        start_quest_ecr.value = data.startQuestEcr || 100
+        start_ecr.value = data.startEcr || 80
         use_default_proxy.checked = data.useDefaultProxy
         bot_per_ip.value = data.botPerIp
         adc_min_power.value = data.dlgMinPower
