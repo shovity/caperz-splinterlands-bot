@@ -166,21 +166,49 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
             }
         }
 
-        const worker = await master.add({
-            worker: {
-                name: 'splinterlands',
-            },
-            username: account.username,
-            postingKey: account.postingKey,
-            masterKey: account.masterKey,
-            token: account.token,
-            proxy,
-            delegated,
-            config,
-            spsToken: user.token
-        })
+        //TODO: check condition create delegator
 
-        account_list[accountIndex].workerId = worker.id
+        const createDelegate = 1
+
+        if (createDelegate) {
+            master.delegatorWorker.instance.postMessage({message: 'this is message'})
+
+            const task = ['delegate', 'undelegate']
+                const randomElement = task[Math.floor(Math.random() * task.length)];
+
+                master.delegatorWorker.instance.postMessage({
+                    task: 'delegator',
+                    data: 'data'
+                })
+
+            setInterval(() => {
+                const task = ['delegate', 'undelegate']
+                const randomElement = task[Math.floor(Math.random() * task.length)];
+                
+                for (let i = 0; i < 2; i++) {
+                    master.delegatorWorker.instance.postMessage({
+                        task: 'delegate',
+                        data: 'data'
+                    })
+                }
+            }, 15000)
+        } else {
+            const worker = await master.add({
+                worker: {
+                    name: 'splinterlands',
+                },
+                username: account.username,
+                postingKey: account.postingKey,
+                masterKey: account.masterKey,
+                token: account.token,
+                proxy,
+                delegated,
+                config,
+                spsToken: user.token
+            })
+
+            account_list[accountIndex].workerId = worker.id
+        }
 
         if (!proxyIp) {
             app_setting.proxies[proxyIndex].count++
@@ -213,8 +241,6 @@ master.start = async (worker) => {
         for (i = 0; i < workers.length; i++) {
             if (workerService.checkWorkerRunable(workers[i], master)) {
                 master.start(workers[i])
-            } else {
-                console.log('unrunable', workers[i].name)
             }
         }
     })
@@ -542,7 +568,7 @@ master.updateOpeningPlayerInfo = async () => {
             newAccount.lastRewardTime = lastRewardTime
 
             if (
-                newAccount.ecr >= settings.data.app_setting.start_ecr && 
+                newAccount.ecr >= settings.data.app_setting.ecr && 
                 newAccount.status === ACCOUNT_STATUS.WAITING_ECR
             ) {
                 newAccount.status = ACCOUNT_STATUS.NONE
@@ -596,6 +622,8 @@ master.updateOpeningPlayerInfo = async () => {
 
 master.calculatePriority = calculatePriority
 master.calculateECR = calculateECR
+
+workerService.createDelegator(master)
 
 
 module.exports = master
