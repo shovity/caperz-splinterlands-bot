@@ -57,27 +57,20 @@ service.collectorMesssageHandler = async (worker, message, master) => {
 }
 
 service.delegatorMessageHandler = async (worker, message, master) => {
-    console.log(message)
+    const account_list = settings.data.account_list
+
+    const accountIndex = account_list.findIndex(
+        (a) => a.username === message.player || a.username === message.param?.player
+    )    
     
-    // const account_list = settings.data.account_list
+    const worker = await master.add({
+        worker: {
+            name: 'splinterlands'
+        },
+        ...message.data,
+    })
 
-    // const accountIndex = account_list.findIndex((a) => a.username === message.player)
-
-    // if (message.type === 'DONE' && account_list[accountIndex].status === 'DELEGATING') {
-    //     const proxyIp = account_list[accountIndex].proxy
-    //     const delegated = 1
-    //     master.handleAddAccount(account_list[accountIndex], proxyIp, delegated)
-    // } else if (message.type === 'ERROR') {
-    //     account_list[accountIndex].status = 'DELEGATING_ERROR'
-
-    //     await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-    // }
-
-    // service.beforeTerminateWorker(worker, master)
-
-    // worker.instance.terminate()
-
-    //TODO: handle done create splinterland worker
+    account_list[accountIndex].workerId = worker.id
 }
 
 service.splinterlandMessageHandler = async (worker, message, master) => {
@@ -244,7 +237,7 @@ service.beforeTerminateWorker = (worker, master) => {
 service.createDelegator = async (master) => {
     master.delegatorWorker = await master.add({
         worker: {
-            name: 'test',
+            name: 'delegator',
         },
     })
 }

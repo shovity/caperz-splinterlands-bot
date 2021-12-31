@@ -41,7 +41,7 @@ const account = ({ win, ipc, settings }) => {
 
         accountService.beforePausedOrStopped(account_list[accountIndex])
 
-        if (account_list[accountIndex].status === 'DONE') {
+        if (account_list[accountIndex].status === 'DONE' || account_list[accountIndex].status === 'DELEGATING') {
             settings.data.account_list[accountIndex].status = 'PAUSED'
 
             account_list[accountIndex].status = 'PAUSED'
