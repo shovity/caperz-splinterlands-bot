@@ -1,9 +1,8 @@
 const {parentPort, workerData} = require("worker_threads")
 
 const delegate = async (delegator, task) => {
-    console.log('worker running')
     changeStatus(delegator, task, 'running')
-
+    console.log(task.data)
     await delay(3000)
 
     changeStatus(delegator, task, 'done')

@@ -1,5 +1,5 @@
 const settings = require('../settings')
-
+const utils = require('../utils')
 const MESSAGE_STATUS = {
     INFO_UPDATE: 'INFO_UPDATE',
     STATUS_UPDATE: 'STATUS_UPDATE',
@@ -244,9 +244,18 @@ service.beforeTerminateWorker = (worker, master) => {
 service.createDelegator = async (master) => {
     master.delegatorWorker = await master.add({
         worker: {
-            name: 'test',
+            name: 'delegator',
         },
+        config: settings.data.app_setting
     })
+}
+
+service.checkDelegate = async (player, proxy) => {
+    const appSetting = settings.data.app_setting
+    const minDlgPower = appSetting.dlgMinPower || 0
+    const res = await utils.getDetails(player, proxy)
+    const cp = res.collection_power
+    return (minDlgPower > cp) && appSetting.modeDelegate && appSetting.majorAccount?.player && appSetting.majorAccount?.postingKey
 }
 
 

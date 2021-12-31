@@ -166,32 +166,24 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
             }
         }
 
-        //TODO: check condition create delegator
+        const shouldDelegate = await workerService.checkDelegate(account.username, proxy)
+        const details = await utils.getDetails(account.username)
 
-        const createDelegate = 1
-
-        if (createDelegate) {
-            master.delegatorWorker.instance.postMessage({message: 'this is message'})
-
-            const task = ['delegate', 'undelegate']
-                const randomElement = task[Math.floor(Math.random() * task.length)];
-
-                master.delegatorWorker.instance.postMessage({
-                    task: 'delegator',
-                    data: 'data'
-                })
-
-            setInterval(() => {
-                const task = ['delegate', 'undelegate']
-                const randomElement = task[Math.floor(Math.random() * task.length)];
-                
-                for (let i = 0; i < 2; i++) {
-                    master.delegatorWorker.instance.postMessage({
-                        task: 'delegate',
-                        data: 'data'
-                    })
+        if (shouldDelegate) {
+            master.delegatorWorker.instance.postMessage({
+                task: 'delegate',
+                data: {
+                    username: account.username,
+                    postingKey: account.postingKey,
+                    masterKey: account.masterKey,
+                    token: account.token,
+                    proxy,
+                    delegated,
+                    config,
+                    spsToken: user.token,
+                    delegatePower: app_setting.dlgMinPower - details.collection_power
                 }
-            }, 15000)
+            })
         } else {
             const worker = await master.add({
                 worker: {
