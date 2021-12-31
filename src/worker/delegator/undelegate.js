@@ -31,12 +31,12 @@ const afterDone = (delegator, task) => {
     const pendingDelegateTasks = delegator.delegateQueue.filter(e => e.status === 'pending')
 
     if (pendingUndelegateTasks.length && !delegator.isRunning()) {
-        const task = pendingUndelegateTasks.pop()
+        const task = pendingUndelegateTasks.shift()
         undelegate(delegator, task)
     }
     
     if (pendingDelegateTasks.length && !pendingUndelegateTasks.length) {
-        const task = pendingDelegateTasks.pop()
+        const task = pendingDelegateTasks.shift()
 
         undelegate(delegator, task)
     }

@@ -35,7 +35,7 @@ const afterDone = (delegator, task) => {
         !delegator.isRunning() && 
         !undelegateTasks.length
     ) {
-        const task = pendingDelegateTasks.pop()
+        const task = pendingDelegateTasks.shift()
         delegate(delegator, task)
     }
 
@@ -43,7 +43,7 @@ const afterDone = (delegator, task) => {
         undelegateTasks.length &&
         !delegator.isRunning()
     ) {
-        const task = undelegateTasks.pop()
+        const task = undelegateTasks.shift()
         undelegate(delegator, task)
     }
 
