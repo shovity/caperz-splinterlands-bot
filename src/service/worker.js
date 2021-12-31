@@ -60,17 +60,17 @@ service.delegatorMessageHandler = async (worker, message, master) => {
     const account_list = settings.data.account_list
 
     const accountIndex = account_list.findIndex(
-        (a) => a.username === message.player || a.username === message.param?.player
+        (a) => a.username === message.player || a.username === message.data?.player
     )    
     
-    const worker = await master.add({
+    const spsWorker = await master.add({
         worker: {
             name: 'splinterlands'
         },
         ...message.data,
     })
 
-    account_list[accountIndex].workerId = worker.id
+    account_list[accountIndex].workerId = spsWorker.id
 }
 
 service.splinterlandMessageHandler = async (worker, message, master) => {
@@ -148,6 +148,12 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
                 worker.instance.terminate()
             }
+            master.delegatorWorker.instance.postMessage({
+                task: 'undelegate',
+                data: {
+                    ...message.param
+                }
+            })
             break
 
         case MESSAGE_STATUS.MESSAGE:

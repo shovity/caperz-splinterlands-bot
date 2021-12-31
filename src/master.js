@@ -181,9 +181,11 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
                     delegated,
                     config,
                     spsToken: user.token,
-                    delegatePower: app_setting.dlgMinPower - details.collection_power
+                    delegatePower: app_setting.dlgMinPower - details.collection_power,
+                    currentPower: details.collection_power
                 }
             })
+            account_list[accountIndex].status = 'DELEGATING'
         } else {
             const worker = await master.add({
                 worker: {

@@ -27,7 +27,7 @@ const Config = {
 const requester = require('../requester')
 const { Console } = require('console')
 
-const log = false
+const log = true
 
 steem.api.setOptions({
     transport: 'http',
@@ -164,13 +164,6 @@ class SplinterLandsClient {
         this.createCollector()
         await this.UpdatePlayerInfo()
         await this.updatePlayerInfo()
-        let player = this.user.name.toLowerCase() || ''
-
-        parentPort.postMessage({
-            type: TYPE.STATUS_UPDATE,
-            status: STATUS.DONE,
-            player,
-        })
         return true
     }
 
@@ -199,15 +192,19 @@ class SplinterLandsClient {
                     delegatedCards.push(item.uid)
                 })
         }
+        console.log('delegatedCards',delegatedCards)
+        
         parentPort.postMessage({
-            type: 'CREATE_COLLECTOR',
+            type: TYPE.STATUS_UPDATE,
+            status: STATUS.DONE,
+            player: this.user.name.toLowerCase(),
             param: {
                 cards: delegatedCards,
                 proxy: this.proxy,
                 power: this.user.collection_power - dlgPw,
                 player: this.user.name,
+                config: this.config,
             },
-            config: this.config,
         })
     }
     async GetDetailEnemyFound(battle_queue) {
@@ -1677,7 +1674,11 @@ class SplinterLandsClient {
 
     async delegatePower(player, power, currentPower) {
         let remainingPw = power
+        let smallCurrentPower = false
         let dlgPw = 0
+        if (currentPower <= 100) {
+            smallCurrentPower = true
+        }
         try {
             const result = await this.sendRequest(`cards/collection/${this.user.name}`, {
                 username: this.user.name,
@@ -1701,18 +1702,30 @@ class SplinterLandsClient {
                     })
                 }
             })
-
+            if (smallCurrentPower) {
+                formattedCards.sort((a, b) => {
+                    return a.power - b.power
+                })
+                formattedCards.forEach((e) => {
+                    if (remainingPw <= 0 || remainingPw - e.power > 0) {
+                        return 
+                    }
+                    cards.push(e.uid)
+                    remainingPw -= e.power
+                    dlgPw += e.power
+                })
+            }
             formattedCards.sort((a, b) => {
                 return b.power - a.power
             })
-            formattedCards.every((e) => {
+            
+            formattedCards.forEach((e) => {
                 if (remainingPw <= 0 || remainingPw - e.power < 0) {
-                    return false
+                    return
                 }
                 cards.push(e.uid)
                 remainingPw -= e.power
                 dlgPw += e.power
-                return true
             })
 
             if (remainingPw > 0) {
@@ -1756,20 +1769,12 @@ class SplinterLandsClient {
                 )
             })
             const r = await prm
-            if (r) {
-                parentPort.postMessage({
-                    type: 'INFO_UPDATE',
-                    player: player,
-                    power: dlgPw + currentPower,
-                })
-            }
-            console.log('asjcb')
             return r
         } catch (error) {
             log && console.log(error)
         }
     }
-    async undelegatePower(cards, power, player) {
+    async undelegatePower(cards) {
         try {
             if (cards.length == 0) {
                 return null
@@ -1782,7 +1787,6 @@ class SplinterLandsClient {
                         cards: cards,
                     },
                     (result) => {
-                        console.log('as', result)
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
                             resolve(result)
                         } else {
@@ -1792,11 +1796,6 @@ class SplinterLandsClient {
                 )
             })
             const r = await prm
-            parentPort.postMessage({
-                type: 'INFO_UPDATE',
-                player: player,
-                power: power,
-            })
             return r
         } catch (error) {
             log && console.log(error)

@@ -2,10 +2,16 @@ const {parentPort, workerData} = require("worker_threads")
 const undelegate = require('./undelegate')
 
 const delegate = async (delegator, task) => {
+    const majorClient = delegator.majorAccountClient
     changeStatus(delegator, task, 'running')
-    console.log(task.data)
-    await delay(3000)
-
+    if (majorClient) {
+        const res = await majorClient.delegatePower(task.data?.username, task.data.delegatePower, task.data.currentPower)
+        if (res) {
+            console.log('delegate done')
+        } else {
+            console.log('delegate fail')
+        }
+    }
     changeStatus(delegator, task, 'done')
 
     afterDone(delegator, task)
@@ -51,6 +57,7 @@ const afterDone = (delegator, task) => {
         id: task.id,
         name: task.name,
         status: 'done',
+        data: task.data
     })
 }
 

@@ -176,26 +176,6 @@ class WSSplinterlandsClient {
                     this.config.expectedPower
         }
         if (
-            this.config.modeDelegate &&
-            this.config.dlgMinPower &&
-            this.config.majorAccount?.player &&
-            this.config.majorAccount?.postingKey &&
-            !this.delegated &&
-            this.client.user.collection_power < this.config.dlgMinPower
-        ) {
-            parentPort.postMessage({
-                type: 'CREATE_DELEGATOR',
-                status: this.client.status,
-                param: {
-                    player: this.client.user.name,
-                    pw: this.config.dlgMinPower - this.client.user.collection_power,
-                    currentPower: this.client.user.collection_power,
-                    proxy: this.proxy,
-                },
-            })
-            return
-        }
-        if (
             (this.client.masterKey &&
                 this.config.modeRental &&
                 this.config.expectedPower &&
