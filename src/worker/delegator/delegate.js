@@ -1,7 +1,7 @@
 const {parentPort, workerData} = require("worker_threads")
+const undelegate = require('./undelegate')
 
 const delegate = async (delegator, task) => {
-    console.log('worker running')
     changeStatus(delegator, task, 'running')
 
     await delay(3000)
@@ -27,11 +27,24 @@ const changeStatus = (delegator, task, status) => {
 }
 
 const afterDone = (delegator, task) => {
-    const pendingDelegateTasks = delegator.delegateQueue.filter(e => e.status === 'pending').length
+    const pendingDelegateTasks = delegator.delegateQueue.filter(e => e.status === 'pending')
+    const undelegateTasks = delegator.undelegateQueue.filter(e => e.status === 'pending')
 
-    if (pendingDelegateTasks.length && !delegator.isRunning()) {
+    if (
+        pendingDelegateTasks.length && 
+        !delegator.isRunning() && 
+        !undelegateTasks.length
+    ) {
         const task = pendingDelegateTasks.pop()
         delegate(delegator, task)
+    }
+
+    if (
+        undelegateTasks.length &&
+        !delegator.isRunning()
+    ) {
+        const task = undelegateTasks.pop()
+        undelegate(delegator, task)
     }
 
     parentPort.postMessage({
