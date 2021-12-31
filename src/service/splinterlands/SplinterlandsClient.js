@@ -25,6 +25,7 @@ const Config = {
 }
 
 const requester = require('../requester')
+const { Console } = require('console')
 
 const log = false
 
@@ -98,6 +99,7 @@ class SplinterLandsClient {
         this.status = ''
         this._active_auth_tx_callbacks = {}
         this.masterKey = masterKey
+        this.rentRequireCardDone = false
     }
     sendMessage = ({ player, ...data }) => {
         if (!this.user && !player) return
@@ -184,7 +186,7 @@ class SplinterLandsClient {
             result.cards
                 .filter((c) => {
                     if (
-                        this.config.majorAccount?.postingKey && 
+                        this.config.majorAccount?.postingKey &&
                         c.delegated_to &&
                         c.player === this.config.majorAccount?.player &&
                         c.delegated_to == this.user.name
@@ -618,7 +620,7 @@ class SplinterLandsClient {
         })
 
         this.user = Object.assign(this.user, res)
-        
+
         if (quest) {
             this.user.quest = quest[0]
         }
@@ -1375,15 +1377,150 @@ class SplinterLandsClient {
             return rates[rates.length - 1]
         } else return this.settings.xp_levels[rarity - 1][this.settings.xp_levels[rarity - 1].length - 1]
     }
-    async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1, initialDec) {
+    async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1, initialDec, requireCard) {
         let retry = false
         let blackList = bl
         let gainedPower = 0
         let remainingPower = expectedPower - curPower
         let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
         let weight = remainingDec / rentalDay / remainingPower
+        let cardRemaining = []
         log && console.log('weight ', weight)
         log && console.log('remainingPower', remainingPower)
+
+        const getCardMarketIdArray = async (card) => {
+            if (!card) {
+                return []
+            }
+            let result = []
+            const res = await this.sendRequest('market/for_rent_by_card', {
+                card_detail_id: card.card_detail_id,
+                gold: card.gold,
+                edition: card.edition,
+                v: Date.now(),
+                username: this.user.name,
+                token: this.token,
+            })
+            if (!res) {
+                return []
+            }
+            res.sort((a, b) => {
+                return +a.buy_price - +b.buy_price
+            })
+            if (res[0].buy_price / this.calculateCP(res[0]) > weight) {
+                blackList.push(card.formated)
+                retry = true
+                return []
+            }
+            res.every((c) => {
+                if (c.buy_price / this.calculateCP(c) > weight || gainedPower + this.calculateCP(c) > remainingPower + 100) {
+                    return false
+                } else {
+                    log && console.log('card power', this.calculateCP(c))
+                    result.push(c.market_id)
+                    gainedPower += this.calculateCP(c)
+                    log && console.log('price', c.buy_price)
+                    return true
+                }
+            })
+            return result
+        }
+
+        if (requireCard?.length) {
+            console.log(requireCard)
+            const pc = await this.getPlayerCardsUID()
+            const playerCards = pc.map((c) => this.getCardId(c))
+            requireCard.forEach((c) => {
+                const cid = c.id.split('_')[1]
+                if (!playerCards.includes(cid)) {
+                    cardRemaining.push({
+                        id: cid,
+                        dec: c.maxDec,
+                    })
+                }
+            })
+        }
+        if (cardRemaining.length) {
+            await Promise.all(
+                cardRemaining.map(async (card) => {
+                    const res = await this.sendRequest('market/for_rent_by_card', {
+                        card_detail_id: card.id.split('-')[0],
+                        gold: card.id.split('-')[2] == 'c' ? false : true,
+                        edition: card.id.split('-')[1],
+                        v: Date.now(),
+                        username: this.user.name,
+                        token: this.token,
+                    })
+                    if (!res) {
+                        return
+                    }
+                    res.sort((a, b) => {
+                        return +a.buy_price - +b.buy_price
+                    }).filter((c) => {
+                        if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+                            return false
+                        }
+
+                        if (c.unlock_date && new Date(c.unlock_date) >= Date.now()) {
+                            return false
+                        }
+
+                        if (
+                            c.player != c.last_used_player &&
+                            c.last_used_date &&
+                            Date.now() - new Date(c.last_used_date) < 1000 * 60 * 60 * 24
+                        ) {
+                            if (
+                                c.last_transferred_date &&
+                                Date.now() - new Date(c.last_used_date) > Date.now() - new Date(c.last_transferred_date)
+                            ) {
+                                return false
+                            }
+                        }
+                        if (c.buy_price > card.dec) {
+                            return false
+                        }
+                        return true
+                    })
+                    console.log(res[0])
+                    if (res[0]) {
+                        const id = res[0].market_id
+                        const prm = new Promise((resolve, reject) => {
+                            this.broadcastCustomJson(
+                                'sm_market_rent',
+                                '',
+                                {
+                                    items: [id],
+                                    currency: 'DEC',
+                                    days: rentalDay,
+                                },
+                                (result) => {
+                                    if (result && !result.error && result.trx_info && result.trx_info.success) {
+                                        resolve(result)
+                                    } else {
+                                        resolve(null)
+                                    }
+                                }
+                            )
+                        })
+                        return prm
+                    }
+                })
+            )
+            return
+        } else {
+            this.rentRequireCardDone = true
+        }
+        if (remainingPower <= 0) {
+            parentPort.postMessage({
+                type: 'INFO_UPDATE',
+                status: 'RUNNING',
+                player: this.user.name,
+                matchStatus: 'NONE',
+            })
+            log && console.log('done ne')
+            return
+        }
         const res = await this.sendRequest('market/for_rent_grouped', {
             v: Date.now(),
             username: this.user.name,
@@ -1417,67 +1554,33 @@ class SplinterLandsClient {
                 return b.power - a.power
             })
 
-        const getCardMarketIdArray = async (card) => {
-            if (!card) {
-                return []
-            }
-            let result = []
-            const res = await this.sendRequest('market/for_rent_by_card', {
-                card_detail_id: card.card_detail_id,
-                gold: card.gold,
-                edition: card.edition,
-                v: Date.now(),
-                username: this.user.name,
-                token: this.token,
-            })
-            if (!res) {
-                return []
-            }
-            res.sort((a, b) => {
-                return +a.buy_price - +b.buy_price
-            })
-            if (res[0].buy_price / card.power > weight) {
-                blackList.push(card.formated)
-                retry = true
-                return []
-            }
-            log && console.log('card power', card.power)
-            res.every((c) => {
-                if (c.buy_price / card.power > weight || gainedPower + card.power > remainingPower + 200) {
-                    return false
-                } else {
-                    result.push(c.market_id)
-                    gainedPower += card.power
-                    log && console.log('price', c.buy_price)
-                    return true
-                }
-            })
-            return result
-        }
-
-        const marketIdArray = await getCardMarketIdArray(data[0])
-        const ids = marketIdArray.filter((e) => e != 0)
         let r
-        if (ids.length > 0) {
-            const prm = new Promise((resolve, reject) => {
-                this.broadcastCustomJson(
-                    'sm_market_rent',
-                    '',
-                    {
-                        items: marketIdArray.filter((e) => e != 0),
-                        currency: 'DEC',
-                        days: rentalDay,
-                    },
-                    (result) => {
-                        if (result && !result.error && result.trx_info && result.trx_info.success) {
-                            resolve(result)
-                        } else {
-                            resolve(null)
+        if (data.length > 0) {
+            const marketIdArray = await getCardMarketIdArray(data[0])
+            const ids = marketIdArray.filter((e) => e != 0)
+            if (ids.length > 0) {
+                const prm = new Promise((resolve, reject) => {
+                    this.broadcastCustomJson(
+                        'sm_market_rent',
+                        '',
+                        {
+                            items: marketIdArray.filter((e) => e != 0),
+                            currency: 'DEC',
+                            days: rentalDay,
+                        },
+                        (result) => {
+                            if (result && !result.error && result.trx_info && result.trx_info.success) {
+                                resolve(result)
+                            } else {
+                                resolve(null)
+                            }
                         }
-                    }
-                )
-            })
-            r = await prm
+                    )
+                })
+                r = await prm
+            }
+        } else {
+            retry = true
         }
         if (retry) {
             await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay, initialDec)

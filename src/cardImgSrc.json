@@ -1,0 +1,5012 @@
+[
+    {
+        "id":"card_1-0-c",
+        "url": "assets/img/cardList/card_1-0-c.png",
+        "name": "Goblin Shaman"
+    },
+    {
+        "id":"card_1-0-g",
+        "url": "assets/img/cardList/card_1-0-g.png",
+        "name": "Goblin Shaman"
+    },
+    {
+        "id":"card_1-1-c",
+        "url": "assets/img/cardList/card_1-1-c.png",
+        "name": "Goblin Shaman"
+    },
+    {
+        "id":"card_1-1-g",
+        "url": "assets/img/cardList/card_1-1-g.png",
+        "name": "Goblin Shaman"
+    },
+    {
+        "id":"card_2-0-c",
+        "url": "assets/img/cardList/card_2-0-c.png",
+        "name": "Giant Roc"
+    },
+    {
+        "id":"card_2-0-g",
+        "url": "assets/img/cardList/card_2-0-g.png",
+        "name": "Giant Roc"
+    },
+    {
+        "id":"card_2-1-c",
+        "url": "assets/img/cardList/card_2-1-c.png",
+        "name": "Giant Roc"
+    },
+    {
+        "id":"card_2-1-g",
+        "url": "assets/img/cardList/card_2-1-g.png",
+        "name": "Giant Roc"
+    },
+    {
+        "id":"card_3-0-c",
+        "url": "assets/img/cardList/card_3-0-c.png",
+        "name": "Kobold Miner"
+    },
+    {
+        "id":"card_3-0-g",
+        "url": "assets/img/cardList/card_3-0-g.png",
+        "name": "Kobold Miner"
+    },
+    {
+        "id":"card_3-1-c",
+        "url": "assets/img/cardList/card_3-1-c.png",
+        "name": "Kobold Miner"
+    },
+    {
+        "id":"card_3-1-g",
+        "url": "assets/img/cardList/card_3-1-g.png",
+        "name": "Kobold Miner"
+    },
+    {
+        "id":"card_4-0-c",
+        "url": "assets/img/cardList/card_4-0-c.png",
+        "name": "Fire Beetle"
+    },
+    {
+        "id":"card_4-0-g",
+        "url": "assets/img/cardList/card_4-0-g.png",
+        "name": "Fire Beetle"
+    },
+    {
+        "id":"card_4-1-c",
+        "url": "assets/img/cardList/card_4-1-c.png",
+        "name": "Fire Beetle"
+    },
+    {
+        "id":"card_4-1-g",
+        "url": "assets/img/cardList/card_4-1-g.png",
+        "name": "Fire Beetle"
+    },
+    {
+        "id":"card_106-3-c",
+        "url": "assets/img/cardList/card_106-3-c.png",
+        "name": "Exploding Dwarf"
+    },
+    {
+        "id":"card_106-3-g",
+        "url": "assets/img/cardList/card_106-3-g.png",
+        "name": "Exploding Dwarf"
+    },
+    {
+        "id":"card_126-2-c",
+        "url": "assets/img/cardList/card_126-2-c.png",
+        "name": "Molten Ogre"
+    },
+    {
+        "id":"card_126-2-g",
+        "url": "assets/img/cardList/card_126-2-g.png",
+        "name": "Molten Ogre"
+    },
+    {
+        "id":"card_157-4-c",
+        "url": "assets/img/cardList/card_157-4-c.png",
+        "name": "Kobold Bruiser"
+    },
+    {
+        "id":"card_157-4-g",
+        "url": "assets/img/cardList/card_157-4-g.png",
+        "name": "Kobold Bruiser"
+    },
+    {
+        "id":"card_158-4-c",
+        "url": "assets/img/cardList/card_158-4-c.png",
+        "name": "Serpentine Spy"
+    },
+    {
+        "id":"card_158-4-g",
+        "url": "assets/img/cardList/card_158-4-g.png",
+        "name": "Serpentine Spy"
+    },
+    {
+        "id":"card_159-4-c",
+        "url": "assets/img/cardList/card_159-4-c.png",
+        "name": "Magma Troll"
+    },
+    {
+        "id":"card_159-4-g",
+        "url": "assets/img/cardList/card_159-4-g.png",
+        "name": "Magma Troll"
+    },
+    {
+        "id":"card_160-4-c",
+        "url": "assets/img/cardList/card_160-4-c.png",
+        "name": "Goblin Fireballer"
+    },
+    {
+        "id":"card_160-4-g",
+        "url": "assets/img/cardList/card_160-4-g.png",
+        "name": "Goblin Fireballer"
+    },
+    {
+        "id":"card_214-3-c",
+        "url": "assets/img/cardList/card_214-3-c.png",
+        "name": "Ettin Spearman"
+    },
+    {
+        "id":"card_214-3-g",
+        "url": "assets/img/cardList/card_214-3-g.png",
+        "name": "Ettin Spearman"
+    },
+    {
+        "id":"card_227-3-c",
+        "url": "assets/img/cardList/card_227-3-c.png",
+        "name": "Flame Monkey"
+    },
+    {
+        "id":"card_227-3-g",
+        "url": "assets/img/cardList/card_227-3-g.png",
+        "name": "Flame Monkey"
+    },
+    {
+        "id":"card_248-3-c",
+        "url": "assets/img/cardList/card_248-3-c.png",
+        "name": "Ant Miners"
+    },
+    {
+        "id":"card_248-3-g",
+        "url": "assets/img/cardList/card_248-3-g.png",
+        "name": "Ant Miners"
+    },
+    {
+        "id":"card_266-5-c",
+        "url": "assets/img/cardList/card_266-5-c.png",
+        "name": "Flamesmith"
+    },
+    {
+        "id":"card_266-5-g",
+        "url": "assets/img/cardList/card_266-5-g.png",
+        "name": "Flamesmith"
+    },
+    {
+        "id":"card_281-3-c",
+        "url": "assets/img/cardList/card_281-3-c.png",
+        "name": "Charlok Minotaur"
+    },
+    {
+        "id":"card_281-3-g",
+        "url": "assets/img/cardList/card_281-3-g.png",
+        "name": "Charlok Minotaur"
+    },
+    {
+        "id":"card_299-6-c",
+        "url": "assets/img/cardList/card_299-6-c.png",
+        "name": "Chimney Wallstop"
+    },
+    {
+        "id":"card_299-6-g",
+        "url": "assets/img/cardList/card_299-6-g.png",
+        "name": "Chimney Wallstop"
+    },
+    {
+        "id":"card_300-6-c",
+        "url": "assets/img/cardList/card_300-6-c.png",
+        "name": "Krash Wanderford"
+    },
+    {
+        "id":"card_300-6-g",
+        "url": "assets/img/cardList/card_300-6-g.png",
+        "name": "Krash Wanderford"
+    },
+    {
+        "id":"card_331-3-c",
+        "url": "assets/img/cardList/card_331-3-c.jpg",
+        "name": "VENARI HEATSMITH"
+    },
+    {
+        "id":"card_331-3-g",
+        "url": "assets/img/cardList/card_331-3-g.jpg",
+        "name": "VENARI HEATSMITH"
+    },
+    {
+        "id":"card_395-7-c",
+        "url": "assets/img/cardList/card_395-7-c.jpg",
+        "name": "RADIATED SCORCHER"
+    },
+    {
+        "id":"card_395-7-g",
+        "url": "assets/img/cardList/card_395-7-g.jpg",
+        "name": "RADIATED SCORCHER"
+    },
+    {
+        "id":"card_396-7-c",
+        "url": "assets/img/cardList/card_396-7-c.jpg",
+        "name": "LAVA SPIDER"
+    },
+    {
+        "id":"card_396-7-g",
+        "url": "assets/img/cardList/card_396-7-g.jpg",
+        "name": "LAVA SPIDER"
+    },
+    {
+        "id":"card_397-7-c",
+        "url": "assets/img/cardList/card_397-7-c.jpg",
+        "name": "RADIATED BRUTE"
+    },
+    {
+        "id":"card_397-7-g",
+        "url": "assets/img/cardList/card_397-7-g.jpg",
+        "name": "RADIATED BRUTE"
+    },
+    {
+        "id":"card_398-7-c",
+        "url": "assets/img/cardList/card_398-7-c.jpg",
+        "name": "SCAVO CHEMIST"
+    },
+    {
+        "id":"card_398-7-g",
+        "url": "assets/img/cardList/card_398-7-g.jpg",
+        "name": "SCAVO CHEMIST"
+    },
+    {
+        "id":"card_399-7-c",
+        "url": "assets/img/cardList/card_399-7-c.jpg",
+        "name": "ANTOID PLATOON"
+    },
+    {
+        "id":"card_399-7-g",
+        "url": "assets/img/cardList/card_399-7-g.jpg",
+        "name": "ANTOID PLATOON"
+    },
+    {
+        "id":"card_5-0-c",
+        "url": "assets/img/cardList/card_5-0-c.png",
+        "name": "Malric Inferno"
+    },
+    {
+        "id":"card_5-0-g",
+        "url": "assets/img/cardList/card_5-0-g.png",
+        "name": "Malric Inferno"
+    },
+    {
+        "id":"card_5-1-c",
+        "url": "assets/img/cardList/card_5-1-c.png",
+        "name": "Malric Inferno"
+    },
+    {
+        "id":"card_5-1-g",
+        "url": "assets/img/cardList/card_5-1-g.png",
+        "name": "Malric Inferno"
+    },
+    {
+        "id":"card_6-0-c",
+        "url": "assets/img/cardList/card_6-0-c.png",
+        "name": "Serpentine Soldier"
+    },
+    {
+        "id":"card_6-0-g",
+        "url": "assets/img/cardList/card_6-0-g.png",
+        "name": "Serpentine Soldier"
+    },
+    {
+        "id":"card_6-1-c",
+        "url": "assets/img/cardList/card_6-1-c.png",
+        "name": "Serpentine Soldier"
+    },
+    {
+        "id":"card_6-1-g",
+        "url": "assets/img/cardList/card_6-1-g.png",
+        "name": "Serpentine Soldier"
+    },
+    {
+        "id":"card_7-0-c",
+        "url": "assets/img/cardList/card_7-0-c.png",
+        "name": "Pit Ogre"
+    },
+    {
+        "id":"card_7-0-g",
+        "url": "assets/img/cardList/card_7-0-g.png",
+        "name": "Pit Ogre"
+    },
+    {
+        "id":"card_7-1-c",
+        "url": "assets/img/cardList/card_7-1-c.png",
+        "name": "Pit Ogre"
+    },
+    {
+        "id":"card_7-1-g",
+        "url": "assets/img/cardList/card_7-1-g.png",
+        "name": "Pit Ogre"
+    },
+    {
+        "id":"card_8-0-c",
+        "url": "assets/img/cardList/card_8-0-c.png",
+        "name": "Cerberus"
+    },
+    {
+        "id":"card_8-0-g",
+        "url": "assets/img/cardList/card_8-0-g.png",
+        "name": "Cerberus"
+    },
+    {
+        "id":"card_8-1-c",
+        "url": "assets/img/cardList/card_8-1-c.png",
+        "name": "Cerberus"
+    },
+    {
+        "id":"card_8-1-g",
+        "url": "assets/img/cardList/card_8-1-g.png",
+        "name": "Cerberus"
+    },
+    {
+        "id":"card_87-3-c",
+        "url": "assets/img/cardList/card_87-3-c.png",
+        "name": "Flame Imp"
+    },
+    {
+        "id":"card_87-3-g",
+        "url": "assets/img/cardList/card_87-3-g.png",
+        "name": "Flame Imp"
+    },
+    {
+        "id":"card_94-3-c",
+        "url": "assets/img/cardList/card_94-3-c.png",
+        "name": "Naga Fire Wizard"
+    },
+    {
+        "id":"card_94-3-g",
+        "url": "assets/img/cardList/card_94-3-g.png",
+        "name": "Naga Fire Wizard"
+    },
+    {
+        "id":"card_133-3-c",
+        "url": "assets/img/cardList/card_133-3-c.png",
+        "name": "Beetle Queen"
+    },
+    {
+        "id":"card_133-3-g",
+        "url": "assets/img/cardList/card_133-3-g.png",
+        "name": "Beetle Queen"
+    },
+    {
+        "id":"card_161-4-c",
+        "url": "assets/img/cardList/card_161-4-c.png",
+        "name": "Fire Elemental"
+    },
+    {
+        "id":"card_161-4-g",
+        "url": "assets/img/cardList/card_161-4-g.png",
+        "name": "Fire Elemental"
+    },
+    {
+        "id":"card_162-4-c",
+        "url": "assets/img/cardList/card_162-4-c.png",
+        "name": "Living Lava"
+    },
+    {
+        "id":"card_162-4-g",
+        "url": "assets/img/cardList/card_162-4-g.png",
+        "name": "Living Lava"
+    },
+    {
+        "id":"card_163-4-c",
+        "url": "assets/img/cardList/card_163-4-c.png",
+        "name": "Spark Pixies"
+    },
+    {
+        "id":"card_163-4-g",
+        "url": "assets/img/cardList/card_163-4-g.png",
+        "name": "Spark Pixies"
+    },
+    {
+        "id":"card_167-4-c",
+        "url": "assets/img/cardList/card_167-4-c.png",
+        "name": "Pyre"
+    },
+    {
+        "id":"card_167-4-g",
+        "url": "assets/img/cardList/card_167-4-g.png",
+        "name": "Pyre"
+    },
+    {
+        "id":"card_247-3-c",
+        "url": "assets/img/cardList/card_247-3-c.png",
+        "name": "Fineas Rage"
+    },
+    {
+        "id":"card_247-3-g",
+        "url": "assets/img/cardList/card_247-3-g.png",
+        "name": "Fineas Rage"
+    },
+    {
+        "id":"card_260-5-c",
+        "url": "assets/img/cardList/card_260-5-c.png",
+        "name": "Qid Yuff"
+    },
+    {
+        "id":"card_260-5-g",
+        "url": "assets/img/cardList/card_260-5-g.png",
+        "name": "Qid Yuff"
+    },
+    {
+        "id":"card_289-3-c",
+        "url": "assets/img/cardList/card_289-3-c.png",
+        "name": "Efreet Elder"
+    },
+    {
+        "id":"card_289-3-g",
+        "url": "assets/img/cardList/card_289-3-g.png",
+        "name": "Efreet Elder"
+    },
+    {
+        "id":"card_301-6-c",
+        "url": "assets/img/cardList/card_301-6-c.png",
+        "name": "Orella Abadon"
+    },
+    {
+        "id":"card_301-6-g",
+        "url": "assets/img/cardList/card_301-6-g.png",
+        "name": "Orella Abadon"
+    },
+    {
+        "id":"card_302-6-c",
+        "url": "assets/img/cardList/card_302-6-c.png",
+        "name": "Sarius"
+    },
+    {
+        "id":"card_302-6-g",
+        "url": "assets/img/cardList/card_302-6-g.png",
+        "name": "Sarius"
+    },
+    {
+        "id":"card_332-3-c",
+        "url": "assets/img/cardList/card_332-3-c.jpg",
+        "name": "EXPLODING RATS"
+    },
+    {
+        "id":"card_332-3-g",
+        "url": "assets/img/cardList/card_332-3-g.jpg",
+        "name": "EXPLODING RATS"
+    },
+    {
+        "id":"card_400-7-c",
+        "url": "assets/img/cardList/card_400-7-c.jpg",
+        "name": "SCAVO FIREBOLT"
+    },
+    {
+        "id":"card_400-7-g",
+        "url": "assets/img/cardList/card_400-7-g.jpg",
+        "name": "SCAVO FIREBOLT"
+    },
+    {
+        "id":"card_401-7-c",
+        "url": "assets/img/cardList/card_401-7-c.jpg",
+        "name": "TENYII STRIKER"
+    },
+    {
+        "id":"card_401-7-g",
+        "url": "assets/img/cardList/card_401-7-g.jpg",
+        "name": "TENYII STRIKER"
+    },
+    {
+        "id":"card_402-7-c",
+        "url": "assets/img/cardList/card_402-7-c.jpg",
+        "name": "DJINN APPRENTICE"
+    },
+    {
+        "id":"card_402-7-g",
+        "url": "assets/img/cardList/card_402-7-g.jpg",
+        "name": "DJINN APPRENTICE"
+    },
+    {
+        "id":"card_403-7-c",
+        "url": "assets/img/cardList/card_403-7-c.jpg",
+        "name": "MOLTEN ASH GOLEM"
+    },
+    {
+        "id":"card_403-7-g",
+        "url": "assets/img/cardList/card_403-7-g.jpg",
+        "name": "MOLTEN ASH GOLEM"
+    },
+    {
+        "id":"card_440-7-c",
+        "url": "assets/img/cardList/card_440-7-c.jpg",
+        "name": "TARSA"
+    },
+    {
+        "id":"card_440-7-g",
+        "url": "assets/img/cardList/card_440-7-g.jpg",
+        "name": "TARSA"
+    },
+    {
+        "id":"card_9-0-c",
+        "url": "assets/img/cardList/card_9-0-c.png",
+        "name": "Fire Demon"
+    },
+    {
+        "id":"card_9-0-g",
+        "url": "assets/img/cardList/card_9-0-g.png",
+        "name": "Fire Demon"
+    },
+    {
+        "id":"card_9-1-c",
+        "url": "assets/img/cardList/card_9-1-c.png",
+        "name": "Fire Demon"
+    },
+    {
+        "id":"card_9-1-g",
+        "url": "assets/img/cardList/card_9-1-g.png",
+        "name": "Fire Demon"
+    },
+    {
+        "id":"card_10-0-c",
+        "url": "assets/img/cardList/card_10-0-c.png",
+        "name": "Serpent of the Flame"
+    },
+    {
+        "id":"card_10-0-g",
+        "url": "assets/img/cardList/card_10-0-g.png",
+        "name": "Serpent of the Flame"
+    },
+    {
+        "id":"card_10-1-c",
+        "url": "assets/img/cardList/card_10-1-c.png",
+        "name": "Serpent of the Flame"
+    },
+    {
+        "id":"card_10-1-g",
+        "url": "assets/img/cardList/card_10-1-g.png",
+        "name": "Serpent of the Flame"
+    },
+    {
+        "id":"card_70-1-c",
+        "url": "assets/img/cardList/card_70-1-c.png",
+        "name": "Talia Firestorm"
+    },
+    {
+        "id":"card_70-1-g",
+        "url": "assets/img/cardList/card_70-1-g.png",
+        "name": "Talia Firestorm"
+    },
+    {
+        "id":"card_100-3-c",
+        "url": "assets/img/cardList/card_100-3-c.png",
+        "name": "Imp Bowman"
+    },
+    {
+        "id":"card_100-3-g",
+        "url": "assets/img/cardList/card_100-3-g.png",
+        "name": "Imp Bowman"
+    },
+    {
+        "id":"card_164-4-c",
+        "url": "assets/img/cardList/card_164-4-c.png",
+        "name": "Ferexia General"
+    },
+    {
+        "id":"card_164-4-g",
+        "url": "assets/img/cardList/card_164-4-g.png",
+        "name": "Ferexia General"
+    },
+    {
+        "id":"card_165-4-c",
+        "url": "assets/img/cardList/card_165-4-c.png",
+        "name": "Pyromaniac"
+    },
+    {
+        "id":"card_165-4-g",
+        "url": "assets/img/cardList/card_165-4-g.png",
+        "name": "Pyromaniac"
+    },
+    {
+        "id":"card_228-3-c",
+        "url": "assets/img/cardList/card_228-3-c.png",
+        "name": "Pyromancer"
+    },
+    {
+        "id":"card_228-3-g",
+        "url": "assets/img/cardList/card_228-3-g.png",
+        "name": "Pyromancer"
+    },
+    {
+        "id":"card_292-4-c",
+        "url": "assets/img/cardList/card_292-4-c.png",
+        "name": "Goblin Firemage"
+    },
+    {
+        "id":"card_292-4-g",
+        "url": "assets/img/cardList/card_292-4-g.png",
+        "name": "Goblin Firemage"
+    },
+    {
+        "id":"card_303-6-c",
+        "url": "assets/img/cardList/card_303-6-c.png",
+        "name": "Gorth"
+    },
+    {
+        "id":"card_303-6-g",
+        "url": "assets/img/cardList/card_303-6-g.png",
+        "name": "Gorth"
+    },
+    {
+        "id":"card_333-3-c",
+        "url": "assets/img/cardList/card_333-3-c.jpg",
+        "name": "LAVA LAUNCHER"
+    },
+    {
+        "id":"card_333-3-g",
+        "url": "assets/img/cardList/card_333-3-g.jpg",
+        "name": "LAVA LAUNCHER"
+    },
+    {
+        "id":"card_404-7-c",
+        "url": "assets/img/cardList/card_404-7-c.jpg",
+        "name": "FORGOTTEN ONE"
+    },
+    {
+        "id":"card_404-7-g",
+        "url": "assets/img/cardList/card_404-7-g.jpg",
+        "name": "FORGOTTEN ONE"
+    },
+    {
+        "id":"card_405-7-c",
+        "url": "assets/img/cardList/card_405-7-c.jpg",
+        "name": "TUSK THE WIDE"
+    },
+    {
+        "id":"card_405-7-g",
+        "url": "assets/img/cardList/card_405-7-g.jpg",
+        "name": "TUSK THE WIDE"
+    },
+    {
+        "id":"card_406-7-c",
+        "url": "assets/img/cardList/card_406-7-c.jpg",
+        "name": "DJINN INFERNI"
+    },
+    {
+        "id":"card_406-7-g",
+        "url": "assets/img/cardList/card_406-7-g.jpg",
+        "name": "DJINN INFERNI"
+    },
+    {
+        "id":"card_11-0-c",
+        "url": "assets/img/cardList/card_11-0-c.png",
+        "name": "Elemental Phoenix"
+    },
+    {
+        "id":"card_11-0-g",
+        "url": "assets/img/cardList/card_11-0-g.png",
+        "name": "Elemental Phoenix"
+    },
+    {
+        "id":"card_11-1-c",
+        "url": "assets/img/cardList/card_11-1-c.png",
+        "name": "Elemental Phoenix"
+    },
+    {
+        "id":"card_11-1-g",
+        "url": "assets/img/cardList/card_11-1-g.png",
+        "name": "Elemental Phoenix"
+    },
+    {
+        "id":"card_110-1-c",
+        "url": "assets/img/cardList/card_110-1-c.png",
+        "name": "Plado Emberstorm"
+    },
+    {
+        "id":"card_110-1-g",
+        "url": "assets/img/cardList/card_110-1-g.png",
+        "name": "Plado Emberstorm"
+    },
+    {
+        "id":"card_127-2-c",
+        "url": "assets/img/cardList/card_127-2-c.png",
+        "name": "Lord of Fire"
+    },
+    {
+        "id":"card_127-2-g",
+        "url": "assets/img/cardList/card_127-2-g.png",
+        "name": "Lord of Fire"
+    },
+    {
+        "id":"card_166-4-c",
+        "url": "assets/img/cardList/card_166-4-c.png",
+        "name": "Magnor"
+    },
+    {
+        "id":"card_166-4-g",
+        "url": "assets/img/cardList/card_166-4-g.png",
+        "name": "Magnor"
+    },
+    {
+        "id":"card_222-3-c",
+        "url": "assets/img/cardList/card_222-3-c.png",
+        "name": "Zalran Efreet"
+    },
+    {
+        "id":"card_222-3-g",
+        "url": "assets/img/cardList/card_222-3-g.png",
+        "name": "Zalran Efreet"
+    },
+    {
+        "id":"card_236-4-c",
+        "url": "assets/img/cardList/card_236-4-c.png",
+        "name": "Yodin Zaku"
+    },
+    {
+        "id":"card_236-4-g",
+        "url": "assets/img/cardList/card_236-4-g.png",
+        "name": "Yodin Zaku"
+    },
+    {
+        "id":"card_265-5-c",
+        "url": "assets/img/cardList/card_265-5-c.png",
+        "name": "Caladuum"
+    },
+    {
+        "id":"card_265-5-g",
+        "url": "assets/img/cardList/card_265-5-g.png",
+        "name": "Caladuum"
+    },
+    {
+        "id":"card_298-5-c",
+        "url": "assets/img/cardList/card_298-5-c.png",
+        "name": "Aganju"
+    },
+    {
+        "id":"card_298-5-g",
+        "url": "assets/img/cardList/card_298-5-g.png",
+        "name": "Aganju"
+    },
+    {
+        "id":"card_304-6-c",
+        "url": "assets/img/cardList/card_304-6-c.png",
+        "name": "Fina Voxom"
+    },
+    {
+        "id":"card_304-6-g",
+        "url": "assets/img/cardList/card_304-6-g.png",
+        "name": "Fina Voxom"
+    },
+    {
+        "id":"card_407-7-c",
+        "url": "assets/img/cardList/card_407-7-c.jpg",
+        "name": "IFRIT RISING"
+    },
+    {
+        "id":"card_407-7-g",
+        "url": "assets/img/cardList/card_407-7-g.jpg",
+        "name": "IFRIT RISING"
+    },
+    {
+        "id":"card_408-7-c",
+        "url": "assets/img/cardList/card_408-7-c.jpg",
+        "name": "SCORCH FIEND"
+    },
+    {
+        "id":"card_408-7-g",
+        "url": "assets/img/cardList/card_408-7-g.jpg",
+        "name": "SCORCH FIEND"
+    },
+    {
+        "id":"card_12-0-c",
+        "url": "assets/img/cardList/card_12-0-c.png",
+        "name": "Pirate Captain"
+    },
+    {
+        "id":"card_12-0-g",
+        "url": "assets/img/cardList/card_12-0-g.png",
+        "name": "Pirate Captain"
+    },
+    {
+        "id":"card_12-1-c",
+        "url": "assets/img/cardList/card_12-1-c.png",
+        "name": "Pirate Captain"
+    },
+    {
+        "id":"card_12-1-g",
+        "url": "assets/img/cardList/card_12-1-g.png",
+        "name": "Pirate Captain"
+    },
+    {
+        "id":"card_13-0-c",
+        "url": "assets/img/cardList/card_13-0-c.png",
+        "name": "Spineback Turtle"
+    },
+    {
+        "id":"card_13-0-g",
+        "url": "assets/img/cardList/card_13-0-g.png",
+        "name": "Spineback Turtle"
+    },
+    {
+        "id":"card_13-1-c",
+        "url": "assets/img/cardList/card_13-1-c.png",
+        "name": "Spineback Turtle"
+    },
+    {
+        "id":"card_13-1-g",
+        "url": "assets/img/cardList/card_13-1-g.png",
+        "name": "Spineback Turtle"
+    },
+    {
+        "id":"card_14-0-c",
+        "url": "assets/img/cardList/card_14-0-c.png",
+        "name": "Crustacean King"
+    },
+    {
+        "id":"card_14-0-g",
+        "url": "assets/img/cardList/card_14-0-g.png",
+        "name": "Crustacean King"
+    },
+    {
+        "id":"card_14-1-c",
+        "url": "assets/img/cardList/card_14-1-c.png",
+        "name": "Crustacean King"
+    },
+    {
+        "id":"card_14-1-g",
+        "url": "assets/img/cardList/card_14-1-g.png",
+        "name": "Crustacean King"
+    },
+    {
+        "id":"card_15-0-c",
+        "url": "assets/img/cardList/card_15-0-c.png",
+        "name": "Sabre Shark"
+    },
+    {
+        "id":"card_15-0-g",
+        "url": "assets/img/cardList/card_15-0-g.png",
+        "name": "Sabre Shark"
+    },
+    {
+        "id":"card_15-1-c",
+        "url": "assets/img/cardList/card_15-1-c.png",
+        "name": "Sabre Shark"
+    },
+    {
+        "id":"card_15-1-g",
+        "url": "assets/img/cardList/card_15-1-g.png",
+        "name": "Sabre Shark"
+    },
+    {
+        "id":"card_83-3-c",
+        "url": "assets/img/cardList/card_83-3-c.png",
+        "name": "Sea Genie"
+    },
+    {
+        "id":"card_83-3-g",
+        "url": "assets/img/cardList/card_83-3-g.png",
+        "name": "Sea Genie"
+    },
+    {
+        "id":"card_103-3-c",
+        "url": "assets/img/cardList/card_103-3-c.png",
+        "name": "Sea Monster"
+    },
+    {
+        "id":"card_103-3-g",
+        "url": "assets/img/cardList/card_103-3-g.png",
+        "name": "Sea Monster"
+    },
+    {
+        "id":"card_168-4-c",
+        "url": "assets/img/cardList/card_168-4-c.png",
+        "name": "Feasting Seaweed"
+    },
+    {
+        "id":"card_168-4-g",
+        "url": "assets/img/cardList/card_168-4-g.png",
+        "name": "Feasting Seaweed"
+    },
+    {
+        "id":"card_169-4-c",
+        "url": "assets/img/cardList/card_169-4-c.png",
+        "name": "Albatross"
+    },
+    {
+        "id":"card_169-4-g",
+        "url": "assets/img/cardList/card_169-4-g.png",
+        "name": "Albatross"
+    },
+    {
+        "id":"card_170-4-c",
+        "url": "assets/img/cardList/card_170-4-c.png",
+        "name": "Tortisian Fighter"
+    },
+    {
+        "id":"card_170-4-g",
+        "url": "assets/img/cardList/card_170-4-g.png",
+        "name": "Tortisian Fighter"
+    },
+    {
+        "id":"card_171-4-c",
+        "url": "assets/img/cardList/card_171-4-c.png",
+        "name": "Sniping Narwhal"
+    },
+    {
+        "id":"card_171-4-g",
+        "url": "assets/img/cardList/card_171-4-g.png",
+        "name": "Sniping Narwhal"
+    },
+    {
+        "id":"card_232-3-c",
+        "url": "assets/img/cardList/card_232-3-c.png",
+        "name": "Wave Runner"
+    },
+    {
+        "id":"card_232-3-g",
+        "url": "assets/img/cardList/card_232-3-g.png",
+        "name": "Wave Runner"
+    },
+    {
+        "id":"card_264-5-c",
+        "url": "assets/img/cardList/card_264-5-c.png",
+        "name": "Frost Lion"
+    },
+    {
+        "id":"card_264-5-g",
+        "url": "assets/img/cardList/card_264-5-g.png",
+        "name": "Frost Lion"
+    },
+    {
+        "id":"card_287-3-c",
+        "url": "assets/img/cardList/card_287-3-c.png",
+        "name": "Demented Shark"
+    },
+    {
+        "id":"card_287-3-g",
+        "url": "assets/img/cardList/card_287-3-g.png",
+        "name": "Demented Shark"
+    },
+    {
+        "id":"card_305-6-c",
+        "url": "assets/img/cardList/card_305-6-c.png",
+        "name": "Alva the Crusher"
+    },
+    {
+        "id":"card_305-6-g",
+        "url": "assets/img/cardList/card_305-6-g.png",
+        "name": "Alva the Crusher"
+    },
+    {
+        "id":"card_306-6-c",
+        "url": "assets/img/cardList/card_306-6-c.png",
+        "name": "Isgald Vorst"
+    },
+    {
+        "id":"card_306-6-g",
+        "url": "assets/img/cardList/card_306-6-g.png",
+        "name": "Isgald Vorst"
+    },
+    {
+        "id":"card_337-3-c",
+        "url": "assets/img/cardList/card_337-3-c.jpg",
+        "name": "PELACOR BANDIT"
+    },
+    {
+        "id":"card_337-3-g",
+        "url": "assets/img/cardList/card_337-3-g.jpg",
+        "name": "PELACOR BANDIT"
+    },
+    {
+        "id":"card_381-7-c",
+        "url": "assets/img/cardList/card_381-7-c.jpg",
+        "name": "HARDY STONEFISH"
+    },
+    {
+        "id":"card_381-7-g",
+        "url": "assets/img/cardList/card_381-7-g.jpg",
+        "name": "HARDY STONEFISH"
+    },
+    {
+        "id":"card_382-7-c",
+        "url": "assets/img/cardList/card_382-7-c.jpg",
+        "name": "KULU SWIMHUNTER"
+    },
+    {
+        "id":"card_382-7-g",
+        "url": "assets/img/cardList/card_382-7-g.jpg",
+        "name": "KULU SWIMHUNTER"
+    },
+    {
+        "id":"card_383-7-c",
+        "url": "assets/img/cardList/card_383-7-c.jpg",
+        "name": "CRUEL SETHROPOD"
+    },
+    {
+        "id":"card_383-7-g",
+        "url": "assets/img/cardList/card_383-7-g.jpg",
+        "name": "CRUEL SETHROPOD"
+    },
+    {
+        "id":"card_384-7-c",
+        "url": "assets/img/cardList/card_384-7-c.jpg",
+        "name": "FLYING SQUID"
+    },
+    {
+        "id":"card_384-7-g",
+        "url": "assets/img/cardList/card_384-7-g.jpg",
+        "name": "FLYING SQUID"
+    },
+    {
+        "id":"card_385-7-c",
+        "url": "assets/img/cardList/card_385-7-c.jpg",
+        "name": "DEEPLURKER"
+    },
+    {
+        "id":"card_385-7-g",
+        "url": "assets/img/cardList/card_385-7-g.jpg",
+        "name": "DEEPLURKER"
+    },
+    {
+        "id":"card_16-0-c",
+        "url": "assets/img/cardList/card_16-0-c.png",
+        "name": "Alric Stormbringer"
+    },
+    {
+        "id":"card_16-0-g",
+        "url": "assets/img/cardList/card_16-0-g.png",
+        "name": "Alric Stormbringer"
+    },
+    {
+        "id":"card_16-1-c",
+        "url": "assets/img/cardList/card_16-1-c.png",
+        "name": "Alric Stormbringer"
+    },
+    {
+        "id":"card_16-1-g",
+        "url": "assets/img/cardList/card_16-1-g.png",
+        "name": "Alric Stormbringer"
+    },
+    {
+        "id":"card_17-0-c",
+        "url": "assets/img/cardList/card_17-0-c.png",
+        "name": "Medusa"
+    },
+    {
+        "id":"card_17-0-g",
+        "url": "assets/img/cardList/card_17-0-g.png",
+        "name": "Medusa"
+    },
+    {
+        "id":"card_17-1-c",
+        "url": "assets/img/cardList/card_17-1-c.png",
+        "name": "Medusa"
+    },
+    {
+        "id":"card_17-1-g",
+        "url": "assets/img/cardList/card_17-1-g.png",
+        "name": "Medusa"
+    },
+    {
+        "id":"card_18-0-c",
+        "url": "assets/img/cardList/card_18-0-c.png",
+        "name": "Water Elemental"
+    },
+    {
+        "id":"card_18-0-g",
+        "url": "assets/img/cardList/card_18-0-g.png",
+        "name": "Water Elemental"
+    },
+    {
+        "id":"card_18-1-c",
+        "url": "assets/img/cardList/card_18-1-c.png",
+        "name": "Water Elemental"
+    },
+    {
+        "id":"card_18-1-g",
+        "url": "assets/img/cardList/card_18-1-g.png",
+        "name": "Water Elemental"
+    },
+    {
+        "id":"card_19-0-c",
+        "url": "assets/img/cardList/card_19-0-c.png",
+        "name": "Frozen Soldier"
+    },
+    {
+        "id":"card_19-0-g",
+        "url": "assets/img/cardList/card_19-0-g.png",
+        "name": "Frozen Soldier"
+    },
+    {
+        "id":"card_19-1-c",
+        "url": "assets/img/cardList/card_19-1-c.png",
+        "name": "Frozen Soldier"
+    },
+    {
+        "id":"card_19-1-g",
+        "url": "assets/img/cardList/card_19-1-g.png",
+        "name": "Frozen Soldier"
+    },
+    {
+        "id":"card_93-3-c",
+        "url": "assets/img/cardList/card_93-3-c.png",
+        "name": "Pirate Archer"
+    },
+    {
+        "id":"card_93-3-g",
+        "url": "assets/img/cardList/card_93-3-g.png",
+        "name": "Pirate Archer"
+    },
+    {
+        "id":"card_122-2-c",
+        "url": "assets/img/cardList/card_122-2-c.png",
+        "name": "Electric Eels"
+    },
+    {
+        "id":"card_122-2-g",
+        "url": "assets/img/cardList/card_122-2-g.png",
+        "name": "Electric Eels"
+    },
+    {
+        "id":"card_134-3-c",
+        "url": "assets/img/cardList/card_134-3-c.png",
+        "name": "Naga Windmaster"
+    },
+    {
+        "id":"card_134-3-g",
+        "url": "assets/img/cardList/card_134-3-g.png",
+        "name": "Naga Windmaster"
+    },
+    {
+        "id":"card_172-4-c",
+        "url": "assets/img/cardList/card_172-4-c.png",
+        "name": "Ice Pixie"
+    },
+    {
+        "id":"card_172-4-g",
+        "url": "assets/img/cardList/card_172-4-g.png",
+        "name": "Ice Pixie"
+    },
+    {
+        "id":"card_173-4-c",
+        "url": "assets/img/cardList/card_173-4-c.png",
+        "name": "Giant Squid"
+    },
+    {
+        "id":"card_173-4-g",
+        "url": "assets/img/cardList/card_173-4-g.png",
+        "name": "Giant Squid"
+    },
+    {
+        "id":"card_174-4-c",
+        "url": "assets/img/cardList/card_174-4-c.png",
+        "name": "Serpent of Eld"
+    },
+    {
+        "id":"card_174-4-g",
+        "url": "assets/img/cardList/card_174-4-g.png",
+        "name": "Serpent of Eld"
+    },
+    {
+        "id":"card_178-4-c",
+        "url": "assets/img/cardList/card_178-4-c.png",
+        "name": "Bortus"
+    },
+    {
+        "id":"card_178-4-g",
+        "url": "assets/img/cardList/card_178-4-g.png",
+        "name": "Bortus"
+    },
+    {
+        "id":"card_208-3-c",
+        "url": "assets/img/cardList/card_208-3-c.png",
+        "name": "Battle Orca"
+    },
+    {
+        "id":"card_208-3-g",
+        "url": "assets/img/cardList/card_208-3-g.png",
+        "name": "Battle Orca"
+    },
+    {
+        "id":"card_250-3-c",
+        "url": "assets/img/cardList/card_250-3-c.png",
+        "name": "Captain's Ghost"
+    },
+    {
+        "id":"card_250-3-g",
+        "url": "assets/img/cardList/card_250-3-g.png",
+        "name": "Captain's Ghost"
+    },
+    {
+        "id":"card_251-3-c",
+        "url": "assets/img/cardList/card_251-3-c.png",
+        "name": "Kelp Initiate"
+    },
+    {
+        "id":"card_251-3-g",
+        "url": "assets/img/cardList/card_251-3-g.png",
+        "name": "Kelp Initiate"
+    },
+    {
+        "id":"card_257-5-c",
+        "url": "assets/img/cardList/card_257-5-c.png",
+        "name": "Vera Salacia"
+    },
+    {
+        "id":"card_257-5-g",
+        "url": "assets/img/cardList/card_257-5-g.png",
+        "name": "Vera Salacia"
+    },
+    {
+        "id":"card_307-6-c",
+        "url": "assets/img/cardList/card_307-6-c.png",
+        "name": "Alfredo"
+    },
+    {
+        "id":"card_307-6-g",
+        "url": "assets/img/cardList/card_307-6-g.png",
+        "name": "Alfredo"
+    },
+    {
+        "id":"card_308-6-c",
+        "url": "assets/img/cardList/card_308-6-c.png",
+        "name": "Relenor Cleaver"
+    },
+    {
+        "id":"card_308-6-g",
+        "url": "assets/img/cardList/card_308-6-g.png",
+        "name": "Relenor Cleaver"
+    },
+    {
+        "id":"card_338-3-c",
+        "url": "assets/img/cardList/card_338-3-c.jpg",
+        "name": "VENARI WAVESMITH"
+    },
+    {
+        "id":"card_338-3-g",
+        "url": "assets/img/cardList/card_338-3-g.jpg",
+        "name": "VENARI WAVESMITH"
+    },
+    {
+        "id":"card_386-7-c",
+        "url": "assets/img/cardList/card_386-7-c.jpg",
+        "name": "ANGELIC MANDARIN"
+    },
+    {
+        "id":"card_386-7-g",
+        "url": "assets/img/cardList/card_386-7-g.jpg",
+        "name": "ANGELIC MANDARIN"
+    },
+    {
+        "id":"card_387-7-c",
+        "url": "assets/img/cardList/card_387-7-c.jpg",
+        "name": "MERDAALI GUARDIAN"
+    },
+    {
+        "id":"card_387-7-g",
+        "url": "assets/img/cardList/card_387-7-g.jpg",
+        "name": "MERDAALI GUARDIAN"
+    },
+    {
+        "id":"card_388-7-c",
+        "url": "assets/img/cardList/card_388-7-c.jpg",
+        "name": "DIEMONSHARK"
+    },
+    {
+        "id":"card_388-7-g",
+        "url": "assets/img/cardList/card_388-7-g.jpg",
+        "name": "DIEMONSHARK"
+    },
+    {
+        "id":"card_389-7-c",
+        "url": "assets/img/cardList/card_389-7-c.jpg",
+        "name": "RIVER NYMPH"
+    },
+    {
+        "id":"card_389-7-g",
+        "url": "assets/img/cardList/card_389-7-g.jpg",
+        "name": "RIVER NYMPH"
+    },
+    {
+        "id":"card_437-7-c",
+        "url": "assets/img/cardList/card_437-7-c.jpg",
+        "name": "KELYA FRENDUL"
+    },
+    {
+        "id":"card_437-7-g",
+        "url": "assets/img/cardList/card_437-7-g.jpg",
+        "name": "KELYA FRENDUL"
+    },
+    {
+        "id":"card_20-0-c",
+        "url": "assets/img/cardList/card_20-0-c.png",
+        "name": "Mischievous Mermaid"
+    },
+    {
+        "id":"card_20-0-g",
+        "url": "assets/img/cardList/card_20-0-g.png",
+        "name": "Mischievous Mermaid"
+    },
+    {
+        "id":"card_20-1-c",
+        "url": "assets/img/cardList/card_20-1-c.png",
+        "name": "Mischievous Mermaid"
+    },
+    {
+        "id":"card_20-1-g",
+        "url": "assets/img/cardList/card_20-1-g.png",
+        "name": "Mischievous Mermaid"
+    },
+    {
+        "id":"card_21-0-c",
+        "url": "assets/img/cardList/card_21-0-c.png",
+        "name": "Naga Warrior"
+    },
+    {
+        "id":"card_21-0-g",
+        "url": "assets/img/cardList/card_21-0-g.png",
+        "name": "Naga Warrior"
+    },
+    {
+        "id":"card_21-1-c",
+        "url": "assets/img/cardList/card_21-1-c.png",
+        "name": "Naga Warrior"
+    },
+    {
+        "id":"card_21-1-g",
+        "url": "assets/img/cardList/card_21-1-g.png",
+        "name": "Naga Warrior"
+    },
+    {
+        "id":"card_71-1-c",
+        "url": "assets/img/cardList/card_71-1-c.png",
+        "name": "Xia Seachan"
+    },
+    {
+        "id":"card_71-1-g",
+        "url": "assets/img/cardList/card_71-1-g.png",
+        "name": "Xia Seachan"
+    },
+    {
+        "id":"card_123-2-c",
+        "url": "assets/img/cardList/card_123-2-c.png",
+        "name": "Mermaid Healer"
+    },
+    {
+        "id":"card_123-2-g",
+        "url": "assets/img/cardList/card_123-2-g.png",
+        "name": "Mermaid Healer"
+    },
+    {
+        "id":"card_175-4-c",
+        "url": "assets/img/cardList/card_175-4-c.png",
+        "name": "Coral Wraith"
+    },
+    {
+        "id":"card_175-4-g",
+        "url": "assets/img/cardList/card_175-4-g.png",
+        "name": "Coral Wraith"
+    },
+    {
+        "id":"card_176-4-c",
+        "url": "assets/img/cardList/card_176-4-c.png",
+        "name": "Azmare Harpoonist"
+    },
+    {
+        "id":"card_176-4-g",
+        "url": "assets/img/cardList/card_176-4-g.png",
+        "name": "Azmare Harpoonist"
+    },
+    {
+        "id":"card_231-3-c",
+        "url": "assets/img/cardList/card_231-3-c.png",
+        "name": "Torhilo the Frozen"
+    },
+    {
+        "id":"card_231-3-g",
+        "url": "assets/img/cardList/card_231-3-g.png",
+        "name": "Torhilo the Frozen"
+    },
+    {
+        "id":"card_280-3-c",
+        "url": "assets/img/cardList/card_280-3-c.png",
+        "name": "Axemaster"
+    },
+    {
+        "id":"card_280-3-g",
+        "url": "assets/img/cardList/card_280-3-g.png",
+        "name": "Axemaster"
+    },
+    {
+        "id":"card_293-4-c",
+        "url": "assets/img/cardList/card_293-4-c.png",
+        "name": "Lobstradamus"
+    },
+    {
+        "id":"card_293-4-g",
+        "url": "assets/img/cardList/card_293-4-g.png",
+        "name": "Lobstradamus"
+    },
+    {
+        "id":"card_309-6-c",
+        "url": "assets/img/cardList/card_309-6-c.png",
+        "name": "Edith Emberstar"
+    },
+    {
+        "id":"card_309-6-g",
+        "url": "assets/img/cardList/card_309-6-g.png",
+        "name": "Edith Emberstar"
+    },
+    {
+        "id":"card_390-7-c",
+        "url": "assets/img/cardList/card_390-7-c.jpg",
+        "name": "NERISSA TRIDAWN"
+    },
+    {
+        "id":"card_390-7-g",
+        "url": "assets/img/cardList/card_390-7-g.jpg",
+        "name": "NERISSA TRIDAWN"
+    },
+    {
+        "id":"card_391-7-c",
+        "url": "assets/img/cardList/card_391-7-c.jpg",
+        "name": "WAVE BROOD"
+    },
+    {
+        "id":"card_391-7-g",
+        "url": "assets/img/cardList/card_391-7-g.jpg",
+        "name": "WAVE BROOD"
+    },
+    {
+        "id":"card_392-7-c",
+        "url": "assets/img/cardList/card_392-7-c.jpg",
+        "name": "IGOR DARKSPEAR"
+    },
+    {
+        "id":"card_392-7-g",
+        "url": "assets/img/cardList/card_392-7-g.jpg",
+        "name": "IGOR DARKSPEAR"
+    },
+    {
+        "id":"card_22-0-c",
+        "url": "assets/img/cardList/card_22-0-c.png",
+        "name": "Frost Giant"
+    },
+    {
+        "id":"card_22-0-g",
+        "url": "assets/img/cardList/card_22-0-g.png",
+        "name": "Frost Giant"
+    },
+    {
+        "id":"card_22-1-c",
+        "url": "assets/img/cardList/card_22-1-c.png",
+        "name": "Frost Giant"
+    },
+    {
+        "id":"card_22-1-g",
+        "url": "assets/img/cardList/card_22-1-g.png",
+        "name": "Frost Giant"
+    },
+    {
+        "id":"card_98-3-c",
+        "url": "assets/img/cardList/card_98-3-c.png",
+        "name": "Ruler of the Seas"
+    },
+    {
+        "id":"card_98-3-g",
+        "url": "assets/img/cardList/card_98-3-g.png",
+        "name": "Ruler of the Seas"
+    },
+    {
+        "id":"card_111-1-c",
+        "url": "assets/img/cardList/card_111-1-c.png",
+        "name": "Valnamor"
+    },
+    {
+        "id":"card_111-1-g",
+        "url": "assets/img/cardList/card_111-1-g.png",
+        "name": "Valnamor"
+    },
+    {
+        "id":"card_177-4-c",
+        "url": "assets/img/cardList/card_177-4-c.png",
+        "name": "Phantom of the Abyss"
+    },
+    {
+        "id":"card_177-4-g",
+        "url": "assets/img/cardList/card_177-4-g.png",
+        "name": "Phantom of the Abyss"
+    },
+    {
+        "id":"card_213-3-c",
+        "url": "assets/img/cardList/card_213-3-c.png",
+        "name": "The Kraken"
+    },
+    {
+        "id":"card_213-3-g",
+        "url": "assets/img/cardList/card_213-3-g.png",
+        "name": "The Kraken"
+    },
+    {
+        "id":"card_254-4-c",
+        "url": "assets/img/cardList/card_254-4-c.png",
+        "name": "Lir Deepswimmer"
+    },
+    {
+        "id":"card_254-4-g",
+        "url": "assets/img/cardList/card_254-4-g.png",
+        "name": "Lir Deepswimmer"
+    },
+    {
+        "id":"card_263-5-c",
+        "url": "assets/img/cardList/card_263-5-c.png",
+        "name": "Poseidon"
+    },
+    {
+        "id":"card_263-5-g",
+        "url": "assets/img/cardList/card_263-5-g.png",
+        "name": "Poseidon"
+    },
+    {
+        "id":"card_296-5-c",
+        "url": "assets/img/cardList/card_296-5-c.png",
+        "name": "Two Gun Pete"
+    },
+    {
+        "id":"card_296-5-g",
+        "url": "assets/img/cardList/card_296-5-g.png",
+        "name": "Two Gun Pete"
+    },
+    {
+        "id":"card_310-6-c",
+        "url": "assets/img/cardList/card_310-6-c.png",
+        "name": "Flagulon Reine"
+    },
+    {
+        "id":"card_310-6-g",
+        "url": "assets/img/cardList/card_310-6-g.png",
+        "name": "Flagulon Reine"
+    },
+    {
+        "id":"card_339-3-c",
+        "url": "assets/img/cardList/card_339-3-c.jpg",
+        "name": "DJINN OSHANNUS"
+    },
+    {
+        "id":"card_339-3-g",
+        "url": "assets/img/cardList/card_339-3-g.jpg",
+        "name": "DJINN OSHANNUS"
+    },
+    {
+        "id":"card_393-7-c",
+        "url": "assets/img/cardList/card_393-7-c.jpg",
+        "name": "RIVER HELLONDALE"
+    },
+    {
+        "id":"card_393-7-g",
+        "url": "assets/img/cardList/card_393-7-g.jpg",
+        "name": "RIVER HELLONDALE"
+    },
+    {
+        "id":"card_394-7-c",
+        "url": "assets/img/cardList/card_394-7-c.jpg",
+        "name": "TORRENT FIEND"
+    },
+    {
+        "id":"card_394-7-g",
+        "url": "assets/img/cardList/card_394-7-g.jpg",
+        "name": "TORRENT FIEND"
+    },
+    {
+        "id":"card_23-0-c",
+        "url": "assets/img/cardList/card_23-0-c.png",
+        "name": "Flesh Golem"
+    },
+    {
+        "id":"card_23-0-g",
+        "url": "assets/img/cardList/card_23-0-g.png",
+        "name": "Flesh Golem"
+    },
+    {
+        "id":"card_23-1-c",
+        "url": "assets/img/cardList/card_23-1-c.png",
+        "name": "Flesh Golem"
+    },
+    {
+        "id":"card_23-1-g",
+        "url": "assets/img/cardList/card_23-1-g.png",
+        "name": "Flesh Golem"
+    },
+    {
+        "id":"card_24-0-c",
+        "url": "assets/img/cardList/card_24-0-c.png",
+        "name": "Goblin Sorcerer"
+    },
+    {
+        "id":"card_24-0-g",
+        "url": "assets/img/cardList/card_24-0-g.png",
+        "name": "Goblin Sorcerer"
+    },
+    {
+        "id":"card_24-1-c",
+        "url": "assets/img/cardList/card_24-1-c.png",
+        "name": "Goblin Sorcerer"
+    },
+    {
+        "id":"card_24-1-g",
+        "url": "assets/img/cardList/card_24-1-g.png",
+        "name": "Goblin Sorcerer"
+    },
+    {
+        "id":"card_25-0-c",
+        "url": "assets/img/cardList/card_25-0-c.png",
+        "name": "Rexxie"
+    },
+    {
+        "id":"card_25-0-g",
+        "url": "assets/img/cardList/card_25-0-g.png",
+        "name": "Rexxie"
+    },
+    {
+        "id":"card_25-1-c",
+        "url": "assets/img/cardList/card_25-1-c.png",
+        "name": "Rexxie"
+    },
+    {
+        "id":"card_25-1-g",
+        "url": "assets/img/cardList/card_25-1-g.png",
+        "name": "Rexxie"
+    },
+    {
+        "id":"card_26-0-c",
+        "url": "assets/img/cardList/card_26-0-c.png",
+        "name": "Minotaur Warrior"
+    },
+    {
+        "id":"card_26-0-g",
+        "url": "assets/img/cardList/card_26-0-g.png",
+        "name": "Minotaur Warrior"
+    },
+    {
+        "id":"card_26-1-c",
+        "url": "assets/img/cardList/card_26-1-c.png",
+        "name": "Minotaur Warrior"
+    },
+    {
+        "id":"card_26-1-g",
+        "url": "assets/img/cardList/card_26-1-g.png",
+        "name": "Minotaur Warrior"
+    },
+    {
+        "id":"card_90-3-c",
+        "url": "assets/img/cardList/card_90-3-c.png",
+        "name": "Wood Nymph"
+    },
+    {
+        "id":"card_90-3-g",
+        "url": "assets/img/cardList/card_90-3-g.png",
+        "name": "Wood Nymph"
+    },
+    {
+        "id":"card_120-2-c",
+        "url": "assets/img/cardList/card_120-2-c.png",
+        "name": "Goblin Chef"
+    },
+    {
+        "id":"card_120-2-g",
+        "url": "assets/img/cardList/card_120-2-g.png",
+        "name": "Goblin Chef"
+    },
+    {
+        "id":"card_179-4-c",
+        "url": "assets/img/cardList/card_179-4-c.png",
+        "name": "Goblin Thief"
+    },
+    {
+        "id":"card_179-4-g",
+        "url": "assets/img/cardList/card_179-4-g.png",
+        "name": "Goblin Thief"
+    },
+    {
+        "id":"card_180-4-c",
+        "url": "assets/img/cardList/card_180-4-c.png",
+        "name": "Failed Summoner"
+    },
+    {
+        "id":"card_180-4-g",
+        "url": "assets/img/cardList/card_180-4-g.png",
+        "name": "Failed Summoner"
+    },
+    {
+        "id":"card_181-4-c",
+        "url": "assets/img/cardList/card_181-4-c.png",
+        "name": "Biceratops"
+    },
+    {
+        "id":"card_181-4-g",
+        "url": "assets/img/cardList/card_181-4-g.png",
+        "name": "Biceratops"
+    },
+    {
+        "id":"card_182-4-c",
+        "url": "assets/img/cardList/card_182-4-c.png",
+        "name": "Orc Sergeant"
+    },
+    {
+        "id":"card_182-4-g",
+        "url": "assets/img/cardList/card_182-4-g.png",
+        "name": "Orc Sergeant"
+    },
+    {
+        "id":"card_220-3-c",
+        "url": "assets/img/cardList/card_220-3-c.png",
+        "name": "Screeching Vulture"
+    },
+    {
+        "id":"card_220-3-g",
+        "url": "assets/img/cardList/card_220-3-g.png",
+        "name": "Screeching Vulture"
+    },
+    {
+        "id":"card_225-3-c",
+        "url": "assets/img/cardList/card_225-3-c.png",
+        "name": "Barking Spider"
+    },
+    {
+        "id":"card_225-3-g",
+        "url": "assets/img/cardList/card_225-3-g.png",
+        "name": "Barking Spider"
+    },
+    {
+        "id":"card_226-3-c",
+        "url": "assets/img/cardList/card_226-3-c.png",
+        "name": "Nectar Queen"
+    },
+    {
+        "id":"card_226-3-g",
+        "url": "assets/img/cardList/card_226-3-g.png",
+        "name": "Nectar Queen"
+    },
+    {
+        "id":"card_272-5-c",
+        "url": "assets/img/cardList/card_272-5-c.png",
+        "name": "Goblin Dartling"
+    },
+    {
+        "id":"card_272-5-g",
+        "url": "assets/img/cardList/card_272-5-g.png",
+        "name": "Goblin Dartling"
+    },
+    {
+        "id":"card_284-3-c",
+        "url": "assets/img/cardList/card_284-3-c.png",
+        "name": "Harvester"
+    },
+    {
+        "id":"card_284-3-g",
+        "url": "assets/img/cardList/card_284-3-g.png",
+        "name": "Harvester"
+    },
+    {
+        "id":"card_311-6-c",
+        "url": "assets/img/cardList/card_311-6-c.png",
+        "name": "Bertrol Gobson"
+    },
+    {
+        "id":"card_311-6-g",
+        "url": "assets/img/cardList/card_311-6-g.png",
+        "name": "Bertrol Gobson"
+    },
+    {
+        "id":"card_312-6-c",
+        "url": "assets/img/cardList/card_312-6-c.png",
+        "name": "Katrelba Gobson"
+    },
+    {
+        "id":"card_312-6-g",
+        "url": "assets/img/cardList/card_312-6-g.png",
+        "name": "Katrelba Gobson"
+    },
+    {
+        "id":"card_334-3-c",
+        "url": "assets/img/cardList/card_334-3-c.jpg",
+        "name": "PELACOR MERCENARY"
+    },
+    {
+        "id":"card_334-3-g",
+        "url": "assets/img/cardList/card_334-3-g.jpg",
+        "name": "PELACOR MERCENARY"
+    },
+    {
+        "id":"card_367-7-c",
+        "url": "assets/img/cardList/card_367-7-c.jpg",
+        "name": "MYCELIC MORPHOID"
+    },
+    {
+        "id":"card_367-7-g",
+        "url": "assets/img/cardList/card_367-7-g.jpg",
+        "name": "MYCELIC MORPHOID"
+    },
+    {
+        "id":"card_368-7-c",
+        "url": "assets/img/cardList/card_368-7-c.jpg",
+        "name": "VENARI KNIFER"
+    },
+    {
+        "id":"card_368-7-g",
+        "url": "assets/img/cardList/card_368-7-g.jpg",
+        "name": "VENARI KNIFER"
+    },
+    {
+        "id":"card_369-7-c",
+        "url": "assets/img/cardList/card_369-7-c.jpg",
+        "name": "VENARI SCOUT"
+    },
+    {
+        "id":"card_369-7-g",
+        "url": "assets/img/cardList/card_369-7-g.jpg",
+        "name": "VENARI SCOUT"
+    },
+    {
+        "id":"card_370-7-c",
+        "url": "assets/img/cardList/card_370-7-c.jpg",
+        "name": "HILL GIANT"
+    },
+    {
+        "id":"card_370-7-g",
+        "url": "assets/img/cardList/card_370-7-g.jpg",
+        "name": "HILL GIANT"
+    },
+    {
+        "id":"card_371-7-c",
+        "url": "assets/img/cardList/card_371-7-c.jpg",
+        "name": "GOBLIN PSYCHIC"
+    },
+    {
+        "id":"card_371-7-g",
+        "url": "assets/img/cardList/card_371-7-g.jpg",
+        "name": "GOBLIN PSYCHIC"
+    },
+    {
+        "id":"card_27-0-c",
+        "url": "assets/img/cardList/card_27-0-c.png",
+        "name": "Lyanna Natura"
+    },
+    {
+        "id":"card_27-0-g",
+        "url": "assets/img/cardList/card_27-0-g.png",
+        "name": "Lyanna Natura"
+    },
+    {
+        "id":"card_27-1-c",
+        "url": "assets/img/cardList/card_27-1-c.png",
+        "name": "Lyanna Natura"
+    },
+    {
+        "id":"card_27-1-g",
+        "url": "assets/img/cardList/card_27-1-g.png",
+        "name": "Lyanna Natura"
+    },
+    {
+        "id":"card_28-0-c",
+        "url": "assets/img/cardList/card_28-0-c.png",
+        "name": "Earth Elemental"
+    },
+    {
+        "id":"card_28-0-g",
+        "url": "assets/img/cardList/card_28-0-g.png",
+        "name": "Earth Elemental"
+    },
+    {
+        "id":"card_28-1-c",
+        "url": "assets/img/cardList/card_28-1-c.png",
+        "name": "Earth Elemental"
+    },
+    {
+        "id":"card_28-1-g",
+        "url": "assets/img/cardList/card_28-1-g.png",
+        "name": "Earth Elemental"
+    },
+    {
+        "id":"card_29-0-c",
+        "url": "assets/img/cardList/card_29-0-c.png",
+        "name": "Stone Golem"
+    },
+    {
+        "id":"card_29-0-g",
+        "url": "assets/img/cardList/card_29-0-g.png",
+        "name": "Stone Golem"
+    },
+    {
+        "id":"card_29-1-c",
+        "url": "assets/img/cardList/card_29-1-c.png",
+        "name": "Stone Golem"
+    },
+    {
+        "id":"card_29-1-g",
+        "url": "assets/img/cardList/card_29-1-g.png",
+        "name": "Stone Golem"
+    },
+    {
+        "id":"card_30-0-c",
+        "url": "assets/img/cardList/card_30-0-c.png",
+        "name": "Stonesplitter Orc"
+    },
+    {
+        "id":"card_30-0-g",
+        "url": "assets/img/cardList/card_30-0-g.png",
+        "name": "Stonesplitter Orc"
+    },
+    {
+        "id":"card_30-1-c",
+        "url": "assets/img/cardList/card_30-1-c.png",
+        "name": "Stonesplitter Orc"
+    },
+    {
+        "id":"card_30-1-g",
+        "url": "assets/img/cardList/card_30-1-g.png",
+        "name": "Stonesplitter Orc"
+    },
+    {
+        "id":"card_85-3-c",
+        "url": "assets/img/cardList/card_85-3-c.png",
+        "name": "Mushroom Seer"
+    },
+    {
+        "id":"card_85-3-g",
+        "url": "assets/img/cardList/card_85-3-g.png",
+        "name": "Mushroom Seer"
+    },
+    {
+        "id":"card_102-3-c",
+        "url": "assets/img/cardList/card_102-3-c.png",
+        "name": "Javelin Thrower"
+    },
+    {
+        "id":"card_102-3-g",
+        "url": "assets/img/cardList/card_102-3-g.png",
+        "name": "Javelin Thrower"
+    },
+    {
+        "id":"card_183-4-c",
+        "url": "assets/img/cardList/card_183-4-c.png",
+        "name": "Khmer Princess"
+    },
+    {
+        "id":"card_183-4-g",
+        "url": "assets/img/cardList/card_183-4-g.png",
+        "name": "Khmer Princess"
+    },
+    {
+        "id":"card_184-4-c",
+        "url": "assets/img/cardList/card_184-4-c.png",
+        "name": "Unicorn Mustang"
+    },
+    {
+        "id":"card_184-4-g",
+        "url": "assets/img/cardList/card_184-4-g.png",
+        "name": "Unicorn Mustang"
+    },
+    {
+        "id":"card_185-4-c",
+        "url": "assets/img/cardList/card_185-4-c.png",
+        "name": "Child of the Forest"
+    },
+    {
+        "id":"card_185-4-g",
+        "url": "assets/img/cardList/card_185-4-g.png",
+        "name": "Child of the Forest"
+    },
+    {
+        "id":"card_189-4-c",
+        "url": "assets/img/cardList/card_189-4-c.png",
+        "name": "Wizard of Eastwood"
+    },
+    {
+        "id":"card_189-4-g",
+        "url": "assets/img/cardList/card_189-4-g.png",
+        "name": "Wizard of Eastwood"
+    },
+    {
+        "id":"card_253-3-c",
+        "url": "assets/img/cardList/card_253-3-c.png",
+        "name": "Centauri Mage"
+    },
+    {
+        "id":"card_253-3-g",
+        "url": "assets/img/cardList/card_253-3-g.png",
+        "name": "Centauri Mage"
+    },
+    {
+        "id":"card_259-5-c",
+        "url": "assets/img/cardList/card_259-5-c.png",
+        "name": "Mylor Crowling"
+    },
+    {
+        "id":"card_259-5-g",
+        "url": "assets/img/cardList/card_259-5-g.png",
+        "name": "Mylor Crowling"
+    },
+    {
+        "id":"card_313-6-c",
+        "url": "assets/img/cardList/card_313-6-c.png",
+        "name": "Cutter Brieze"
+    },
+    {
+        "id":"card_313-6-g",
+        "url": "assets/img/cardList/card_313-6-g.png",
+        "name": "Cutter Brieze"
+    },
+    {
+        "id":"card_314-6-c",
+        "url": "assets/img/cardList/card_314-6-c.png",
+        "name": "Palidon Rakk"
+    },
+    {
+        "id":"card_314-6-g",
+        "url": "assets/img/cardList/card_314-6-g.png",
+        "name": "Palidon Rakk"
+    },
+    {
+        "id":"card_335-3-c",
+        "url": "assets/img/cardList/card_335-3-c.jpg",
+        "name": "VENARI SEEDSMITH"
+    },
+    {
+        "id":"card_335-3-g",
+        "url": "assets/img/cardList/card_335-3-g.jpg",
+        "name": "VENARI SEEDSMITH"
+    },
+    {
+        "id":"card_372-7-c",
+        "url": "assets/img/cardList/card_372-7-c.jpg",
+        "name": "MYCELIC SLIPSPAWN"
+    },
+    {
+        "id":"card_372-7-g",
+        "url": "assets/img/cardList/card_372-7-g.jpg",
+        "name": "MYCELIC SLIPSPAWN"
+    },
+    {
+        "id":"card_373-7-c",
+        "url": "assets/img/cardList/card_373-7-c.jpg",
+        "name": "REGAL PERYTON"
+    },
+    {
+        "id":"card_373-7-g",
+        "url": "assets/img/cardList/card_373-7-g.jpg",
+        "name": "REGAL PERYTON"
+    },
+    {
+        "id":"card_374-7-c",
+        "url": "assets/img/cardList/card_374-7-c.jpg",
+        "name": "GOBLIN TOWER"
+    },
+    {
+        "id":"card_374-7-g",
+        "url": "assets/img/cardList/card_374-7-g.jpg",
+        "name": "GOBLIN TOWER"
+    },
+    {
+        "id":"card_375-7-c",
+        "url": "assets/img/cardList/card_375-7-c.jpg",
+        "name": "MYCELIC INFANTRY"
+    },
+    {
+        "id":"card_375-7-g",
+        "url": "assets/img/cardList/card_375-7-g.jpg",
+        "name": "MYCELIC INFANTRY"
+    },
+    {
+        "id":"card_439-7-c",
+        "url": "assets/img/cardList/card_439-7-c.jpg",
+        "name": "OBSIDIAN"
+    },
+    {
+        "id":"card_439-7-g",
+        "url": "assets/img/cardList/card_439-7-g.jpg",
+        "name": "OBSIDIAN"
+    },
+    {
+        "id":"card_31-0-c",
+        "url": "assets/img/cardList/card_31-0-c.png",
+        "name": "Magi of the Forest"
+    },
+    {
+        "id":"card_31-0-g",
+        "url": "assets/img/cardList/card_31-0-g.png",
+        "name": "Magi of the Forest"
+    },
+    {
+        "id":"card_31-1-c",
+        "url": "assets/img/cardList/card_31-1-c.png",
+        "name": "Magi of the Forest"
+    },
+    {
+        "id":"card_31-1-g",
+        "url": "assets/img/cardList/card_31-1-g.png",
+        "name": "Magi of the Forest"
+    },
+    {
+        "id":"card_32-0-c",
+        "url": "assets/img/cardList/card_32-0-c.png",
+        "name": "Swamp Thing"
+    },
+    {
+        "id":"card_32-0-g",
+        "url": "assets/img/cardList/card_32-0-g.png",
+        "name": "Swamp Thing"
+    },
+    {
+        "id":"card_32-1-c",
+        "url": "assets/img/cardList/card_32-1-c.png",
+        "name": "Swamp Thing"
+    },
+    {
+        "id":"card_32-1-g",
+        "url": "assets/img/cardList/card_32-1-g.png",
+        "name": "Swamp Thing"
+    },
+    {
+        "id":"card_72-1-c",
+        "url": "assets/img/cardList/card_72-1-c.png",
+        "name": "Xander Foxwood"
+    },
+    {
+        "id":"card_72-1-g",
+        "url": "assets/img/cardList/card_72-1-g.png",
+        "name": "Xander Foxwood"
+    },
+    {
+        "id":"card_95-3-c",
+        "url": "assets/img/cardList/card_95-3-c.png",
+        "name": "Brownie"
+    },
+    {
+        "id":"card_95-3-g",
+        "url": "assets/img/cardList/card_95-3-g.png",
+        "name": "Brownie"
+    },
+    {
+        "id":"card_186-4-c",
+        "url": "assets/img/cardList/card_186-4-c.png",
+        "name": "Mitica Headhunter"
+    },
+    {
+        "id":"card_186-4-g",
+        "url": "assets/img/cardList/card_186-4-g.png",
+        "name": "Mitica Headhunter"
+    },
+    {
+        "id":"card_187-4-c",
+        "url": "assets/img/cardList/card_187-4-c.png",
+        "name": "Sporcerer"
+    },
+    {
+        "id":"card_187-4-g",
+        "url": "assets/img/cardList/card_187-4-g.png",
+        "name": "Sporcerer"
+    },
+    {
+        "id":"card_221-3-c",
+        "url": "assets/img/cardList/card_221-3-c.png",
+        "name": "Spirit Shaman"
+    },
+    {
+        "id":"card_221-3-g",
+        "url": "assets/img/cardList/card_221-3-g.png",
+        "name": "Spirit Shaman"
+    },
+    {
+        "id":"card_279-4-c",
+        "url": "assets/img/cardList/card_279-4-c.png",
+        "name": "Beatrix Ironhand"
+    },
+    {
+        "id":"card_279-4-g",
+        "url": "assets/img/cardList/card_279-4-g.png",
+        "name": "Beatrix Ironhand"
+    },
+    {
+        "id":"card_315-6-c",
+        "url": "assets/img/cardList/card_315-6-c.png",
+        "name": "Quora Towershead"
+    },
+    {
+        "id":"card_315-6-g",
+        "url": "assets/img/cardList/card_315-6-g.png",
+        "name": "Quora Towershead"
+    },
+    {
+        "id":"card_376-7-c",
+        "url": "assets/img/cardList/card_376-7-c.jpg",
+        "name": "GRUND"
+    },
+    {
+        "id":"card_376-7-g",
+        "url": "assets/img/cardList/card_376-7-g.jpg",
+        "name": "GRUND"
+    },
+    {
+        "id":"card_377-7-c",
+        "url": "assets/img/cardList/card_377-7-c.jpg",
+        "name": "HUNTER JARX"
+    },
+    {
+        "id":"card_377-7-g",
+        "url": "assets/img/cardList/card_377-7-g.jpg",
+        "name": "HUNTER JARX"
+    },
+    {
+        "id":"card_378-7-c",
+        "url": "assets/img/cardList/card_378-7-c.jpg",
+        "name": "ACID SHOOTER"
+    },
+    {
+        "id":"card_378-7-g",
+        "url": "assets/img/cardList/card_378-7-g.jpg",
+        "name": "ACID SHOOTER"
+    },
+    {
+        "id":"card_33-0-c",
+        "url": "assets/img/cardList/card_33-0-c.png",
+        "name": "Spirit of the Forest"
+    },
+    {
+        "id":"card_33-0-g",
+        "url": "assets/img/cardList/card_33-0-g.png",
+        "name": "Spirit of the Forest"
+    },
+    {
+        "id":"card_33-1-c",
+        "url": "assets/img/cardList/card_33-1-c.png",
+        "name": "Spirit of the Forest"
+    },
+    {
+        "id":"card_33-1-g",
+        "url": "assets/img/cardList/card_33-1-g.png",
+        "name": "Spirit of the Forest"
+    },
+    {
+        "id":"card_112-1-c",
+        "url": "assets/img/cardList/card_112-1-c.png",
+        "name": "Prince Rennyn"
+    },
+    {
+        "id":"card_112-1-g",
+        "url": "assets/img/cardList/card_112-1-g.png",
+        "name": "Prince Rennyn"
+    },
+    {
+        "id":"card_121-2-c",
+        "url": "assets/img/cardList/card_121-2-c.png",
+        "name": "Minotaur Warlord"
+    },
+    {
+        "id":"card_121-2-g",
+        "url": "assets/img/cardList/card_121-2-g.png",
+        "name": "Minotaur Warlord"
+    },
+    {
+        "id":"card_188-4-c",
+        "url": "assets/img/cardList/card_188-4-c.png",
+        "name": "Kron the Undying"
+    },
+    {
+        "id":"card_188-4-g",
+        "url": "assets/img/cardList/card_188-4-g.png",
+        "name": "Kron the Undying"
+    },
+    {
+        "id":"card_249-3-c",
+        "url": "assets/img/cardList/card_249-3-c.png",
+        "name": "Spirit Druid Grog"
+    },
+    {
+        "id":"card_249-3-g",
+        "url": "assets/img/cardList/card_249-3-g.png",
+        "name": "Spirit Druid Grog"
+    },
+    {
+        "id":"card_271-5-c",
+        "url": "assets/img/cardList/card_271-5-c.png",
+        "name": "Oaken Behemoth"
+    },
+    {
+        "id":"card_271-5-g",
+        "url": "assets/img/cardList/card_271-5-g.png",
+        "name": "Oaken Behemoth"
+    },
+    {
+        "id":"card_278-4-c",
+        "url": "assets/img/cardList/card_278-4-c.png",
+        "name": "Scarred Llama Mage"
+    },
+    {
+        "id":"card_278-4-g",
+        "url": "assets/img/cardList/card_278-4-g.png",
+        "name": "Scarred Llama Mage"
+    },
+    {
+        "id":"card_297-5-c",
+        "url": "assets/img/cardList/card_297-5-c.png",
+        "name": "Epona"
+    },
+    {
+        "id":"card_297-5-g",
+        "url": "assets/img/cardList/card_297-5-g.png",
+        "name": "Epona"
+    },
+    {
+        "id":"card_316-6-c",
+        "url": "assets/img/cardList/card_316-6-c.png",
+        "name": "Jini Guise"
+    },
+    {
+        "id":"card_316-6-g",
+        "url": "assets/img/cardList/card_316-6-g.png",
+        "name": "Jini Guise"
+    },
+    {
+        "id":"card_336-3-c",
+        "url": "assets/img/cardList/card_336-3-c.jpg",
+        "name": "DJINN BILJKA"
+    },
+    {
+        "id":"card_336-3-g",
+        "url": "assets/img/cardList/card_336-3-g.jpg",
+        "name": "DJINN BILJKA"
+    },
+    {
+        "id":"card_379-7-c",
+        "url": "assets/img/cardList/card_379-7-c.jpg",
+        "name": "QUEEN MYCELIA"
+    },
+    {
+        "id":"card_379-7-g",
+        "url": "assets/img/cardList/card_379-7-g.jpg",
+        "name": "QUEEN MYCELIA"
+    },
+    {
+        "id":"card_380-7-c",
+        "url": "assets/img/cardList/card_380-7-c.jpg",
+        "name": "FUNGUS FIEND"
+    },
+    {
+        "id":"card_380-7-g",
+        "url": "assets/img/cardList/card_380-7-g.jpg",
+        "name": "FUNGUS FIEND"
+    },
+    {
+        "id":"card_34-0-c",
+        "url": "assets/img/cardList/card_34-0-c.png",
+        "name": "Divine Healer"
+    },
+    {
+        "id":"card_34-0-g",
+        "url": "assets/img/cardList/card_34-0-g.png",
+        "name": "Divine Healer"
+    },
+    {
+        "id":"card_34-1-c",
+        "url": "assets/img/cardList/card_34-1-c.png",
+        "name": "Divine Healer"
+    },
+    {
+        "id":"card_34-1-g",
+        "url": "assets/img/cardList/card_34-1-g.png",
+        "name": "Divine Healer"
+    },
+    {
+        "id":"card_35-0-c",
+        "url": "assets/img/cardList/card_35-0-c.png",
+        "name": "Feral Spirit"
+    },
+    {
+        "id":"card_35-0-g",
+        "url": "assets/img/cardList/card_35-0-g.png",
+        "name": "Feral Spirit"
+    },
+    {
+        "id":"card_35-1-c",
+        "url": "assets/img/cardList/card_35-1-c.png",
+        "name": "Feral Spirit"
+    },
+    {
+        "id":"card_35-1-g",
+        "url": "assets/img/cardList/card_35-1-g.png",
+        "name": "Feral Spirit"
+    },
+    {
+        "id":"card_36-0-c",
+        "url": "assets/img/cardList/card_36-0-c.png",
+        "name": "Silvershield Knight"
+    },
+    {
+        "id":"card_36-0-g",
+        "url": "assets/img/cardList/card_36-0-g.png",
+        "name": "Silvershield Knight"
+    },
+    {
+        "id":"card_36-1-c",
+        "url": "assets/img/cardList/card_36-1-c.png",
+        "name": "Silvershield Knight"
+    },
+    {
+        "id":"card_36-1-g",
+        "url": "assets/img/cardList/card_36-1-g.png",
+        "name": "Silvershield Knight"
+    },
+    {
+        "id":"card_37-0-c",
+        "url": "assets/img/cardList/card_37-0-c.png",
+        "name": "Silvershield Warrior"
+    },
+    {
+        "id":"card_37-0-g",
+        "url": "assets/img/cardList/card_37-0-g.png",
+        "name": "Silvershield Warrior"
+    },
+    {
+        "id":"card_37-1-c",
+        "url": "assets/img/cardList/card_37-1-c.png",
+        "name": "Silvershield Warrior"
+    },
+    {
+        "id":"card_37-1-g",
+        "url": "assets/img/cardList/card_37-1-g.png",
+        "name": "Silvershield Warrior"
+    },
+    {
+        "id":"card_96-3-c",
+        "url": "assets/img/cardList/card_96-3-c.png",
+        "name": "Silvershield Archers"
+    },
+    {
+        "id":"card_96-3-g",
+        "url": "assets/img/cardList/card_96-3-g.png",
+        "name": "Silvershield Archers"
+    },
+    {
+        "id":"card_118-2-c",
+        "url": "assets/img/cardList/card_118-2-c.png",
+        "name": "Armorsmith"
+    },
+    {
+        "id":"card_118-2-g",
+        "url": "assets/img/cardList/card_118-2-g.png",
+        "name": "Armorsmith"
+    },
+    {
+        "id":"card_146-4-c",
+        "url": "assets/img/cardList/card_146-4-c.png",
+        "name": "Cave Slug"
+    },
+    {
+        "id":"card_146-4-g",
+        "url": "assets/img/cardList/card_146-4-g.png",
+        "name": "Cave Slug"
+    },
+    {
+        "id":"card_147-4-c",
+        "url": "assets/img/cardList/card_147-4-c.png",
+        "name": "Crystal Jaguar"
+    },
+    {
+        "id":"card_147-4-g",
+        "url": "assets/img/cardList/card_147-4-g.png",
+        "name": "Crystal Jaguar"
+    },
+    {
+        "id":"card_148-4-c",
+        "url": "assets/img/cardList/card_148-4-c.png",
+        "name": "Lone Boatman"
+    },
+    {
+        "id":"card_148-4-g",
+        "url": "assets/img/cardList/card_148-4-g.png",
+        "name": "Lone Boatman"
+    },
+    {
+        "id":"card_149-4-c",
+        "url": "assets/img/cardList/card_149-4-c.png",
+        "name": "Herbalist"
+    },
+    {
+        "id":"card_149-4-g",
+        "url": "assets/img/cardList/card_149-4-g.png",
+        "name": "Herbalist"
+    },
+    {
+        "id":"card_217-3-c",
+        "url": "assets/img/cardList/card_217-3-c.png",
+        "name": "Baby Unicorn"
+    },
+    {
+        "id":"card_217-3-g",
+        "url": "assets/img/cardList/card_217-3-g.png",
+        "name": "Baby Unicorn"
+    },
+    {
+        "id":"card_233-3-c",
+        "url": "assets/img/cardList/card_233-3-c.png",
+        "name": "Warrior of Peace"
+    },
+    {
+        "id":"card_233-3-g",
+        "url": "assets/img/cardList/card_233-3-g.png",
+        "name": "Warrior of Peace"
+    },
+    {
+        "id":"card_283-3-c",
+        "url": "assets/img/cardList/card_283-3-c.png",
+        "name": "Chain Spinner"
+    },
+    {
+        "id":"card_283-3-g",
+        "url": "assets/img/cardList/card_283-3-g.png",
+        "name": "Chain Spinner"
+    },
+    {
+        "id":"card_317-6-c",
+        "url": "assets/img/cardList/card_317-6-c.png",
+        "name": "Helmet Kharafax"
+    },
+    {
+        "id":"card_317-6-g",
+        "url": "assets/img/cardList/card_317-6-g.png",
+        "name": "Helmet Kharafax"
+    },
+    {
+        "id":"card_318-6-c",
+        "url": "assets/img/cardList/card_318-6-c.png",
+        "name": "Hugo Strongsword"
+    },
+    {
+        "id":"card_318-6-g",
+        "url": "assets/img/cardList/card_318-6-g.png",
+        "name": "Hugo Strongsword"
+    },
+    {
+        "id":"card_343-3-c",
+        "url": "assets/img/cardList/card_343-3-c.jpg",
+        "name": "PELACOR CONJURER"
+    },
+    {
+        "id":"card_343-3-g",
+        "url": "assets/img/cardList/card_343-3-g.jpg",
+        "name": "PELACOR CONJURER"
+    },
+    {
+        "id":"card_409-7-c",
+        "url": "assets/img/cardList/card_409-7-c.jpg",
+        "name": "GARGOYA SCRAPPER"
+    },
+    {
+        "id":"card_409-7-g",
+        "url": "assets/img/cardList/card_409-7-g.jpg",
+        "name": "GARGOYA SCRAPPER"
+    },
+    {
+        "id":"card_410-7-c",
+        "url": "assets/img/cardList/card_410-7-c.jpg",
+        "name": "SUNKAI HARVESTER"
+    },
+    {
+        "id":"card_410-7-g",
+        "url": "assets/img/cardList/card_410-7-g.jpg",
+        "name": "SUNKAI HARVESTER"
+    },
+    {
+        "id":"card_411-7-c",
+        "url": "assets/img/cardList/card_411-7-c.jpg",
+        "name": "STITCH LEECH"
+    },
+    {
+        "id":"card_411-7-g",
+        "url": "assets/img/cardList/card_411-7-g.jpg",
+        "name": "STITCH LEECH"
+    },
+    {
+        "id":"card_412-7-c",
+        "url": "assets/img/cardList/card_412-7-c.jpg",
+        "name": "BLINDING REFLECTOR"
+    },
+    {
+        "id":"card_412-7-g",
+        "url": "assets/img/cardList/card_412-7-g.jpg",
+        "name": "BLINDING REFLECTOR"
+    },
+    {
+        "id":"card_413-7-c",
+        "url": "assets/img/cardList/card_413-7-c.jpg",
+        "name": "CHAOS KNIGHT"
+    },
+    {
+        "id":"card_413-7-g",
+        "url": "assets/img/cardList/card_413-7-g.jpg",
+        "name": "CHAOS KNIGHT"
+    },
+    {
+        "id":"card_38-0-c",
+        "url": "assets/img/cardList/card_38-0-c.png",
+        "name": "Tyrus Paladium"
+    },
+    {
+        "id":"card_38-0-g",
+        "url": "assets/img/cardList/card_38-0-g.png",
+        "name": "Tyrus Paladium"
+    },
+    {
+        "id":"card_38-1-c",
+        "url": "assets/img/cardList/card_38-1-c.png",
+        "name": "Tyrus Paladium"
+    },
+    {
+        "id":"card_38-1-g",
+        "url": "assets/img/cardList/card_38-1-g.png",
+        "name": "Tyrus Paladium"
+    },
+    {
+        "id":"card_39-0-c",
+        "url": "assets/img/cardList/card_39-0-c.png",
+        "name": "Peacebringer"
+    },
+    {
+        "id":"card_39-0-g",
+        "url": "assets/img/cardList/card_39-0-g.png",
+        "name": "Peacebringer"
+    },
+    {
+        "id":"card_39-1-c",
+        "url": "assets/img/cardList/card_39-1-c.png",
+        "name": "Peacebringer"
+    },
+    {
+        "id":"card_39-1-g",
+        "url": "assets/img/cardList/card_39-1-g.png",
+        "name": "Peacebringer"
+    },
+    {
+        "id":"card_40-0-c",
+        "url": "assets/img/cardList/card_40-0-c.png",
+        "name": "Silvershield Paladin"
+    },
+    {
+        "id":"card_40-0-g",
+        "url": "assets/img/cardList/card_40-0-g.png",
+        "name": "Silvershield Paladin"
+    },
+    {
+        "id":"card_40-1-c",
+        "url": "assets/img/cardList/card_40-1-c.png",
+        "name": "Silvershield Paladin"
+    },
+    {
+        "id":"card_40-1-g",
+        "url": "assets/img/cardList/card_40-1-g.png",
+        "name": "Silvershield Paladin"
+    },
+    {
+        "id":"card_41-0-c",
+        "url": "assets/img/cardList/card_41-0-c.png",
+        "name": "Clay Golem"
+    },
+    {
+        "id":"card_41-0-g",
+        "url": "assets/img/cardList/card_41-0-g.png",
+        "name": "Clay Golem"
+    },
+    {
+        "id":"card_41-1-c",
+        "url": "assets/img/cardList/card_41-1-c.png",
+        "name": "Clay Golem"
+    },
+    {
+        "id":"card_41-1-g",
+        "url": "assets/img/cardList/card_41-1-g.png",
+        "name": "Clay Golem"
+    },
+    {
+        "id":"card_101-3-c",
+        "url": "assets/img/cardList/card_101-3-c.png",
+        "name": "Crystal Werewolf"
+    },
+    {
+        "id":"card_101-3-g",
+        "url": "assets/img/cardList/card_101-3-g.png",
+        "name": "Crystal Werewolf"
+    },
+    {
+        "id":"card_119-2-c",
+        "url": "assets/img/cardList/card_119-2-c.png",
+        "name": "Silvershield Bard"
+    },
+    {
+        "id":"card_119-2-g",
+        "url": "assets/img/cardList/card_119-2-g.png",
+        "name": "Silvershield Bard"
+    },
+    {
+        "id":"card_150-4-c",
+        "url": "assets/img/cardList/card_150-4-c.png",
+        "name": "Truthspeaker"
+    },
+    {
+        "id":"card_150-4-g",
+        "url": "assets/img/cardList/card_150-4-g.png",
+        "name": "Truthspeaker"
+    },
+    {
+        "id":"card_151-4-c",
+        "url": "assets/img/cardList/card_151-4-c.png",
+        "name": "Luminous Eagle"
+    },
+    {
+        "id":"card_151-4-g",
+        "url": "assets/img/cardList/card_151-4-g.png",
+        "name": "Luminous Eagle"
+    },
+    {
+        "id":"card_152-4-c",
+        "url": "assets/img/cardList/card_152-4-c.png",
+        "name": "Shieldbearer"
+    },
+    {
+        "id":"card_152-4-g",
+        "url": "assets/img/cardList/card_152-4-g.png",
+        "name": "Shieldbearer"
+    },
+    {
+        "id":"card_156-4-c",
+        "url": "assets/img/cardList/card_156-4-c.png",
+        "name": "Mother Khala"
+    },
+    {
+        "id":"card_156-4-g",
+        "url": "assets/img/cardList/card_156-4-g.png",
+        "name": "Mother Khala"
+    },
+    {
+        "id":"card_216-3-c",
+        "url": "assets/img/cardList/card_216-3-c.png",
+        "name": "Silvershield Assassin"
+    },
+    {
+        "id":"card_216-3-g",
+        "url": "assets/img/cardList/card_216-3-g.png",
+        "name": "Silvershield Assassin"
+    },
+    {
+        "id":"card_243-3-c",
+        "url": "assets/img/cardList/card_243-3-c.png",
+        "name": "Silvershield Sheriff"
+    },
+    {
+        "id":"card_243-3-g",
+        "url": "assets/img/cardList/card_243-3-g.png",
+        "name": "Silvershield Sheriff"
+    },
+    {
+        "id":"card_261-5-c",
+        "url": "assets/img/cardList/card_261-5-c.png",
+        "name": "Lorna Shine"
+    },
+    {
+        "id":"card_261-5-g",
+        "url": "assets/img/cardList/card_261-5-g.png",
+        "name": "Lorna Shine"
+    },
+    {
+        "id":"card_288-3-c",
+        "url": "assets/img/cardList/card_288-3-c.png",
+        "name": "Temple Priest"
+    },
+    {
+        "id":"card_288-3-g",
+        "url": "assets/img/cardList/card_288-3-g.png",
+        "name": "Temple Priest"
+    },
+    {
+        "id":"card_319-6-c",
+        "url": "assets/img/cardList/card_319-6-c.png",
+        "name": "Ajax Lightfoot"
+    },
+    {
+        "id":"card_319-6-g",
+        "url": "assets/img/cardList/card_319-6-g.png",
+        "name": "Ajax Lightfoot"
+    },
+    {
+        "id":"card_320-6-c",
+        "url": "assets/img/cardList/card_320-6-c.png",
+        "name": "Captain Katie"
+    },
+    {
+        "id":"card_320-6-g",
+        "url": "assets/img/cardList/card_320-6-g.png",
+        "name": "Captain Katie"
+    },
+    {
+        "id":"card_344-3-c",
+        "url": "assets/img/cardList/card_344-3-c.jpg",
+        "name": "VENARI CRYSTALSMITH"
+    },
+    {
+        "id":"card_344-3-g",
+        "url": "assets/img/cardList/card_344-3-g.jpg",
+        "name": "VENARI CRYSTALSMITH"
+    },
+    {
+        "id":"card_414-7-c",
+        "url": "assets/img/cardList/card_414-7-c.jpg",
+        "name": "CELESTIAL HARPY"
+    },
+    {
+        "id":"card_414-7-g",
+        "url": "assets/img/cardList/card_414-7-g.jpg",
+        "name": "CELESTIAL HARPY"
+    },
+    {
+        "id":"card_415-7-c",
+        "url": "assets/img/cardList/card_415-7-c.jpg",
+        "name": "TIME MAGE"
+    },
+    {
+        "id":"card_415-7-g",
+        "url": "assets/img/cardList/card_415-7-g.jpg",
+        "name": "TIME MAGE"
+    },
+    {
+        "id":"card_416-7-c",
+        "url": "assets/img/cardList/card_416-7-c.jpg",
+        "name": "PORTAL SPINNER"
+    },
+    {
+        "id":"card_416-7-g",
+        "url": "assets/img/cardList/card_416-7-g.jpg",
+        "name": "PORTAL SPINNER"
+    },
+    {
+        "id":"card_417-7-c",
+        "url": "assets/img/cardList/card_417-7-c.jpg",
+        "name": "PELACOR ARBALEST"
+    },
+    {
+        "id":"card_417-7-g",
+        "url": "assets/img/cardList/card_417-7-g.jpg",
+        "name": "PELACOR ARBALEST"
+    },
+    {
+        "id":"card_441-7-c",
+        "url": "assets/img/cardList/card_441-7-c.jpg",
+        "name": "GENERAL SLOAN"
+    },
+    {
+        "id":"card_441-7-g",
+        "url": "assets/img/cardList/card_441-7-g.jpg",
+        "name": "GENERAL SLOAN"
+    },
+    {
+        "id":"card_42-0-c",
+        "url": "assets/img/cardList/card_42-0-c.png",
+        "name": "Defender of Truth"
+    },
+    {
+        "id":"card_42-0-g",
+        "url": "assets/img/cardList/card_42-0-g.png",
+        "name": "Defender of Truth"
+    },
+    {
+        "id":"card_42-1-c",
+        "url": "assets/img/cardList/card_42-1-c.png",
+        "name": "Defender of Truth"
+    },
+    {
+        "id":"card_42-1-g",
+        "url": "assets/img/cardList/card_42-1-g.png",
+        "name": "Defender of Truth"
+    },
+    {
+        "id":"card_43-0-c",
+        "url": "assets/img/cardList/card_43-0-c.png",
+        "name": "Air Elemental"
+    },
+    {
+        "id":"card_43-0-g",
+        "url": "assets/img/cardList/card_43-0-g.png",
+        "name": "Air Elemental"
+    },
+    {
+        "id":"card_43-1-c",
+        "url": "assets/img/cardList/card_43-1-c.png",
+        "name": "Air Elemental"
+    },
+    {
+        "id":"card_43-1-g",
+        "url": "assets/img/cardList/card_43-1-g.png",
+        "name": "Air Elemental"
+    },
+    {
+        "id":"card_73-1-c",
+        "url": "assets/img/cardList/card_73-1-c.png",
+        "name": "Kiara Lightbringer"
+    },
+    {
+        "id":"card_73-1-g",
+        "url": "assets/img/cardList/card_73-1-g.png",
+        "name": "Kiara Lightbringer"
+    },
+    {
+        "id":"card_84-3-c",
+        "url": "assets/img/cardList/card_84-3-c.png",
+        "name": "Divine Sorceress"
+    },
+    {
+        "id":"card_84-3-g",
+        "url": "assets/img/cardList/card_84-3-g.png",
+        "name": "Divine Sorceress"
+    },
+    {
+        "id":"card_153-4-c",
+        "url": "assets/img/cardList/card_153-4-c.png",
+        "name": "Light Elemental"
+    },
+    {
+        "id":"card_153-4-g",
+        "url": "assets/img/cardList/card_153-4-g.png",
+        "name": "Light Elemental"
+    },
+    {
+        "id":"card_154-4-c",
+        "url": "assets/img/cardList/card_154-4-c.png",
+        "name": "Thunderbird"
+    },
+    {
+        "id":"card_154-4-g",
+        "url": "assets/img/cardList/card_154-4-g.png",
+        "name": "Thunderbird"
+    },
+    {
+        "id":"card_234-3-c",
+        "url": "assets/img/cardList/card_234-3-c.png",
+        "name": "Evangelist"
+    },
+    {
+        "id":"card_234-3-g",
+        "url": "assets/img/cardList/card_234-3-g.png",
+        "name": "Evangelist"
+    },
+    {
+        "id":"card_270-5-c",
+        "url": "assets/img/cardList/card_270-5-c.png",
+        "name": "Lunakari Mistress"
+    },
+    {
+        "id":"card_270-5-g",
+        "url": "assets/img/cardList/card_270-5-g.png",
+        "name": "Lunakari Mistress"
+    },
+    {
+        "id":"card_295-4-c",
+        "url": "assets/img/cardList/card_295-4-c.png",
+        "name": "Hero of Beyond"
+    },
+    {
+        "id":"card_295-4-g",
+        "url": "assets/img/cardList/card_295-4-g.png",
+        "name": "Hero of Beyond"
+    },
+    {
+        "id":"card_321-6-c",
+        "url": "assets/img/cardList/card_321-6-c.png",
+        "name": "Marisol Contuma"
+    },
+    {
+        "id":"card_321-6-g",
+        "url": "assets/img/cardList/card_321-6-g.png",
+        "name": "Marisol Contuma"
+    },
+    {
+        "id":"card_345-3-c",
+        "url": "assets/img/cardList/card_345-3-c.jpg",
+        "name": "DJINN RENOVA"
+    },
+    {
+        "id":"card_345-3-g",
+        "url": "assets/img/cardList/card_345-3-g.jpg",
+        "name": "DJINN RENOVA"
+    },
+    {
+        "id":"card_418-7-c",
+        "url": "assets/img/cardList/card_418-7-c.jpg",
+        "name": "TEMPORAL MASTER"
+    },
+    {
+        "id":"card_418-7-g",
+        "url": "assets/img/cardList/card_418-7-g.jpg",
+        "name": "TEMPORAL MASTER"
+    },
+    {
+        "id":"card_419-7-c",
+        "url": "assets/img/cardList/card_419-7-c.jpg",
+        "name": "PRISMOLOGIST"
+    },
+    {
+        "id":"card_419-7-g",
+        "url": "assets/img/cardList/card_419-7-g.jpg",
+        "name": "PRISMOLOGIST"
+    },
+    {
+        "id":"card_420-7-c",
+        "url": "assets/img/cardList/card_420-7-c.jpg",
+        "name": "DAX PARAGON"
+    },
+    {
+        "id":"card_420-7-g",
+        "url": "assets/img/cardList/card_420-7-g.jpg",
+        "name": "DAX PARAGON"
+    },
+    {
+        "id":"card_44-0-c",
+        "url": "assets/img/cardList/card_44-0-c.png",
+        "name": "Angel of Light"
+    },
+    {
+        "id":"card_44-0-g",
+        "url": "assets/img/cardList/card_44-0-g.png",
+        "name": "Angel of Light"
+    },
+    {
+        "id":"card_44-1-c",
+        "url": "assets/img/cardList/card_44-1-c.png",
+        "name": "Angel of Light"
+    },
+    {
+        "id":"card_44-1-g",
+        "url": "assets/img/cardList/card_44-1-g.png",
+        "name": "Angel of Light"
+    },
+    {
+        "id":"card_89-3-c",
+        "url": "assets/img/cardList/card_89-3-c.png",
+        "name": "Sacred Unicorn"
+    },
+    {
+        "id":"card_89-3-g",
+        "url": "assets/img/cardList/card_89-3-g.png",
+        "name": "Sacred Unicorn"
+    },
+    {
+        "id":"card_113-1-c",
+        "url": "assets/img/cardList/card_113-1-c.png",
+        "name": "The Peakrider"
+    },
+    {
+        "id":"card_113-1-g",
+        "url": "assets/img/cardList/card_113-1-g.png",
+        "name": "The Peakrider"
+    },
+    {
+        "id":"card_155-4-c",
+        "url": "assets/img/cardList/card_155-4-c.png",
+        "name": "High Priest Darius"
+    },
+    {
+        "id":"card_155-4-g",
+        "url": "assets/img/cardList/card_155-4-g.png",
+        "name": "High Priest Darius"
+    },
+    {
+        "id":"card_239-4-c",
+        "url": "assets/img/cardList/card_239-4-c.png",
+        "name": "Chanseus the Great"
+    },
+    {
+        "id":"card_239-4-g",
+        "url": "assets/img/cardList/card_239-4-g.png",
+        "name": "Chanseus the Great"
+    },
+    {
+        "id":"card_244-3-c",
+        "url": "assets/img/cardList/card_244-3-c.png",
+        "name": "Bila the Radiant"
+    },
+    {
+        "id":"card_244-3-g",
+        "url": "assets/img/cardList/card_244-3-g.png",
+        "name": "Bila the Radiant"
+    },
+    {
+        "id":"card_269-5-c",
+        "url": "assets/img/cardList/card_269-5-c.png",
+        "name": "Kralus"
+    },
+    {
+        "id":"card_269-5-g",
+        "url": "assets/img/cardList/card_269-5-g.png",
+        "name": "Kralus"
+    },
+    {
+        "id":"card_277-5-c",
+        "url": "assets/img/cardList/card_277-5-c.png",
+        "name": "Lensmaster"
+    },
+    {
+        "id":"card_277-5-g",
+        "url": "assets/img/cardList/card_277-5-g.png",
+        "name": "Lensmaster"
+    },
+    {
+        "id":"card_322-6-c",
+        "url": "assets/img/cardList/card_322-6-c.png",
+        "name": "Sola Ranjell"
+    },
+    {
+        "id":"card_322-6-g",
+        "url": "assets/img/cardList/card_322-6-g.png",
+        "name": "Sola Ranjell"
+    },
+    {
+        "id":"card_421-7-c",
+        "url": "assets/img/cardList/card_421-7-c.jpg",
+        "name": "ADELADE BRIGHTWING"
+    },
+    {
+        "id":"card_421-7-g",
+        "url": "assets/img/cardList/card_421-7-g.jpg",
+        "name": "ADELADE BRIGHTWING"
+    },
+    {
+        "id":"card_422-7-c",
+        "url": "assets/img/cardList/card_422-7-c.jpg",
+        "name": "SOUL FIEND"
+    },
+    {
+        "id":"card_422-7-g",
+        "url": "assets/img/cardList/card_422-7-g.jpg",
+        "name": "SOUL FIEND"
+    },
+    {
+        "id":"card_45-0-c",
+        "url": "assets/img/cardList/card_45-0-c.png",
+        "name": "Animated Corpse"
+    },
+    {
+        "id":"card_45-0-g",
+        "url": "assets/img/cardList/card_45-0-g.png",
+        "name": "Animated Corpse"
+    },
+    {
+        "id":"card_45-1-c",
+        "url": "assets/img/cardList/card_45-1-c.png",
+        "name": "Animated Corpse"
+    },
+    {
+        "id":"card_45-1-g",
+        "url": "assets/img/cardList/card_45-1-g.png",
+        "name": "Animated Corpse"
+    },
+    {
+        "id":"card_46-0-c",
+        "url": "assets/img/cardList/card_46-0-c.png",
+        "name": "Haunted Spider"
+    },
+    {
+        "id":"card_46-0-g",
+        "url": "assets/img/cardList/card_46-0-g.png",
+        "name": "Haunted Spider"
+    },
+    {
+        "id":"card_46-1-c",
+        "url": "assets/img/cardList/card_46-1-c.png",
+        "name": "Haunted Spider"
+    },
+    {
+        "id":"card_46-1-g",
+        "url": "assets/img/cardList/card_46-1-g.png",
+        "name": "Haunted Spider"
+    },
+    {
+        "id":"card_47-0-c",
+        "url": "assets/img/cardList/card_47-0-c.png",
+        "name": "Skeleton Assassin"
+    },
+    {
+        "id":"card_47-0-g",
+        "url": "assets/img/cardList/card_47-0-g.png",
+        "name": "Skeleton Assassin"
+    },
+    {
+        "id":"card_47-1-c",
+        "url": "assets/img/cardList/card_47-1-c.png",
+        "name": "Skeleton Assassin"
+    },
+    {
+        "id":"card_47-1-g",
+        "url": "assets/img/cardList/card_47-1-g.png",
+        "name": "Skeleton Assassin"
+    },
+    {
+        "id":"card_48-0-c",
+        "url": "assets/img/cardList/card_48-0-c.png",
+        "name": "Spineback Wolf"
+    },
+    {
+        "id":"card_48-0-g",
+        "url": "assets/img/cardList/card_48-0-g.png",
+        "name": "Spineback Wolf"
+    },
+    {
+        "id":"card_48-1-c",
+        "url": "assets/img/cardList/card_48-1-c.png",
+        "name": "Spineback Wolf"
+    },
+    {
+        "id":"card_48-1-g",
+        "url": "assets/img/cardList/card_48-1-g.png",
+        "name": "Spineback Wolf"
+    },
+    {
+        "id":"card_86-3-c",
+        "url": "assets/img/cardList/card_86-3-c.png",
+        "name": "Vampire"
+    },
+    {
+        "id":"card_86-3-g",
+        "url": "assets/img/cardList/card_86-3-g.png",
+        "name": "Vampire"
+    },
+    {
+        "id":"card_105-3-c",
+        "url": "assets/img/cardList/card_105-3-c.png",
+        "name": "Undead Minotaur"
+    },
+    {
+        "id":"card_105-3-g",
+        "url": "assets/img/cardList/card_105-3-g.png",
+        "name": "Undead Minotaur"
+    },
+    {
+        "id":"card_135-4-c",
+        "url": "assets/img/cardList/card_135-4-c.png",
+        "name": "Maggots"
+    },
+    {
+        "id":"card_135-4-g",
+        "url": "assets/img/cardList/card_135-4-g.png",
+        "name": "Maggots"
+    },
+    {
+        "id":"card_136-4-c",
+        "url": "assets/img/cardList/card_136-4-c.png",
+        "name": "Cursed Slimeball"
+    },
+    {
+        "id":"card_136-4-g",
+        "url": "assets/img/cardList/card_136-4-g.png",
+        "name": "Cursed Slimeball"
+    },
+    {
+        "id":"card_137-4-c",
+        "url": "assets/img/cardList/card_137-4-c.png",
+        "name": "Giant Scorpion"
+    },
+    {
+        "id":"card_137-4-g",
+        "url": "assets/img/cardList/card_137-4-g.png",
+        "name": "Giant Scorpion"
+    },
+    {
+        "id":"card_138-4-c",
+        "url": "assets/img/cardList/card_138-4-c.png",
+        "name": "Undead Badger"
+    },
+    {
+        "id":"card_138-4-g",
+        "url": "assets/img/cardList/card_138-4-g.png",
+        "name": "Undead Badger"
+    },
+    {
+        "id":"card_229-3-c",
+        "url": "assets/img/cardList/card_229-3-c.png",
+        "name": "Undead Rexx"
+    },
+    {
+        "id":"card_229-3-g",
+        "url": "assets/img/cardList/card_229-3-g.png",
+        "name": "Undead Rexx"
+    },
+    {
+        "id":"card_246-3-c",
+        "url": "assets/img/cardList/card_246-3-c.png",
+        "name": "Phantasm"
+    },
+    {
+        "id":"card_246-3-g",
+        "url": "assets/img/cardList/card_246-3-g.png",
+        "name": "Phantasm"
+    },
+    {
+        "id":"card_268-5-c",
+        "url": "assets/img/cardList/card_268-5-c.png",
+        "name": "Marrow's Ghost"
+    },
+    {
+        "id":"card_268-5-g",
+        "url": "assets/img/cardList/card_268-5-g.png",
+        "name": "Marrow's Ghost"
+    },
+    {
+        "id":"card_285-3-c",
+        "url": "assets/img/cardList/card_285-3-c.png",
+        "name": "Nightmare"
+    },
+    {
+        "id":"card_285-3-g",
+        "url": "assets/img/cardList/card_285-3-g.png",
+        "name": "Nightmare"
+    },
+    {
+        "id":"card_323-6-c",
+        "url": "assets/img/cardList/card_323-6-c.png",
+        "name": "Whistling Damon"
+    },
+    {
+        "id":"card_323-6-g",
+        "url": "assets/img/cardList/card_323-6-g.png",
+        "name": "Whistling Damon"
+    },
+    {
+        "id":"card_324-6-c",
+        "url": "assets/img/cardList/card_324-6-c.png",
+        "name": "Witch of Warwick"
+    },
+    {
+        "id":"card_324-6-g",
+        "url": "assets/img/cardList/card_324-6-g.png",
+        "name": "Witch of Warwick"
+    },
+    {
+        "id":"card_340-3-c",
+        "url": "assets/img/cardList/card_340-3-c.jpg",
+        "name": "PELACOR DECEIVER"
+    },
+    {
+        "id":"card_340-3-g",
+        "url": "assets/img/cardList/card_340-3-g.jpg",
+        "name": "PELACOR DECEIVER"
+    },
+    {
+        "id":"card_353-7-c",
+        "url": "assets/img/cardList/card_353-7-c.jpg",
+        "name": "CARRION SHADE"
+    },
+    {
+        "id":"card_353-7-g",
+        "url": "assets/img/cardList/card_353-7-g.jpg",
+        "name": "CARRION SHADE"
+    },
+    {
+        "id":"card_354-7-c",
+        "url": "assets/img/cardList/card_354-7-c.jpg",
+        "name": "RIFTWING"
+    },
+    {
+        "id":"card_354-7-g",
+        "url": "assets/img/cardList/card_354-7-g.jpg",
+        "name": "RIFTWING"
+    },
+    {
+        "id":"card_355-7-c",
+        "url": "assets/img/cardList/card_355-7-c.jpg",
+        "name": "SHADOW SNITCH"
+    },
+    {
+        "id":"card_355-7-g",
+        "url": "assets/img/cardList/card_355-7-g.jpg",
+        "name": "SHADOW SNITCH"
+    },
+    {
+        "id":"card_356-7-c",
+        "url": "assets/img/cardList/card_356-7-c.jpg",
+        "name": "CRYPT BEETLE"
+    },
+    {
+        "id":"card_356-7-g",
+        "url": "assets/img/cardList/card_356-7-g.jpg",
+        "name": "CRYPT BEETLE"
+    },
+    {
+        "id":"card_357-7-c",
+        "url": "assets/img/cardList/card_357-7-c.jpg",
+        "name": "SILENT SHA-VI"
+    },
+    {
+        "id":"card_357-7-g",
+        "url": "assets/img/cardList/card_357-7-g.jpg",
+        "name": "SILENT SHA-VI"
+    },
+    {
+        "id":"card_49-0-c",
+        "url": "assets/img/cardList/card_49-0-c.png",
+        "name": "Zintar Mortalis"
+    },
+    {
+        "id":"card_49-0-g",
+        "url": "assets/img/cardList/card_49-0-g.png",
+        "name": "Zintar Mortalis"
+    },
+    {
+        "id":"card_49-1-c",
+        "url": "assets/img/cardList/card_49-1-c.png",
+        "name": "Zintar Mortalis"
+    },
+    {
+        "id":"card_49-1-g",
+        "url": "assets/img/cardList/card_49-1-g.png",
+        "name": "Zintar Mortalis"
+    },
+    {
+        "id":"card_50-0-c",
+        "url": "assets/img/cardList/card_50-0-c.png",
+        "name": "Haunted Spirit"
+    },
+    {
+        "id":"card_50-0-g",
+        "url": "assets/img/cardList/card_50-0-g.png",
+        "name": "Haunted Spirit"
+    },
+    {
+        "id":"card_50-1-c",
+        "url": "assets/img/cardList/card_50-1-c.png",
+        "name": "Haunted Spirit"
+    },
+    {
+        "id":"card_50-1-g",
+        "url": "assets/img/cardList/card_50-1-g.png",
+        "name": "Haunted Spirit"
+    },
+    {
+        "id":"card_51-0-c",
+        "url": "assets/img/cardList/card_51-0-c.png",
+        "name": "Twisted Jester"
+    },
+    {
+        "id":"card_51-0-g",
+        "url": "assets/img/cardList/card_51-0-g.png",
+        "name": "Twisted Jester"
+    },
+    {
+        "id":"card_51-1-c",
+        "url": "assets/img/cardList/card_51-1-c.png",
+        "name": "Twisted Jester"
+    },
+    {
+        "id":"card_51-1-g",
+        "url": "assets/img/cardList/card_51-1-g.png",
+        "name": "Twisted Jester"
+    },
+    {
+        "id":"card_52-0-c",
+        "url": "assets/img/cardList/card_52-0-c.png",
+        "name": "Undead Priest"
+    },
+    {
+        "id":"card_52-0-g",
+        "url": "assets/img/cardList/card_52-0-g.png",
+        "name": "Undead Priest"
+    },
+    {
+        "id":"card_52-1-c",
+        "url": "assets/img/cardList/card_52-1-c.png",
+        "name": "Undead Priest"
+    },
+    {
+        "id":"card_52-1-g",
+        "url": "assets/img/cardList/card_52-1-g.png",
+        "name": "Undead Priest"
+    },
+    {
+        "id":"card_99-3-c",
+        "url": "assets/img/cardList/card_99-3-c.png",
+        "name": "Skeletal Warrior"
+    },
+    {
+        "id":"card_99-3-g",
+        "url": "assets/img/cardList/card_99-3-g.png",
+        "name": "Skeletal Warrior"
+    },
+    {
+        "id":"card_124-2-c",
+        "url": "assets/img/cardList/card_124-2-c.png",
+        "name": "Undead Archer"
+    },
+    {
+        "id":"card_124-2-g",
+        "url": "assets/img/cardList/card_124-2-g.png",
+        "name": "Undead Archer"
+    },
+    {
+        "id":"card_139-4-c",
+        "url": "assets/img/cardList/card_139-4-c.png",
+        "name": "Dark Astronomer"
+    },
+    {
+        "id":"card_139-4-g",
+        "url": "assets/img/cardList/card_139-4-g.png",
+        "name": "Dark Astronomer"
+    },
+    {
+        "id":"card_140-4-c",
+        "url": "assets/img/cardList/card_140-4-c.png",
+        "name": "Bone Golem"
+    },
+    {
+        "id":"card_140-4-g",
+        "url": "assets/img/cardList/card_140-4-g.png",
+        "name": "Bone Golem"
+    },
+    {
+        "id":"card_141-4-c",
+        "url": "assets/img/cardList/card_141-4-c.png",
+        "name": "Death Elemental"
+    },
+    {
+        "id":"card_141-4-g",
+        "url": "assets/img/cardList/card_141-4-g.png",
+        "name": "Death Elemental"
+    },
+    {
+        "id":"card_145-4-c",
+        "url": "assets/img/cardList/card_145-4-c.png",
+        "name": "Contessa L'ament"
+    },
+    {
+        "id":"card_145-4-g",
+        "url": "assets/img/cardList/card_145-4-g.png",
+        "name": "Contessa L'ament"
+    },
+    {
+        "id":"card_206-3-c",
+        "url": "assets/img/cardList/card_206-3-c.png",
+        "name": "Boogeyman"
+    },
+    {
+        "id":"card_206-3-g",
+        "url": "assets/img/cardList/card_206-3-g.png",
+        "name": "Boogeyman"
+    },
+    {
+        "id":"card_215-3-c",
+        "url": "assets/img/cardList/card_215-3-c.png",
+        "name": "Octopider"
+    },
+    {
+        "id":"card_215-3-g",
+        "url": "assets/img/cardList/card_215-3-g.png",
+        "name": "Octopider"
+    },
+    {
+        "id":"card_245-3-c",
+        "url": "assets/img/cardList/card_245-3-c.png",
+        "name": "Grim Reaper"
+    },
+    {
+        "id":"card_245-3-g",
+        "url": "assets/img/cardList/card_245-3-g.png",
+        "name": "Grim Reaper"
+    },
+    {
+        "id":"card_258-5-c",
+        "url": "assets/img/cardList/card_258-5-c.png",
+        "name": "Owster Rotwell"
+    },
+    {
+        "id":"card_258-5-g",
+        "url": "assets/img/cardList/card_258-5-g.png",
+        "name": "Owster Rotwell"
+    },
+    {
+        "id":"card_282-3-c",
+        "url": "assets/img/cardList/card_282-3-c.png",
+        "name": "Dark Ferryman"
+    },
+    {
+        "id":"card_282-3-g",
+        "url": "assets/img/cardList/card_282-3-g.png",
+        "name": "Dark Ferryman"
+    },
+    {
+        "id":"card_325-6-c",
+        "url": "assets/img/cardList/card_325-6-c.png",
+        "name": "Kotriphus Bayne"
+    },
+    {
+        "id":"card_325-6-g",
+        "url": "assets/img/cardList/card_325-6-g.png",
+        "name": "Kotriphus Bayne"
+    },
+    {
+        "id":"card_326-6-c",
+        "url": "assets/img/cardList/card_326-6-c.png",
+        "name": "Liza Fox"
+    },
+    {
+        "id":"card_326-6-g",
+        "url": "assets/img/cardList/card_326-6-g.png",
+        "name": "Liza Fox"
+    },
+    {
+        "id":"card_341-3-c",
+        "url": "assets/img/cardList/card_341-3-c.jpg",
+        "name": "VENARI BONESMITH"
+    },
+    {
+        "id":"card_341-3-g",
+        "url": "assets/img/cardList/card_341-3-g.jpg",
+        "name": "VENARI BONESMITH"
+    },
+    {
+        "id":"card_358-7-c",
+        "url": "assets/img/cardList/card_358-7-c.jpg",
+        "name": "SOUL STRANGLER"
+    },
+    {
+        "id":"card_358-7-g",
+        "url": "assets/img/cardList/card_358-7-g.jpg",
+        "name": "SOUL STRANGLER"
+    },
+    {
+        "id":"card_359-7-c",
+        "url": "assets/img/cardList/card_359-7-c.jpg",
+        "name": "LIFE SAPPER"
+    },
+    {
+        "id":"card_359-7-g",
+        "url": "assets/img/cardList/card_359-7-g.jpg",
+        "name": "LIFE SAPPER"
+    },
+    {
+        "id":"card_360-7-c",
+        "url": "assets/img/cardList/card_360-7-c.jpg",
+        "name": "DHAMPIR STALKER"
+    },
+    {
+        "id":"card_360-7-g",
+        "url": "assets/img/cardList/card_360-7-g.jpg",
+        "name": "DHAMPIR STALKER"
+    },
+    {
+        "id":"card_361-7-c",
+        "url": "assets/img/cardList/card_361-7-c.jpg",
+        "name": "CURSED WINDEKU"
+    },
+    {
+        "id":"card_361-7-g",
+        "url": "assets/img/cardList/card_361-7-g.jpg",
+        "name": "CURSED WINDEKU"
+    },
+    {
+        "id":"card_438-7-c",
+        "url": "assets/img/cardList/card_438-7-c.jpg",
+        "name": "THADDIUS BROOD"
+    },
+    {
+        "id":"card_438-7-g",
+        "url": "assets/img/cardList/card_438-7-g.jpg",
+        "name": "THADDIUS BROOD"
+    },
+    {
+        "id":"card_53-0-c",
+        "url": "assets/img/cardList/card_53-0-c.png",
+        "name": "Dark Enchantress"
+    },
+    {
+        "id":"card_53-0-g",
+        "url": "assets/img/cardList/card_53-0-g.png",
+        "name": "Dark Enchantress"
+    },
+    {
+        "id":"card_53-1-c",
+        "url": "assets/img/cardList/card_53-1-c.png",
+        "name": "Dark Enchantress"
+    },
+    {
+        "id":"card_53-1-g",
+        "url": "assets/img/cardList/card_53-1-g.png",
+        "name": "Dark Enchantress"
+    },
+    {
+        "id":"card_54-0-c",
+        "url": "assets/img/cardList/card_54-0-c.png",
+        "name": "Screaming Banshee"
+    },
+    {
+        "id":"card_54-0-g",
+        "url": "assets/img/cardList/card_54-0-g.png",
+        "name": "Screaming Banshee"
+    },
+    {
+        "id":"card_54-1-c",
+        "url": "assets/img/cardList/card_54-1-c.png",
+        "name": "Screaming Banshee"
+    },
+    {
+        "id":"card_54-1-g",
+        "url": "assets/img/cardList/card_54-1-g.png",
+        "name": "Screaming Banshee"
+    },
+    {
+        "id":"card_74-1-c",
+        "url": "assets/img/cardList/card_74-1-c.png",
+        "name": "Jarlax the Undead"
+    },
+    {
+        "id":"card_74-1-g",
+        "url": "assets/img/cardList/card_74-1-g.png",
+        "name": "Jarlax the Undead"
+    },
+    {
+        "id":"card_92-3-c",
+        "url": "assets/img/cardList/card_92-3-c.png",
+        "name": "Phantom Soldier"
+    },
+    {
+        "id":"card_92-3-g",
+        "url": "assets/img/cardList/card_92-3-g.png",
+        "name": "Phantom Soldier"
+    },
+    {
+        "id":"card_142-4-c",
+        "url": "assets/img/cardList/card_142-4-c.png",
+        "name": "Soulstorm"
+    },
+    {
+        "id":"card_142-4-g",
+        "url": "assets/img/cardList/card_142-4-g.png",
+        "name": "Soulstorm"
+    },
+    {
+        "id":"card_143-4-c",
+        "url": "assets/img/cardList/card_143-4-c.png",
+        "name": "Darkest Mage"
+    },
+    {
+        "id":"card_143-4-g",
+        "url": "assets/img/cardList/card_143-4-g.png",
+        "name": "Darkest Mage"
+    },
+    {
+        "id":"card_230-3-c",
+        "url": "assets/img/cardList/card_230-3-c.png",
+        "name": "Shadowy Presence"
+    },
+    {
+        "id":"card_230-3-g",
+        "url": "assets/img/cardList/card_230-3-g.png",
+        "name": "Shadowy Presence"
+    },
+    {
+        "id":"card_294-4-c",
+        "url": "assets/img/cardList/card_294-4-c.png",
+        "name": "The Gorlodon"
+    },
+    {
+        "id":"card_294-4-g",
+        "url": "assets/img/cardList/card_294-4-g.png",
+        "name": "The Gorlodon"
+    },
+    {
+        "id":"card_327-6-c",
+        "url": "assets/img/cardList/card_327-6-c.png",
+        "name": "Trapp Falloway"
+    },
+    {
+        "id":"card_327-6-g",
+        "url": "assets/img/cardList/card_327-6-g.png",
+        "name": "Trapp Falloway"
+    },
+    {
+        "id":"card_362-7-c",
+        "url": "assets/img/cardList/card_362-7-c.jpg",
+        "name": "MAGI NECROSI"
+    },
+    {
+        "id":"card_362-7-g",
+        "url": "assets/img/cardList/card_362-7-g.jpg",
+        "name": "MAGI NECROSI"
+    },
+    {
+        "id":"card_363-7-c",
+        "url": "assets/img/cardList/card_363-7-c.jpg",
+        "name": "INSIDIOUS WARLOCK"
+    },
+    {
+        "id":"card_363-7-g",
+        "url": "assets/img/cardList/card_363-7-g.jpg",
+        "name": "INSIDIOUS WARLOCK"
+    },
+    {
+        "id":"card_364-7-c",
+        "url": "assets/img/cardList/card_364-7-c.jpg",
+        "name": "WEIRDING WARRIOR"
+    },
+    {
+        "id":"card_364-7-g",
+        "url": "assets/img/cardList/card_364-7-g.jpg",
+        "name": "WEIRDING WARRIOR"
+    },
+    {
+        "id":"card_55-0-c",
+        "url": "assets/img/cardList/card_55-0-c.png",
+        "name": "Lord of Darkness"
+    },
+    {
+        "id":"card_55-0-g",
+        "url": "assets/img/cardList/card_55-0-g.png",
+        "name": "Lord of Darkness"
+    },
+    {
+        "id":"card_55-1-c",
+        "url": "assets/img/cardList/card_55-1-c.png",
+        "name": "Lord of Darkness"
+    },
+    {
+        "id":"card_55-1-g",
+        "url": "assets/img/cardList/card_55-1-g.png",
+        "name": "Lord of Darkness"
+    },
+    {
+        "id":"card_109-1-c",
+        "url": "assets/img/cardList/card_109-1-c.png",
+        "name": "Crypt Mancer"
+    },
+    {
+        "id":"card_109-1-g",
+        "url": "assets/img/cardList/card_109-1-g.png",
+        "name": "Crypt Mancer"
+    },
+    {
+        "id":"card_125-2-c",
+        "url": "assets/img/cardList/card_125-2-c.png",
+        "name": "Corrupted Pegasus"
+    },
+    {
+        "id":"card_125-2-g",
+        "url": "assets/img/cardList/card_125-2-g.png",
+        "name": "Corrupted Pegasus"
+    },
+    {
+        "id":"card_132-3-c",
+        "url": "assets/img/cardList/card_132-3-c.png",
+        "name": "Fallen Specter"
+    },
+    {
+        "id":"card_132-3-g",
+        "url": "assets/img/cardList/card_132-3-g.png",
+        "name": "Fallen Specter"
+    },
+    {
+        "id":"card_144-4-c",
+        "url": "assets/img/cardList/card_144-4-c.png",
+        "name": "Dark Ha'on"
+    },
+    {
+        "id":"card_144-4-g",
+        "url": "assets/img/cardList/card_144-4-g.png",
+        "name": "Dark Ha'on"
+    },
+    {
+        "id":"card_235-4-c",
+        "url": "assets/img/cardList/card_235-4-c.png",
+        "name": "Mimosa Nightshade"
+    },
+    {
+        "id":"card_235-4-g",
+        "url": "assets/img/cardList/card_235-4-g.png",
+        "name": "Mimosa Nightshade"
+    },
+    {
+        "id":"card_256-3-c",
+        "url": "assets/img/cardList/card_256-3-c.png",
+        "name": "Ancient Lich"
+    },
+    {
+        "id":"card_256-3-g",
+        "url": "assets/img/cardList/card_256-3-g.png",
+        "name": "Ancient Lich"
+    },
+    {
+        "id":"card_267-5-c",
+        "url": "assets/img/cardList/card_267-5-c.png",
+        "name": "Cthulhu"
+    },
+    {
+        "id":"card_267-5-g",
+        "url": "assets/img/cardList/card_267-5-g.png",
+        "name": "Cthulhu"
+    },
+    {
+        "id":"card_290-5-c",
+        "url": "assets/img/cardList/card_290-5-c.png",
+        "name": "Theorosa Nightshade"
+    },
+    {
+        "id":"card_290-5-g",
+        "url": "assets/img/cardList/card_290-5-g.png",
+        "name": "Theorosa Nightshade"
+    },
+    {
+        "id":"card_328-6-c",
+        "url": "assets/img/cardList/card_328-6-c.png",
+        "name": "Xulax Nightwind"
+    },
+    {
+        "id":"card_328-6-g",
+        "url": "assets/img/cardList/card_328-6-g.png",
+        "name": "Xulax Nightwind"
+    },
+    {
+        "id":"card_342-3-c",
+        "url": "assets/img/cardList/card_342-3-c.jpg",
+        "name": "HARKLAW"
+    },
+    {
+        "id":"card_342-3-g",
+        "url": "assets/img/cardList/card_342-3-g.jpg",
+        "name": "HARKLAW"
+    },
+    {
+        "id":"card_365-7-c",
+        "url": "assets/img/cardList/card_365-7-c.jpg",
+        "name": "DJINN MUIRAT"
+    },
+    {
+        "id":"card_365-7-g",
+        "url": "assets/img/cardList/card_365-7-g.jpg",
+        "name": "DJINN MUIRAT"
+    },
+    {
+        "id":"card_366-7-c",
+        "url": "assets/img/cardList/card_366-7-c.jpg",
+        "name": "CORPSE FIEND"
+    },
+    {
+        "id":"card_366-7-g",
+        "url": "assets/img/cardList/card_366-7-g.jpg",
+        "name": "CORPSE FIEND"
+    },
+    {
+        "id":"card_75-2-c",
+        "url": "assets/img/cardList/card_75-2-c.png",
+        "name": "Dragon Whelp"
+    },
+    {
+        "id":"card_75-2-g",
+        "url": "assets/img/cardList/card_75-2-g.png",
+        "name": "Dragon Whelp"
+    },
+    {
+        "id":"card_114-2-c",
+        "url": "assets/img/cardList/card_114-2-c.png",
+        "name": "Delwyn Dragonscale"
+    },
+    {
+        "id":"card_114-2-g",
+        "url": "assets/img/cardList/card_114-2-g.png",
+        "name": "Delwyn Dragonscale"
+    },
+    {
+        "id":"card_274-5-c",
+        "url": "assets/img/cardList/card_274-5-c.png",
+        "name": "Naga Brute"
+    },
+    {
+        "id":"card_274-5-g",
+        "url": "assets/img/cardList/card_274-5-g.png",
+        "name": "Naga Brute"
+    },
+    {
+        "id":"card_78-2-c",
+        "url": "assets/img/cardList/card_78-2-c.png",
+        "name": "Neb Seni"
+    },
+    {
+        "id":"card_78-2-g",
+        "url": "assets/img/cardList/card_78-2-g.png",
+        "name": "Neb Seni"
+    },
+    {
+        "id":"card_115-2-c",
+        "url": "assets/img/cardList/card_115-2-c.png",
+        "name": "Dragonling Bowman"
+    },
+    {
+        "id":"card_115-2-g",
+        "url": "assets/img/cardList/card_115-2-g.png",
+        "name": "Dragonling Bowman"
+    },
+    {
+        "id":"card_223-3-c",
+        "url": "assets/img/cardList/card_223-3-c.png",
+        "name": "Serpentine Mystic"
+    },
+    {
+        "id":"card_223-3-g",
+        "url": "assets/img/cardList/card_223-3-g.png",
+        "name": "Serpentine Mystic"
+    },
+    {
+        "id":"card_224-4-c",
+        "url": "assets/img/cardList/card_224-4-c.png",
+        "name": "Drake of Arnak"
+    },
+    {
+        "id":"card_224-4-g",
+        "url": "assets/img/cardList/card_224-4-g.png",
+        "name": "Drake of Arnak"
+    },
+    {
+        "id":"card_252-3-c",
+        "url": "assets/img/cardList/card_252-3-c.png",
+        "name": "Gloridax Soldier"
+    },
+    {
+        "id":"card_252-3-g",
+        "url": "assets/img/cardList/card_252-3-g.png",
+        "name": "Gloridax Soldier"
+    },
+    {
+        "id":"card_262-5-c",
+        "url": "assets/img/cardList/card_262-5-c.png",
+        "name": "Brighton Bloom"
+    },
+    {
+        "id":"card_262-5-g",
+        "url": "assets/img/cardList/card_262-5-g.png",
+        "name": "Brighton Bloom"
+    },
+    {
+        "id":"card_346-3-c",
+        "url": "assets/img/cardList/card_346-3-c.jpg",
+        "name": "NAGA ASSASSIN"
+    },
+    {
+        "id":"card_346-3-g",
+        "url": "assets/img/cardList/card_346-3-g.jpg",
+        "name": "NAGA ASSASSIN"
+    },
+    {
+        "id":"card_347-3-c",
+        "url": "assets/img/cardList/card_347-3-c.jpg",
+        "name": "TWILIGHT BASILISK"
+    },
+    {
+        "id":"card_347-3-g",
+        "url": "assets/img/cardList/card_347-3-g.jpg",
+        "name": "TWILIGHT BASILISK"
+    },
+    {
+        "id":"card_76-2-c",
+        "url": "assets/img/cardList/card_76-2-c.png",
+        "name": "Royal Dragon Archer"
+    },
+    {
+        "id":"card_76-2-g",
+        "url": "assets/img/cardList/card_76-2-g.png",
+        "name": "Royal Dragon Archer"
+    },
+    {
+        "id":"card_88-3-c",
+        "url": "assets/img/cardList/card_88-3-c.png",
+        "name": "Daria Dragonscale"
+    },
+    {
+        "id":"card_88-3-g",
+        "url": "assets/img/cardList/card_88-3-g.png",
+        "name": "Daria Dragonscale"
+    },
+    {
+        "id":"card_107-3-c",
+        "url": "assets/img/cardList/card_107-3-c.png",
+        "name": "Manticore"
+    },
+    {
+        "id":"card_107-3-g",
+        "url": "assets/img/cardList/card_107-3-g.png",
+        "name": "Manticore"
+    },
+    {
+        "id":"card_116-2-c",
+        "url": "assets/img/cardList/card_116-2-c.png",
+        "name": "Fiendish Harpy"
+    },
+    {
+        "id":"card_116-2-g",
+        "url": "assets/img/cardList/card_116-2-g.png",
+        "name": "Fiendish Harpy"
+    },
+    {
+        "id":"card_212-3-c",
+        "url": "assets/img/cardList/card_212-3-c.png",
+        "name": "Fire Spitter"
+    },
+    {
+        "id":"card_212-3-g",
+        "url": "assets/img/cardList/card_212-3-g.png",
+        "name": "Fire Spitter"
+    },
+    {
+        "id":"card_240-3-c",
+        "url": "assets/img/cardList/card_240-3-c.png",
+        "name": "Kretch Tallevor"
+    },
+    {
+        "id":"card_240-3-g",
+        "url": "assets/img/cardList/card_240-3-g.png",
+        "name": "Kretch Tallevor"
+    },
+    {
+        "id":"card_275-5-c",
+        "url": "assets/img/cardList/card_275-5-c.png",
+        "name": "Dragon Spirit"
+    },
+    {
+        "id":"card_275-5-g",
+        "url": "assets/img/cardList/card_275-5-g.png",
+        "name": "Dragon Spirit"
+    },
+    {
+        "id":"card_348-3-c",
+        "url": "assets/img/cardList/card_348-3-c.jpg",
+        "name": "DJINN CHWALA"
+    },
+    {
+        "id":"card_348-3-g",
+        "url": "assets/img/cardList/card_348-3-g.jpg",
+        "name": "DJINN CHWALA"
+    },
+    {
+        "id":"card_56-0-c",
+        "url": "assets/img/cardList/card_56-0-c.png",
+        "name": "Selenia Sky"
+    },
+    {
+        "id":"card_56-0-g",
+        "url": "assets/img/cardList/card_56-0-g.png",
+        "name": "Selenia Sky"
+    },
+    {
+        "id":"card_56-1-c",
+        "url": "assets/img/cardList/card_56-1-c.png",
+        "name": "Selenia Sky"
+    },
+    {
+        "id":"card_56-1-g",
+        "url": "assets/img/cardList/card_56-1-g.png",
+        "name": "Selenia Sky"
+    },
+    {
+        "id":"card_57-0-c",
+        "url": "assets/img/cardList/card_57-0-c.png",
+        "name": "Lightning Dragon"
+    },
+    {
+        "id":"card_57-0-g",
+        "url": "assets/img/cardList/card_57-0-g.png",
+        "name": "Lightning Dragon"
+    },
+    {
+        "id":"card_57-1-c",
+        "url": "assets/img/cardList/card_57-1-c.png",
+        "name": "Lightning Dragon"
+    },
+    {
+        "id":"card_57-1-g",
+        "url": "assets/img/cardList/card_57-1-g.png",
+        "name": "Lightning Dragon"
+    },
+    {
+        "id":"card_58-0-c",
+        "url": "assets/img/cardList/card_58-0-c.png",
+        "name": "Chromatic Dragon"
+    },
+    {
+        "id":"card_58-0-g",
+        "url": "assets/img/cardList/card_58-0-g.png",
+        "name": "Chromatic Dragon"
+    },
+    {
+        "id":"card_58-1-c",
+        "url": "assets/img/cardList/card_58-1-c.png",
+        "name": "Chromatic Dragon"
+    },
+    {
+        "id":"card_58-1-g",
+        "url": "assets/img/cardList/card_58-1-g.png",
+        "name": "Chromatic Dragon"
+    },
+    {
+        "id":"card_59-0-c",
+        "url": "assets/img/cardList/card_59-0-c.png",
+        "name": "Gold Dragon"
+    },
+    {
+        "id":"card_59-0-g",
+        "url": "assets/img/cardList/card_59-0-g.png",
+        "name": "Gold Dragon"
+    },
+    {
+        "id":"card_59-1-c",
+        "url": "assets/img/cardList/card_59-1-c.png",
+        "name": "Gold Dragon"
+    },
+    {
+        "id":"card_59-1-g",
+        "url": "assets/img/cardList/card_59-1-g.png",
+        "name": "Gold Dragon"
+    },
+    {
+        "id":"card_77-2-c",
+        "url": "assets/img/cardList/card_77-2-c.png",
+        "name": "Shin-Lo"
+    },
+    {
+        "id":"card_77-2-g",
+        "url": "assets/img/cardList/card_77-2-g.png",
+        "name": "Shin-Lo"
+    },
+    {
+        "id":"card_108-3-c",
+        "url": "assets/img/cardList/card_108-3-c.png",
+        "name": "Black Dragon"
+    },
+    {
+        "id":"card_108-3-g",
+        "url": "assets/img/cardList/card_108-3-g.png",
+        "name": "Black Dragon"
+    },
+    {
+        "id":"card_117-2-c",
+        "url": "assets/img/cardList/card_117-2-c.png",
+        "name": "Red Dragon"
+    },
+    {
+        "id":"card_117-2-g",
+        "url": "assets/img/cardList/card_117-2-g.png",
+        "name": "Red Dragon"
+    },
+    {
+        "id":"card_130-2-c",
+        "url": "assets/img/cardList/card_130-2-c.png",
+        "name": "Archmage Arius"
+    },
+    {
+        "id":"card_130-2-g",
+        "url": "assets/img/cardList/card_130-2-g.png",
+        "name": "Archmage Arius"
+    },
+    {
+        "id":"card_200-4-c",
+        "url": "assets/img/cardList/card_200-4-c.png",
+        "name": "Camila Sungazer"
+    },
+    {
+        "id":"card_200-4-g",
+        "url": "assets/img/cardList/card_200-4-g.png",
+        "name": "Camila Sungazer"
+    },
+    {
+        "id":"card_201-4-c",
+        "url": "assets/img/cardList/card_201-4-c.png",
+        "name": "The Vigilator"
+    },
+    {
+        "id":"card_201-4-g",
+        "url": "assets/img/cardList/card_201-4-g.png",
+        "name": "The Vigilator"
+    },
+    {
+        "id":"card_202-4-c",
+        "url": "assets/img/cardList/card_202-4-c.png",
+        "name": "Scale Doctor"
+    },
+    {
+        "id":"card_202-4-g",
+        "url": "assets/img/cardList/card_202-4-g.png",
+        "name": "Scale Doctor"
+    },
+    {
+        "id":"card_203-4-c",
+        "url": "assets/img/cardList/card_203-4-c.png",
+        "name": "Dragon Jumper"
+    },
+    {
+        "id":"card_203-4-g",
+        "url": "assets/img/cardList/card_203-4-g.png",
+        "name": "Dragon Jumper"
+    },
+    {
+        "id":"card_204-4-c",
+        "url": "assets/img/cardList/card_204-4-c.png",
+        "name": "Gloridax Magus"
+    },
+    {
+        "id":"card_204-4-g",
+        "url": "assets/img/cardList/card_204-4-g.png",
+        "name": "Gloridax Magus"
+    },
+    {
+        "id":"card_205-2-c",
+        "url": "assets/img/cardList/card_205-2-c.png",
+        "name": "Prince Julian"
+    },
+    {
+        "id":"card_205-2-g",
+        "url": "assets/img/cardList/card_205-2-g.png",
+        "name": "Prince Julian"
+    },
+    {
+        "id":"card_210-4-c",
+        "url": "assets/img/cardList/card_210-4-c.png",
+        "name": "Diamond Dragon"
+    },
+    {
+        "id":"card_210-4-g",
+        "url": "assets/img/cardList/card_210-4-g.png",
+        "name": "Diamond Dragon"
+    },
+    {
+        "id":"card_211-4-c",
+        "url": "assets/img/cardList/card_211-4-c.png",
+        "name": "Gloridax Guardian"
+    },
+    {
+        "id":"card_211-4-g",
+        "url": "assets/img/cardList/card_211-4-g.png",
+        "name": "Gloridax Guardian"
+    },
+    {
+        "id":"card_238-2-c",
+        "url": "assets/img/cardList/card_238-2-c.png",
+        "name": "Mighty Dricken"
+    },
+    {
+        "id":"card_238-2-g",
+        "url": "assets/img/cardList/card_238-2-g.png",
+        "name": "Mighty Dricken"
+    },
+    {
+        "id":"card_255-3-c",
+        "url": "assets/img/cardList/card_255-3-c.png",
+        "name": "Robo-Dragon Knight"
+    },
+    {
+        "id":"card_255-3-g",
+        "url": "assets/img/cardList/card_255-3-g.png",
+        "name": "Robo-Dragon Knight"
+    },
+    {
+        "id":"card_291-4-c",
+        "url": "assets/img/cardList/card_291-4-c.png",
+        "name": "Byzantine Kitty"
+    },
+    {
+        "id":"card_291-4-g",
+        "url": "assets/img/cardList/card_291-4-g.png",
+        "name": "Byzantine Kitty"
+    },
+    {
+        "id":"card_329-6-c",
+        "url": "assets/img/cardList/card_329-6-c.png",
+        "name": "Larissa Kerato"
+    },
+    {
+        "id":"card_329-6-g",
+        "url": "assets/img/cardList/card_329-6-g.png",
+        "name": "Larissa Kerato"
+    },
+    {
+        "id":"card_433-7-c",
+        "url": "assets/img/cardList/card_433-7-c.jpg",
+        "name": "CHAOS DRAGON"
+    },
+    {
+        "id":"card_433-7-g",
+        "url": "assets/img/cardList/card_433-7-g.jpg",
+        "name": "CHAOS DRAGON"
+    },
+    {
+        "id":"card_434-7-c",
+        "url": "assets/img/cardList/card_434-7-c.jpg",
+        "name": "DESERT DRAGON"
+    },
+    {
+        "id":"card_434-7-g",
+        "url": "assets/img/cardList/card_434-7-g.jpg",
+        "name": "DESERT DRAGON"
+    },
+    {
+        "id":"card_435-7-c",
+        "url": "assets/img/cardList/card_435-7-c.jpg",
+        "name": "ZYVAX VUUL"
+    },
+    {
+        "id":"card_435-7-g",
+        "url": "assets/img/cardList/card_435-7-g.jpg",
+        "name": "ZYVAX VUUL"
+    },
+    {
+        "id":"card_436-7-c",
+        "url": "assets/img/cardList/card_436-7-c.jpg",
+        "name": "VOID DRAGON"
+    },
+    {
+        "id":"card_436-7-g",
+        "url": "assets/img/cardList/card_436-7-g.jpg",
+        "name": "VOID DRAGON"
+    },
+    {
+        "id":"card_442-7-c",
+        "url": "assets/img/cardList/card_442-7-c.jpg",
+        "name": "QUIX THE DEVIOUS"
+    },
+    {
+        "id":"card_442-7-g",
+        "url": "assets/img/cardList/card_442-7-g.jpg",
+        "name": "QUIX THE DEVIOUS"
+    },
+    {
+        "id":"card_60-1-c",
+        "url": "assets/img/cardList/card_60-1-c.png",
+        "name": "Peaceful Giant"
+    },
+    {
+        "id":"card_60-1-g",
+        "url": "assets/img/cardList/card_60-1-g.png",
+        "name": "Peaceful Giant"
+    },
+    {
+        "id":"card_61-1-c",
+        "url": "assets/img/cardList/card_61-1-c.png",
+        "name": "Grumpy Dwarf"
+    },
+    {
+        "id":"card_61-1-g",
+        "url": "assets/img/cardList/card_61-1-g.png",
+        "name": "Grumpy Dwarf"
+    },
+    {
+        "id":"card_62-1-c",
+        "url": "assets/img/cardList/card_62-1-c.png",
+        "name": "Elven Cutthroat"
+    },
+    {
+        "id":"card_62-1-g",
+        "url": "assets/img/cardList/card_62-1-g.png",
+        "name": "Elven Cutthroat"
+    },
+    {
+        "id":"card_63-1-c",
+        "url": "assets/img/cardList/card_63-1-c.png",
+        "name": "Centaur"
+    },
+    {
+        "id":"card_63-1-g",
+        "url": "assets/img/cardList/card_63-1-g.png",
+        "name": "Centaur"
+    },
+    {
+        "id":"card_79-3-c",
+        "url": "assets/img/cardList/card_79-3-c.png",
+        "name": "Highland Archer"
+    },
+    {
+        "id":"card_79-3-g",
+        "url": "assets/img/cardList/card_79-3-g.png",
+        "name": "Highland Archer"
+    },
+    {
+        "id":"card_80-3-c",
+        "url": "assets/img/cardList/card_80-3-c.png",
+        "name": "Rusty Android"
+    },
+    {
+        "id":"card_80-3-g",
+        "url": "assets/img/cardList/card_80-3-g.png",
+        "name": "Rusty Android"
+    },
+    {
+        "id":"card_91-3-c",
+        "url": "assets/img/cardList/card_91-3-c.png",
+        "name": "Creeping Ooze"
+    },
+    {
+        "id":"card_91-3-g",
+        "url": "assets/img/cardList/card_91-3-g.png",
+        "name": "Creeping Ooze"
+    },
+    {
+        "id":"card_97-3-c",
+        "url": "assets/img/cardList/card_97-3-c.png",
+        "name": "Goblin Mech"
+    },
+    {
+        "id":"card_97-3-g",
+        "url": "assets/img/cardList/card_97-3-g.png",
+        "name": "Goblin Mech"
+    },
+    {
+        "id":"card_128-2-c",
+        "url": "assets/img/cardList/card_128-2-c.png",
+        "name": "Enchanted Defender"
+    },
+    {
+        "id":"card_128-2-g",
+        "url": "assets/img/cardList/card_128-2-g.png",
+        "name": "Enchanted Defender"
+    },
+    {
+        "id":"card_190-4-c",
+        "url": "assets/img/cardList/card_190-4-c.png",
+        "name": "Elven Defender"
+    },
+    {
+        "id":"card_190-4-g",
+        "url": "assets/img/cardList/card_190-4-g.png",
+        "name": "Elven Defender"
+    },
+    {
+        "id":"card_191-4-c",
+        "url": "assets/img/cardList/card_191-4-c.png",
+        "name": "Horny Toad"
+    },
+    {
+        "id":"card_191-4-g",
+        "url": "assets/img/cardList/card_191-4-g.png",
+        "name": "Horny Toad"
+    },
+    {
+        "id":"card_192-4-c",
+        "url": "assets/img/cardList/card_192-4-c.png",
+        "name": "Mantoid"
+    },
+    {
+        "id":"card_192-4-g",
+        "url": "assets/img/cardList/card_192-4-g.png",
+        "name": "Mantoid"
+    },
+    {
+        "id":"card_193-4-c",
+        "url": "assets/img/cardList/card_193-4-c.png",
+        "name": "Parasitic Growth"
+    },
+    {
+        "id":"card_193-4-g",
+        "url": "assets/img/cardList/card_193-4-g.png",
+        "name": "Parasitic Growth"
+    },
+    {
+        "id":"card_218-3-c",
+        "url": "assets/img/cardList/card_218-3-c.png",
+        "name": "Gelatinous Cube"
+    },
+    {
+        "id":"card_218-3-g",
+        "url": "assets/img/cardList/card_218-3-g.png",
+        "name": "Gelatinous Cube"
+    },
+    {
+        "id":"card_242-3-c",
+        "url": "assets/img/cardList/card_242-3-c.png",
+        "name": "Sand Worm"
+    },
+    {
+        "id":"card_242-3-g",
+        "url": "assets/img/cardList/card_242-3-g.png",
+        "name": "Sand Worm"
+    },
+    {
+        "id":"card_273-5-c",
+        "url": "assets/img/cardList/card_273-5-c.png",
+        "name": "Battering Ram"
+    },
+    {
+        "id":"card_273-5-g",
+        "url": "assets/img/cardList/card_273-5-g.png",
+        "name": "Battering Ram"
+    },
+    {
+        "id":"card_349-3-c",
+        "url": "assets/img/cardList/card_349-3-c.jpg",
+        "name": "GARGOYA LION"
+    },
+    {
+        "id":"card_349-3-g",
+        "url": "assets/img/cardList/card_349-3-g.jpg",
+        "name": "GARGOYA LION"
+    },
+    {
+        "id":"card_423-7-c",
+        "url": "assets/img/cardList/card_423-7-c.jpg",
+        "name": "SUPPLY RUNNER"
+    },
+    {
+        "id":"card_423-7-g",
+        "url": "assets/img/cardList/card_423-7-g.jpg",
+        "name": "SUPPLY RUNNER"
+    },
+    {
+        "id":"card_424-7-c",
+        "url": "assets/img/cardList/card_424-7-c.jpg",
+        "name": "SCAVO HIRELING"
+    },
+    {
+        "id":"card_424-7-g",
+        "url": "assets/img/cardList/card_424-7-g.jpg",
+        "name": "SCAVO HIRELING"
+    },
+    {
+        "id":"card_425-7-c",
+        "url": "assets/img/cardList/card_425-7-c.jpg",
+        "name": "DISINTEGRATOR"
+    },
+    {
+        "id":"card_425-7-g",
+        "url": "assets/img/cardList/card_425-7-g.jpg",
+        "name": "DISINTEGRATOR"
+    },
+    {
+        "id":"card_426-7-c",
+        "url": "assets/img/cardList/card_426-7-c.jpg",
+        "name": "CHAOS AGENT"
+    },
+    {
+        "id":"card_426-7-g",
+        "url": "assets/img/cardList/card_426-7-g.jpg",
+        "name": "CHAOS AGENT"
+    },
+    {
+        "id":"card_64-1-c",
+        "url": "assets/img/cardList/card_64-1-c.png",
+        "name": "Cocatrice"
+    },
+    {
+        "id":"card_64-1-g",
+        "url": "assets/img/cardList/card_64-1-g.png",
+        "name": "Cocatrice"
+    },
+    {
+        "id":"card_65-1-c",
+        "url": "assets/img/cardList/card_65-1-c.png",
+        "name": "Cyclops"
+    },
+    {
+        "id":"card_65-1-g",
+        "url": "assets/img/cardList/card_65-1-g.png",
+        "name": "Cyclops"
+    },
+    {
+        "id":"card_66-1-c",
+        "url": "assets/img/cardList/card_66-1-c.png",
+        "name": "Enchanted Pixie"
+    },
+    {
+        "id":"card_66-1-g",
+        "url": "assets/img/cardList/card_66-1-g.png",
+        "name": "Enchanted Pixie"
+    },
+    {
+        "id":"card_81-3-c",
+        "url": "assets/img/cardList/card_81-3-c.png",
+        "name": "Hobgoblin"
+    },
+    {
+        "id":"card_81-3-g",
+        "url": "assets/img/cardList/card_81-3-g.png",
+        "name": "Hobgoblin"
+    },
+    {
+        "id":"card_104-3-c",
+        "url": "assets/img/cardList/card_104-3-c.png",
+        "name": "Prismatic Energy"
+    },
+    {
+        "id":"card_104-3-g",
+        "url": "assets/img/cardList/card_104-3-g.png",
+        "name": "Prismatic Energy"
+    },
+    {
+        "id":"card_131-3-c",
+        "url": "assets/img/cardList/card_131-3-c.png",
+        "name": "Furious Chicken"
+    },
+    {
+        "id":"card_131-3-g",
+        "url": "assets/img/cardList/card_131-3-g.png",
+        "name": "Furious Chicken"
+    },
+    {
+        "id":"card_194-4-c",
+        "url": "assets/img/cardList/card_194-4-c.png",
+        "name": "Elven Mystic"
+    },
+    {
+        "id":"card_194-4-g",
+        "url": "assets/img/cardList/card_194-4-g.png",
+        "name": "Elven Mystic"
+    },
+    {
+        "id":"card_195-4-c",
+        "url": "assets/img/cardList/card_195-4-c.png",
+        "name": "Goblin Chariot"
+    },
+    {
+        "id":"card_195-4-g",
+        "url": "assets/img/cardList/card_195-4-g.png",
+        "name": "Goblin Chariot"
+    },
+    {
+        "id":"card_196-4-c",
+        "url": "assets/img/cardList/card_196-4-c.png",
+        "name": "Tower Griffin"
+    },
+    {
+        "id":"card_196-4-g",
+        "url": "assets/img/cardList/card_196-4-g.png",
+        "name": "Tower Griffin"
+    },
+    {
+        "id":"card_219-3-c",
+        "url": "assets/img/cardList/card_219-3-c.png",
+        "name": "Gremlin Blaster"
+    },
+    {
+        "id":"card_219-3-g",
+        "url": "assets/img/cardList/card_219-3-g.png",
+        "name": "Gremlin Blaster"
+    },
+    {
+        "id":"card_350-3-c",
+        "url": "assets/img/cardList/card_350-3-c.jpg",
+        "name": "GARGOYA DEVIL"
+    },
+    {
+        "id":"card_350-3-g",
+        "url": "assets/img/cardList/card_350-3-g.jpg",
+        "name": "GARGOYA DEVIL"
+    },
+    {
+        "id":"card_427-7-c",
+        "url": "assets/img/cardList/card_427-7-c.jpg",
+        "name": "XENITH ARCHER"
+    },
+    {
+        "id":"card_427-7-g",
+        "url": "assets/img/cardList/card_427-7-g.jpg",
+        "name": "XENITH ARCHER"
+    },
+    {
+        "id":"card_428-7-c",
+        "url": "assets/img/cardList/card_428-7-c.jpg",
+        "name": "XENITH MONK"
+    },
+    {
+        "id":"card_428-7-g",
+        "url": "assets/img/cardList/card_428-7-g.jpg",
+        "name": "XENITH MONK"
+    },
+    {
+        "id":"card_429-7-c",
+        "url": "assets/img/cardList/card_429-7-c.jpg",
+        "name": "VENARI SPELLSMITH"
+    },
+    {
+        "id":"card_429-7-g",
+        "url": "assets/img/cardList/card_429-7-g.jpg",
+        "name": "VENARI SPELLSMITH"
+    },
+    {
+        "id":"card_67-1-c",
+        "url": "assets/img/cardList/card_67-1-c.png",
+        "name": "Raging Impaler"
+    },
+    {
+        "id":"card_67-1-g",
+        "url": "assets/img/cardList/card_67-1-g.png",
+        "name": "Raging Impaler"
+    },
+    {
+        "id":"card_68-1-c",
+        "url": "assets/img/cardList/card_68-1-c.png",
+        "name": "Magi Sphinx"
+    },
+    {
+        "id":"card_68-1-g",
+        "url": "assets/img/cardList/card_68-1-g.png",
+        "name": "Magi Sphinx"
+    },
+    {
+        "id":"card_129-2-c",
+        "url": "assets/img/cardList/card_129-2-c.png",
+        "name": "Dwarven Wizard"
+    },
+    {
+        "id":"card_129-2-g",
+        "url": "assets/img/cardList/card_129-2-g.png",
+        "name": "Dwarven Wizard"
+    },
+    {
+        "id":"card_197-4-c",
+        "url": "assets/img/cardList/card_197-4-c.png",
+        "name": "War Chaang"
+    },
+    {
+        "id":"card_197-4-g",
+        "url": "assets/img/cardList/card_197-4-g.png",
+        "name": "War Chaang"
+    },
+    {
+        "id":"card_198-4-c",
+        "url": "assets/img/cardList/card_198-4-c.png",
+        "name": "Tortisian Chief"
+    },
+    {
+        "id":"card_198-4-g",
+        "url": "assets/img/cardList/card_198-4-g.png",
+        "name": "Tortisian Chief"
+    },
+    {
+        "id":"card_237-2-c",
+        "url": "assets/img/cardList/card_237-2-c.png",
+        "name": "Halfling Alchemist"
+    },
+    {
+        "id":"card_237-2-g",
+        "url": "assets/img/cardList/card_237-2-g.png",
+        "name": "Halfling Alchemist"
+    },
+    {
+        "id":"card_241-3-c",
+        "url": "assets/img/cardList/card_241-3-c.png",
+        "name": "Onyx Sentinel"
+    },
+    {
+        "id":"card_241-3-g",
+        "url": "assets/img/cardList/card_241-3-g.png",
+        "name": "Onyx Sentinel"
+    },
+    {
+        "id":"card_276-5-c",
+        "url": "assets/img/cardList/card_276-5-c.png",
+        "name": "Grenadier"
+    },
+    {
+        "id":"card_276-5-g",
+        "url": "assets/img/cardList/card_276-5-g.png",
+        "name": "Grenadier"
+    },
+    {
+        "id":"card_351-3-c",
+        "url": "assets/img/cardList/card_351-3-c.jpg",
+        "name": "URAEUS"
+    },
+    {
+        "id":"card_351-3-g",
+        "url": "assets/img/cardList/card_351-3-g.jpg",
+        "name": "URAEUS"
+    },
+    {
+        "id":"card_430-7-c",
+        "url": "assets/img/cardList/card_430-7-c.jpg",
+        "name": "MAGI OF CHAOS"
+    },
+    {
+        "id":"card_430-7-g",
+        "url": "assets/img/cardList/card_430-7-g.jpg",
+        "name": "MAGI OF CHAOS"
+    },
+    {
+        "id":"card_431-7-c",
+        "url": "assets/img/cardList/card_431-7-c.jpg",
+        "name": "GEM METEOR"
+    },
+    {
+        "id":"card_431-7-g",
+        "url": "assets/img/cardList/card_431-7-g.jpg",
+        "name": "GEM METEOR"
+    },
+    {
+        "id":"card_69-1-c",
+        "url": "assets/img/cardList/card_69-1-c.png",
+        "name": "Hydra"
+    },
+    {
+        "id":"card_69-1-g",
+        "url": "assets/img/cardList/card_69-1-g.png",
+        "name": "Hydra"
+    },
+    {
+        "id":"card_82-3-c",
+        "url": "assets/img/cardList/card_82-3-c.png",
+        "name": "Lord Arianthus"
+    },
+    {
+        "id":"card_82-3-g",
+        "url": "assets/img/cardList/card_82-3-g.png",
+        "name": "Lord Arianthus"
+    },
+    {
+        "id":"card_199-4-c",
+        "url": "assets/img/cardList/card_199-4-c.png",
+        "name": "Cornealus"
+    },
+    {
+        "id":"card_199-4-g",
+        "url": "assets/img/cardList/card_199-4-g.png",
+        "name": "Cornealus"
+    },
+    {
+        "id":"card_207-3-c",
+        "url": "assets/img/cardList/card_207-3-c.png",
+        "name": "Spirit Miner"
+    },
+    {
+        "id":"card_207-3-g",
+        "url": "assets/img/cardList/card_207-3-g.png",
+        "name": "Spirit Miner"
+    },
+    {
+        "id":"card_209-4-c",
+        "url": "assets/img/cardList/card_209-4-c.png",
+        "name": "Chain Golem"
+    },
+    {
+        "id":"card_209-4-g",
+        "url": "assets/img/cardList/card_209-4-g.png",
+        "name": "Chain Golem"
+    },
+    {
+        "id":"card_286-3-c",
+        "url": "assets/img/cardList/card_286-3-c.png",
+        "name": "Almo Cambio"
+    },
+    {
+        "id":"card_286-3-g",
+        "url": "assets/img/cardList/card_286-3-g.png",
+        "name": "Almo Cambio"
+    },
+    {
+        "id":"card_330-6-c",
+        "url": "assets/img/cardList/card_330-6-c.png",
+        "name": "Tatiana Blayde"
+    },
+    {
+        "id":"card_330-6-g",
+        "url": "assets/img/cardList/card_330-6-g.png",
+        "name": "Tatiana Blayde"
+    },
+    {
+        "id":"card_352-7-c",
+        "url": "assets/img/cardList/card_352-7-c.jpg",
+        "name": "DOCTOR BLIGHT"
+    },
+    {
+        "id":"card_352-7-g",
+        "url": "assets/img/cardList/card_352-7-g.jpg",
+        "name": "DOCTOR BLIGHT"
+    },
+    {
+        "id":"card_432-7-c",
+        "url": "assets/img/cardList/card_432-7-c.jpg",
+        "name": "LEGIONNAIRE ALVAR"
+    },
+    {
+        "id":"card_432-7-g",
+        "url": "assets/img/cardList/card_432-7-g.jpg",
+        "name": "LEGIONNAIRE ALVAR"
+    }
+]

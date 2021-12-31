@@ -167,7 +167,13 @@ class WSSplinterlandsClient {
         const currentTimestamp = new Date().getTime() / 1000
         log && console.log('CheckCondition->>', userName)
         if (this.initialDec == null) {
-            this.initialDec = this.client.getBalance('DEC') || 0
+            this.initialDec =
+                this.client.getBalance('DEC') +
+                this.config.maxDec * this.config.rentalDay -
+                (this.config.maxDec *
+                    this.config.rentalDay *
+                    (this.config.expectedPower - this.client.user.collection_power)) /
+                    this.config.expectedPower
         }
         if (
             this.config.modeDelegate &&
@@ -190,13 +196,17 @@ class WSSplinterlandsClient {
             return
         }
         if (
-            this.client.masterKey &&
-            this.config.modeRental &&
-            this.config.expectedPower &&
-            this.config.maxDec &&
-            this.config.maxDec > this.initialDec - this.client.getBalance('DEC') &&
-            this.config.rentalDay &&
-            this.client.user.collection_power < this.config.expectedPower
+            (this.client.masterKey &&
+                this.config.modeRental &&
+                this.config.expectedPower &&
+                this.config.maxDec &&
+                this.config.maxDec * this.config.rentalDay > this.initialDec - this.client.getBalance('DEC') &&
+                this.config.rentalDay &&
+                this.client.user.collection_power < this.config.expectedPower) ||
+            (this.client.masterKey &&
+                !this.client.rentRequireCardDone &&
+                this.config.modeRental &&
+                this.config.requireCard.length)
         ) {
             parentPort.postMessage({
                 type: 'INFO_UPDATE',
@@ -204,7 +214,12 @@ class WSSplinterlandsClient {
                 player: this.client.user.name,
                 matchStatus: MATCH_STATUS.NONE,
             })
-            let dec = this.config.maxDec - (this.initialDec - this.client.getBalance('DEC'))
+
+            let dec =
+                (this.config.maxDec *
+                    this.config.rentalDay *
+                    (this.config.expectedPower - this.client.user.collection_power)) /
+                this.config.expectedPower
 
             let r = await this.client.cardRental(
                 this.client.user.collection_power,
@@ -212,7 +227,8 @@ class WSSplinterlandsClient {
                 dec,
                 [],
                 this.config.rentalDay,
-                this.initialDec
+                this.initialDec,
+                this.config.requireCard
             )
             this.CheckCondition()
             return
@@ -282,7 +298,7 @@ class WSSplinterlandsClient {
             } else {
                 this.startQuest = false
             }
-
+            
             this.client.updatePlayerInfo({
                 matchStatus: MATCH_STATUS.MATCHING,
                 questClaimed: this.questClaimed,

@@ -553,7 +553,7 @@ master.updateOpeningPlayerInfo = async () => {
             newAccount.rating = accountDetails.rating
             newAccount.power = accountDetails.collection_power
         }
-        if (accountQuestDetails.length) {
+        if (accountQuestDetails && accountQuestDetails.length) {
             newAccount.quest = accountQuestDetails[0].completed_items
             newAccount.maxQuest = accountQuestDetails[0].total_items
             newAccount.questClaimed = accountQuestDetails[0].claim_date != null

@@ -13,8 +13,6 @@ const log = false
 
 const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
     matchDetails.rules = encodeURIComponent(matchDetails.rules)
-    // matchDetails.rules = matchDetails.rules.
-    //https://nftauto.online/api/v2/splinterlands/teams?rules=${matchDetails.rules}&leaderboard=${matchDetails.leaderboard}&cards=${matchDetails.cards}&active=${matchDetails.active}&mana_cap=${matchDetails.mana_cap}&player=${account}&color=${matchDetails.color}&quest=${matchDetails.quest}&opponent=${opponent}
     matchDetails.player = account
     let params = `rules=${matchDetails.rules}`
     params += `&leaderboard=${matchDetails.leaderboard}`
@@ -31,7 +29,6 @@ const getBattlesWithRuleset = (matchDetails, account, spsToken, opponent) => {
     if (opponent) {
         params += `&opponent=${opponent}`
     }
-    //add user token to header
     const host = 'https://nftauto.online/'
     const url = `api/v2/splinterlands/teams?${params}`
     // console.log('API call: ', host+url)

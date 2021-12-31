@@ -280,10 +280,67 @@ button.active {
 }
 #save_season {
     margin-left: 12px;
-    height: 26px!important;
+    height: 26px !important;
     padding: 2px 6px;
-    font-size: 12px!important;
+    font-size: 12px !important;
 }
 .caption {
     font-size: 12px;
+}
+.modal * {
+    color: #000;
+}
+#card_active {
+    position: sticky;
+    top: 0;
+    padding-left: 16px;
+    overflow: scroll;
+}
+#require_card_list > div {
+    background-color: #cfcfcf;
+    border-radius: 8px;
+    padding: 8px 0px;
+    margin: 0;
+}
+.card {
+    width: 100%;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    position: relative; 
+    overflow: hidden;
+}
+.card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.require-card-dec *{
+    margin: 0px;
+    font-size: 12px;
+    padding: 0;
+}
+.require-card-dec .max-dec{
+    white-space: nowrap;
+}
+.foil {
+    width: 32px;
+    height: 32px;
+    border: 2px solid;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    display: flex;
+    margin-left: 8px;
+    opacity: 0.3;
+    cursor: pointer;
+}
+.foil-gold {
+    border-color: #eac200;
+}
+.foil-classic {
+    border-color: #219b92;
+}
+.foil-selected {
+    opacity: 1;
 }

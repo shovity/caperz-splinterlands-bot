@@ -22,8 +22,7 @@ const service = {}
 service.handleNotEnoughEcr = (username) => {
     const account_list = settings.data.account_list
     const ecrStop = settings.data.app_setting.ecr || 0
-    const ecrStart = settings.data.app_setting.start_ecr || 80
-
+    const ecrStart = settings.data.app_setting.startEcr || 80
     for (let i = 0; i< account_list.length; i++) {
         const ecrNow = service.calculateECR(account_list[i].updatedAt, account_list[i].ecr)
 

@@ -262,6 +262,46 @@
                             <label for="acr_rental_day">Rental days</label>
                             <input type="number" class="form-control" id="acr_rental_day" placeholder="Days for rental">
                         </div>
+                        <div class="col-md-12 mb-3">                        
+                            <input id="require_card" type="text" readonly class="form-control" data-bs-toggle="modal" data-bs-target="#card_list_modal">
+                        </div>
+                        <div class="modal fade" id="card_list_modal" tabindex="-1" aria-labelledby="cardListModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="color: #000;" class="modal-title" id="cardListModalLabel">Card List</h5>
+                                    <div class='foil foil-classic' click-emit="foil:c">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12.865" height="15.225" viewBox="0 0 12.865 15.225"><g transform="translate(0)"><g transform="translate(0 0)"><path fill="#219b92" d="M1.781,14.765,0,4.481A.563.563,0,0,1,.46,3.854L2.6,3.485l.606-.108L6.2,2.858l1.84-.324a.562.562,0,0,1,.628.455l1.646,9.44.13.8v.044a.539.539,0,0,1-.022.238.564.564,0,0,1-.433.411l-7.577,1.3a.563.563,0,0,1-.628-.455Zm10.045-3.2-1.8-10.392A.562.562,0,0,0,9.4.714l-2.165.368-3.161.563V.563A.563.563,0,0,1,4.638,0h7.686a.563.563,0,0,1,.541.563V11a.563.563,0,0,1-.563.563Z" transform="translate(0 0)"/></g></g></svg>
+                                    </div>
+                                    <div class='foil foil-gold' click-emit="foil:g">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12.865" height="15.225" viewBox="0 0 12.865 15.225"><g transform="translate(0)"><g transform="translate(0 0)"><path fill="#eac200" d="M1.781,14.765,0,4.481A.563.563,0,0,1,.46,3.854L2.6,3.485l.606-.108L6.2,2.858l1.84-.324a.562.562,0,0,1,.628.455l1.646,9.44.13.8v.044a.539.539,0,0,1-.022.238.564.564,0,0,1-.433.411l-7.577,1.3a.563.563,0,0,1-.628-.455Zm10.045-3.2-1.8-10.392A.562.562,0,0,0,9.4.714l-2.165.368-3.161.563V.563A.563.563,0,0,1,4.638,0h7.686a.563.563,0,0,1,.541.563V11a.563.563,0,0,1-.563.563Z" transform="translate(0 0)"/></g></g></svg>
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body d-flex">
+                                    <div class="col-md-9">
+                                        <div style="margin-bottom: 8px;" class="d-flex">
+                                            <input class="form-control" id="require_card_search">
+                                            <button class="btn btn-primary" style="margin-left: 8px ;" click-emit="require_card.search">Search</button>
+                                        </div>
+
+                                        <div id="card_list" class="row">
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="card_active" class="col-md-3">
+                                        <p>Require Card & Config</p>
+                                        <div id="require_card_list">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                <button class="btn btn-primary active" click-emit="require_card.save" data-bs-dismiss="modal">Save changes</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

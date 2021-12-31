@@ -24,7 +24,6 @@ const setting = ({ win, ipc, settings }) => {
             ...oldSetting,
             ...data
         }
-    
         settings.data.app_setting = newSetting
         // await master.enqAccounts()
     })

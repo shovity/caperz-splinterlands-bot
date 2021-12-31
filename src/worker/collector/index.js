@@ -11,6 +11,7 @@ async function main(wokerData) {
         if (resAuth && resAuth.success) {
             // console.log('success login', user.name, client.getEcr(), client.getBalance('DEC'))
             await client.updateSettings()
+            console.log(wokerData.param?.cards)
             const res = await client.undelegatePower(wokerData.param?.cards, wokerData.param?.power, workerData.param?.player)
             parentPort.postMessage({
                 type: 'DONE',

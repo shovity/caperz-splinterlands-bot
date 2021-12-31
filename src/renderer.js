@@ -6,6 +6,8 @@ ori.use('event store emitter storage', () => {
     var playerMonitoringTable
     var proxyMonitoringTable
     let totalDec = {}
+    var cardData
+    var requireCard = []
 
     const user = storage.user
 
@@ -39,7 +41,7 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_yellow'>Renting</span>"
             case 'NOT IN WHITELIST':
                 return "<span class='status_black'>Not in whitelist</span>"
-            case 'DELEGATING': 
+            case 'DELEGATING':
                 return "<span class='status_yellow'>Delegating</span>"
             default:
                 return "<span class='status_gray'>None</span>"
@@ -274,6 +276,7 @@ ori.use('event store emitter storage', () => {
                 postingKey: ma_posting_key.value,
                 masterKey: ma_master_key.value,
             },
+            requireCard: requireCard,
         })
         showNotice('saved')
     })
@@ -314,6 +317,44 @@ ori.use('event store emitter storage', () => {
         ma_username.value = data.majorAccount?.player || ''
         ma_posting_key.value = data.majorAccount?.postingKey || ''
         ma_master_key.value = data.majorAccount?.masterKey || ''
+        require_card.value = ''
+        $.getJSON('cardImgSrc.json', function (dt) {
+            if (data.requireCard?.length) {
+                requireCard = data.requireCard
+                requireCard.forEach((rc) => {
+                    let rcard = dt.find((c) => c.id == rc.id)
+                    let html = `<div class="row mb-3" id="${rc.id}">
+            <div class="col-md-2" style="padding: 0;padding-left: 12px;">
+                            <div class="card" click-emit="require_card.add:${rc.id}">
+                                <img class="card-image" style="width: 100%" src="${rcard.url}"/>
+                            </div>
+                            </div>
+                            <div class="col-md-8 require-card-dec">
+                                <p style="font-size: 12px;margin: 0px">${capitalizeFirstLetter(rcard.name.toLowerCase())}</p>
+                                <div class="d-flex">
+                                <p class="max-dec">Max DEC: </p>
+                                    <input class="form-control max-dec-value">
+                                </div>
+                            </div>
+                            <div class="col-md-1 d-flex justify-content-center align-items-center">
+                                <button type="button" class="btn-close" click-emit="require_card.remove:${rc.id}"></button>
+                            </div>
+                        </div>`
+                    document.getElementById('require_card_list').innerHTML += html
+                })
+                requireCard.forEach((rc) => {
+                    
+                    if (require_card.value) {
+                        require_card.value += `, `
+                        require_card.value += rc.id.split('_')[1]
+                    } else {
+                        require_card.value = rc.id.split('_')[1]
+                    }
+                    const card = document.querySelector(`#${rc.id}`)
+                    card.querySelector(`.max-dec-value`).value = rc.maxDec
+                })
+            }
+        })
         data.proxies.forEach((proxy) => {
             let row = proxy_table.insertRow(1)
             let cell1 = document.createElement('th')
@@ -623,5 +664,143 @@ ori.use('event store emitter storage', () => {
                 barPercent.innerHTML = width * 1
             }
         }
+    })
+
+    $.getJSON('cardImgSrc.json', function (dt) {
+        let html = ''
+        cardData = dt
+        cardData.forEach((card) => {
+            let cid = card.url.split('/')
+            let id = cid.at(-1).split('.')[0]
+            html += `<div class="col-md-1 mb-3">
+                <div class="card" click-emit="require_card.add:${id}">
+                    <img class="card-image" style="width: 100%" src="${card.url}"/>
+                </div>
+                <p style="font-size: 12px">${capitalizeFirstLetter(card.name.toLowerCase())}</p>
+            </div>`
+        })
+
+        document.getElementById('card_list').innerHTML = html
+    })
+
+    function capitalizeFirstLetter(str) {
+        var splitStr = str.toLowerCase().split(' ')
+        for (var i = 0; i < splitStr.length; i++) {
+            // You do not need to check if i is larger than splitStr length, as your for does that for you
+            // Assign it back to the array
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)
+        }
+        // Directly return the joined string
+        return splitStr.join(' ')
+    }
+
+    event.listen('require_card.add', (id) => {
+        let card = cardData.find((c) => c.id == id)
+        if (requireCard.length && requireCard.findIndex((c) => c.id == id) > -1) {
+            return
+        }
+        const rc = requireCard
+        requireCard = []
+        rc.forEach((c) => {
+            console.log(c)
+            const card = document.querySelector(`#${c.id}`)
+            const maxDec = card.querySelector(`.max-dec-value`).value
+            requireCard.push({
+                id: c.id,
+                maxDec: maxDec,
+            })
+        })
+        requireCard.push({
+            id: id,
+            maxDec: 0,
+        })
+        let html = `<div class="row mb-3" id="${id}">
+        <div class="col-md-2" style="padding: 0;padding-left: 12px;">
+                        <div class="card" click-emit="require_card.add:${id}">
+                            <img class="card-image" style="width: 100%" src="${card.url}"/>
+                        </div>
+                        </div>
+                        <div class="col-md-8 require-card-dec">
+                            <p style="font-size: 12px;margin: 0px">${capitalizeFirstLetter(card.name.toLowerCase())}</p>
+                            <div class="d-flex">
+                            <p class="max-dec">Max DEC: </p>
+                                <input class="form-control max-dec-value">
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-flex justify-content-center align-items-center">
+                            <button type="button" class="btn-close" click-emit="require_card.remove:${id}"></button>
+                        </div>
+                    </div>`
+        document.getElementById('require_card_list').innerHTML += html
+        requireCard.forEach((c) => {
+            const card = document.querySelector(`#${c.id}`)
+            card.querySelector(`.max-dec-value`).value = c.maxDec
+        })
+    })
+    event.listen('require_card.remove', (id) => {
+        const index = requireCard.findIndex((c) => c.id == id)
+        if (index > -1) {
+            requireCard.splice(index, 1)
+            $(`#${id}`).remove()
+        }
+    })
+    event.listen('require_card.save', () => {
+        require_card.value = ''
+        let res = []
+        requireCard.forEach((c) => {
+            if (require_card.value) {
+                require_card.value += `, `
+                require_card.value += c.id.split('_')[1]
+            } else {
+                require_card.value = c.id.split('_')[1]
+            }
+            const card = document.querySelector(`#${c.id}`)
+            const maxDec = card.querySelector(`.max-dec-value`).value
+            res.push({
+                id: c.id,
+                maxDec: maxDec
+            })
+        })
+        requireCard = res
+    })
+    event.listen('require_card.search', () => {
+        const value = require_card_search.value
+        let html = ''
+        cardData.forEach((card) => {
+            if (card.name.toLowerCase().includes(value)) {
+                html += `<div class="col-md-1 mb-3">
+                <div class="card" click-emit="require_card.add:${card.id}">
+                    <img class="card-image" style="width: 100%" src="${card.url}"/>
+                </div>
+                <p style="font-size: 12px">${capitalizeFirstLetter(card.name.toLowerCase())}</p>
+            </div>`
+            }
+        })
+        document.getElementById('card_list').innerHTML = html
+    })
+    event.listen('foil', (foil) => {
+        let html = ''
+        if (foil == 'c') {
+            $('.foil-classic').addClass('foil-selected')
+            $('.foil-gold').removeClass('foil-selected')
+        } else {
+            $('.foil-gold').addClass('foil-selected')
+            $('.foil-classic').removeClass('foil-selected')
+        }
+        cardData.forEach((card) => {
+            let cid = card.url.split('/')
+            let id = cid.at(-1).split('.')[0]
+            const f = id.split('-').at(-1)
+            if (f == foil) {
+                html += `<div class="col-md-1 mb-3">
+                <div class="card" click-emit="require_card.add:${id}">
+                    <img class="card-image" style="width: 100%" src="${card.url}"/>
+                </div>
+                <p style="font-size: 12px">${capitalizeFirstLetter(card.name.toLowerCase())}</p>
+            </div>`
+            }
+        })
+
+        document.getElementById('card_list').innerHTML = html
     })
 })
