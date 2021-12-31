@@ -623,7 +623,9 @@ master.updateOpeningPlayerInfo = async () => {
 master.calculatePriority = calculatePriority
 master.calculateECR = calculateECR
 
-workerService.createDelegator(master)
+master.createDelegator = () => {
+    workerService.createDelegator(master)
+}
 
 
 module.exports = master
