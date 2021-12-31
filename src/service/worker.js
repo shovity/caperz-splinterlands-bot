@@ -24,7 +24,15 @@ service.handleMessage = (worker, message, master) => {
         case 'collector':
             service.collectorMesssageHandler(worker, message, master)
             break
+        
+        case 'test':
+            service.testMessageHandler(worker, message, master)
+            break
     }
+}
+
+service.testMessageHandler = async (worker, message, master) => {
+    console.log(message)
 }
 
 service.collectorMesssageHandler = async (worker, message, master) => {
@@ -49,23 +57,27 @@ service.collectorMesssageHandler = async (worker, message, master) => {
 }
 
 service.delegatorMessageHandler = async (worker, message, master) => {
-    const account_list = settings.data.account_list
+    console.log(message)
+    
+    // const account_list = settings.data.account_list
 
-    const accountIndex = account_list.findIndex((a) => a.username === message.player)
+    // const accountIndex = account_list.findIndex((a) => a.username === message.player)
 
-    if (message.type === 'DONE' && account_list[accountIndex].status === 'DELEGATING') {
-        const proxyIp = account_list[accountIndex].proxy
-        const delegated = 1
-        master.handleAddAccount(account_list[accountIndex], proxyIp, delegated)
-    } else if (message.type === 'ERROR') {
-        account_list[accountIndex].status = 'DELEGATING_ERROR'
+    // if (message.type === 'DONE' && account_list[accountIndex].status === 'DELEGATING') {
+    //     const proxyIp = account_list[accountIndex].proxy
+    //     const delegated = 1
+    //     master.handleAddAccount(account_list[accountIndex], proxyIp, delegated)
+    // } else if (message.type === 'ERROR') {
+    //     account_list[accountIndex].status = 'DELEGATING_ERROR'
 
-        await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-    }
+    //     await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+    // }
 
-    service.beforeTerminateWorker(worker, master)
+    // service.beforeTerminateWorker(worker, master)
 
-    worker.instance.terminate()
+    // worker.instance.terminate()
+
+    //TODO: handle done create splinterland worker
 }
 
 service.splinterlandMessageHandler = async (worker, message, master) => {
@@ -146,7 +158,7 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             break
 
         case MESSAGE_STATUS.MESSAGE:
-            await master.change('log', message.data)
+            await master.change('log: ', message.data)
             break
 
         case MESSAGE_STATUS.ERROR:
@@ -171,7 +183,7 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
             break
-
+        //TODO: clear status create delegator
         case MESSAGE_STATUS.CREATE_DELEGATOR:
             worker.instance.terminate()
 
@@ -189,6 +201,7 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
             break
 
+        //TODO: clear status create delegator
         case MESSAGE_STATUS.CREATE_COLLECTOR:
             await master.add({
                 worker: {
@@ -227,5 +240,14 @@ service.beforeTerminateWorker = (worker, master) => {
         return w
     })
 }
+
+service.createDelegator = async (master) => {
+    master.delegatorWorker = await master.add({
+        worker: {
+            name: 'test',
+        },
+    })
+}
+
 
 module.exports = service
