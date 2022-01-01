@@ -27,7 +27,7 @@ const Config = {
 const requester = require('../requester')
 const { Console } = require('console')
 
-const log = true
+const log = false
 
 steem.api.setOptions({
     transport: 'http',
@@ -192,8 +192,8 @@ class SplinterLandsClient {
                     delegatedCards.push(item.uid)
                 })
         }
-        console.log('delegatedCards',delegatedCards)
-        
+        console.log('delegatedCards', delegatedCards)
+
         parentPort.postMessage({
             type: TYPE.STATUS_UPDATE,
             status: STATUS.DONE,
@@ -1327,7 +1327,8 @@ class SplinterLandsClient {
         return +total_dec
     }
 
-    calculateCP(card) {
+    calculateCP(c) {
+        const card = c.xp > 1 ? { ...c, alpha_xp: 0 } : { ...c, alpha_xp: null }
         const details = cardsDetail.find((o) => o.id === card.card_detail_id)
         var alpha_bcx = 0,
             alpha_dec = 0
@@ -1410,9 +1411,13 @@ class SplinterLandsClient {
                 return []
             }
             res.every((c) => {
-                if (c.buy_price / this.calculateCP(c) > weight || gainedPower + this.calculateCP(c) > remainingPower + 100) {
+                if (
+                    c.buy_price / this.calculateCP(c) > weight ||
+                    gainedPower + this.calculateCP(c) > remainingPower + 100
+                ) {
                     return false
                 } else {
+                    console.log(c)
                     log && console.log('card power', this.calculateCP(c))
                     result.push(c.market_id)
                     gainedPower += this.calculateCP(c)
@@ -1422,9 +1427,7 @@ class SplinterLandsClient {
             })
             return result
         }
-
         if (requireCard?.length) {
-            console.log(requireCard)
             const pc = await this.getPlayerCardsUID()
             const playerCards = pc.map((c) => this.getCardId(c))
             requireCard.forEach((c) => {
@@ -1479,7 +1482,6 @@ class SplinterLandsClient {
                         }
                         return true
                     })
-                    console.log(res[0])
                     if (res[0]) {
                         const id = res[0].market_id
                         const prm = new Promise((resolve, reject) => {
@@ -1530,8 +1532,8 @@ class SplinterLandsClient {
             .map((e) => {
                 return {
                     ...e,
-                    power: this.calculateCPOld({ ...e, xp: 1, alpha_xp: 0 }),
-                    weight: e.low_price / this.calculateCPOld({ ...e, xp: 1, alpha_xp: 0 }),
+                    power: this.calculateCPOld({ ...e, xp: 1, alpha_xp: null }),
+                    weight: e.low_price / this.calculateCPOld({ ...e, xp: 1, alpha_xp: null }),
                     formated: `${e.card_detail_id}-${e.edition}-${e.gold}`,
                 }
             })
@@ -1708,7 +1710,7 @@ class SplinterLandsClient {
                 })
                 formattedCards.forEach((e) => {
                     if (remainingPw <= 0 || remainingPw - e.power > 0) {
-                        return 
+                        return
                     }
                     cards.push(e.uid)
                     remainingPw -= e.power
@@ -1718,7 +1720,7 @@ class SplinterLandsClient {
             formattedCards.sort((a, b) => {
                 return b.power - a.power
             })
-            
+
             formattedCards.forEach((e) => {
                 if (remainingPw <= 0 || remainingPw - e.power < 0) {
                     return
@@ -1753,13 +1755,13 @@ class SplinterLandsClient {
             const prm = new Promise((resolve, reject) => {
                 this.broadcastCustomJson(
                     'sm_delegate_cards',
-                    '',
+                    'Delegate Cards',
                     {
                         to: player,
                         cards: cards,
                     },
                     (result) => {
-                        console.log('as', result)
+                        console.log('delegate ->', result)
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
                             resolve(result)
                         } else {
@@ -1782,11 +1784,12 @@ class SplinterLandsClient {
             const prm = new Promise((resolve, reject) => {
                 this.broadcastCustomJson(
                     'sm_undelegate_cards',
-                    '',
+                    'Delegate Cards',
                     {
                         cards: cards,
                     },
                     (result) => {
+                        console.log('undelegate ->', result)
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
                             resolve(result)
                         } else {
