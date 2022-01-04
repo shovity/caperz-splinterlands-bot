@@ -37,21 +37,19 @@ const afterDone = (delegator, task) => {
 
     if (pendingUndelegateTasks.length && !delegator.isRunning()) {
         const task = pendingUndelegateTasks.shift()
-        undelegate(delegator, task)
-    }
-    
-    if (pendingDelegateTasks.length && !pendingUndelegateTasks.length) {
-        const task = pendingDelegateTasks.shift()
-
-        undelegate(delegator, task)
+        delegator.undelegate(delegator, task)
     }
 
-    parentPort.postMessage({
+    const message = {
         id: task.id,
         name: task.name,
         status: 'done',
-        data: task.data
-    })
+        data: task.data,
+        pendingDelegateTasks: pendingDelegateTasks.length,
+        pendingUndelegateTasks: pendingUndelegateTasks.length
+    }
+
+    parentPort.postMessage(message)
 }
 
 

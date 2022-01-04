@@ -8,6 +8,8 @@ const delegator = {
     delegateQueue: [],
     undelegateQueue: [],
     majorAccountClient: null,
+    delegate: delegate,
+    undelegate: undelegate,
     isRunning: () =>
         !!(delegator.undelegateQueue.findIndex((t) => t.status === 'running') >= 0) ||
         !!(delegator.delegateQueue.findIndex((t) => t.status === 'running') >= 0),
@@ -77,6 +79,15 @@ delegator.push =async (task) => {
 }
 
 parentPort.on('message', (message) => {
+    if (message.action === 'delegating_continue') {
+        const pendingDelegateTasks = delegator.delegateQueue.filter(e => e.status === 'pending')
+        const task = pendingDelegateTasks.shift()
+
+        if (task) {
+            delegate(delegator, task)
+        }
+    }
+
     if (message.task) {
         const task = {
             id: uuidv4(),

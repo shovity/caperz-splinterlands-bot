@@ -57,20 +57,45 @@ service.collectorMesssageHandler = async (worker, message, master) => {
 }
 
 service.delegatorMessageHandler = async (worker, message, master) => {
+    const app_setting = settings.data.app_setting
     const account_list = settings.data.account_list
 
     const accountIndex = account_list.findIndex(
-        (a) => a.username === message.player || a.username === message.data?.player
+        (a) => a.username === message.player || 
+        a.username === message.data?.username || 
+        a.username === message.data?.player
     )    
-    
-    const spsWorker = await master.add({
-        worker: {
-            name: 'splinterlands'
-        },
-        ...message.data,
-    })
 
-    account_list[accountIndex].workerId = spsWorker.id
+    const account = account_list[accountIndex]
+
+    if (message.name === 'delegate' && message.status === 'done') {
+        await master.handleAddAccount(
+            { 
+                username: account.username,
+                postingKey: account.postingKey,
+                masterKey: account.masterKey,
+                token: account.token,
+            },
+            account.proxy,
+            1,
+        )
+    } else if (message.name === 'undelegate') {
+        let proxy = account.proxy
+
+        const proxyIndex = app_setting.proxies.findIndex((p) => p.ip === proxy)
+        if (proxyIndex >= 0) {
+            app_setting.proxies[proxyIndex].count--
+            await master.change('app_setting', { app_setting })
+        }
+
+        await master.dequeue()
+
+        if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
+            master.delegatorWorker.instance.postMessage({
+                action: 'delegating_continue',
+            })        
+        }
+    }
 }
 
 service.splinterlandMessageHandler = async (worker, message, master) => {
@@ -138,22 +163,15 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
 
             if (message.status === 'DONE') {
-                let proxy = account_list[accountIndex].proxy
-
-                const proxyIndex = app_setting.proxies.findIndex((p) => p.ip === proxy)
-                if (proxyIndex >= 0) {
-                    app_setting.proxies[proxyIndex].count--
-                    await master.change('app_setting', { app_setting })
-                }
-
                 worker.instance.terminate()
+
+                master.delegatorWorker.instance.postMessage({
+                    task: 'undelegate',
+                    data: {
+                        ...message.param
+                    }
+                })
             }
-            master.delegatorWorker.instance.postMessage({
-                task: 'undelegate',
-                data: {
-                    ...message.param
-                }
-            })
             break
 
         case MESSAGE_STATUS.MESSAGE:

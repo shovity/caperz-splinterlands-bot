@@ -522,7 +522,7 @@ ori.use('event store emitter storage', () => {
                     targets: 9,
                     render: function (data, type, row) {
                         if (
-                            ['RUNNING', 'PENDING', 'DONE', 'RENTING', 'COLLECTING', 'TRANSFERRING'].includes(
+                            ['RUNNING', 'PENDING', 'DONE', 'RENTING', 'COLLECTING', 'TRANSFERRING', 'DELEGATING'].includes(
                                 data.status
                             )
                         ) {

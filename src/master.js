@@ -115,7 +115,8 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
 
     if (
         account_list[accountIndex].status === ACCOUNT_STATUS.RUNNING ||
-        (account_list[accountIndex].status === ACCOUNT_STATUS.PAUSED && account.status !== ACCOUNT_STATUS.PAUSED)
+        (account_list[accountIndex].status === ACCOUNT_STATUS.PAUSED && account.status !== ACCOUNT_STATUS.PAUSED) ||
+        (delegated && account_list[accountIndex].status === ACCOUNT_STATUS.PAUSED)
     ) {
         return
     }
@@ -138,6 +139,13 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
     })
 
     if (proxyIndex >= 0) {
+
+        if (!delegated) {
+            app_setting.proxies[proxyIndex].count++
+        }
+
+        await master.change('app_setting', { app_setting })
+
         account_list[accountIndex].proxy = app_setting.proxies[proxyIndex].ip
         account_list[accountIndex].status = ACCOUNT_STATUS.RUNNING
 
@@ -169,7 +177,7 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
         const shouldDelegate = await workerService.checkDelegate(account.username, proxy)
         const details = await utils.getDetails(account.username)
 
-        if (shouldDelegate) {
+        if (shouldDelegate && !delegated) {
             master.delegatorWorker.instance.postMessage({
                 task: 'delegate',
                 data: {
@@ -203,10 +211,6 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
 
             account_list[accountIndex].workerId = worker.id
         }
-
-        if (!proxyIp) {
-            app_setting.proxies[proxyIndex].count++
-        }
     } else {
         account_list[accountIndex].status = ACCOUNT_STATUS.PENDING
 
@@ -214,7 +218,6 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
     }
 
     await master.changePath('account_list', [{ ...account_list[accountIndex] }], 1)
-    await master.change('app_setting', { app_setting })
 }
 
 master.start = async (worker) => {

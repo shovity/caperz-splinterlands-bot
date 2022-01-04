@@ -42,7 +42,7 @@ const afterDone = (delegator, task) => {
         !undelegateTasks.length
     ) {
         const task = pendingDelegateTasks.shift()
-        delegate(delegator, task)
+        delegator.delegate(delegator, task)
     }
 
     if (
@@ -50,7 +50,7 @@ const afterDone = (delegator, task) => {
         !delegator.isRunning()
     ) {
         const task = undelegateTasks.shift()
-        undelegate(delegator, task)
+        delegator.undelegate(delegator, task)
     }
 
     parentPort.postMessage({
