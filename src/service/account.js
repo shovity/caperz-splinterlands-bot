@@ -1,5 +1,5 @@
 const settings = require('../settings')
-
+const requester = require('./requester')
 const ACCOUNT_STATUS = {
     PENDING: 'PENDING',
     DONE: 'DONE',
@@ -73,6 +73,12 @@ service.beforePausedOrStopped = (account) => {
 
 service.beforeEnqueue = (username = null) => {
     service.handleNotEnoughEcr(username)
+}
+
+service.getMajorAccountInfo = async (username) => {
+    console.log('get aos')
+    let res = await requester['get']('ann')
+    return 'abc'
 }
 
 

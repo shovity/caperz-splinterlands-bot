@@ -25,9 +25,8 @@ const Config = {
 }
 
 const requester = require('../requester')
-const { Console } = require('console')
 
-const log = true
+const log = false
 
 steem.api.setOptions({
     transport: 'http',

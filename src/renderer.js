@@ -649,9 +649,15 @@ ori.use('event store emitter storage', () => {
             startButton.removeClass('d-none')
         }
     })
+
     ipc.on('log', (event, data) => {
         console.log(data)
     })
+
+    ipc.on('major_acc.update', (event, data) => {
+        console.log('ma', data)
+    })
+
     ipc.on('process', (event, data) => {
         var width = barPercent.innerHTML * 1
         var id = setInterval(frame, 10)

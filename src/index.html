@@ -85,57 +85,78 @@
                 </div>
             </div>
             <div class="container" >
-                <div class="section mt-3">
-                      <div class="mt-1 d-flex" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-controls="collapseOne">
-                        <h5>Auto mode </h5>
-                        <h5>▼</h5>
-                      </div>
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="d-flex">
-                            <div class="w-25">
-                                <div class="form-check form-switch mb-1">
-                                    <input class="form-check-input" type="checkbox" id="mode_play" click-emit="modePlayToggle">
-                                    <label class="form-check-label" for="mode_play">Play game</label>
-                                </div>
-                                <div class="form-check form-switch mb-1">
-                                    <input class="form-check-input" type="checkbox" id="mode_claim_quest" click-emit="modeClaimQuestToggle">
-                                    <label class="form-check-label" for="mode_claim_quest">Claim daily quest</label>
-                                </div>
-                                <!-- <div class="form-check form-switch mb-1">
-                                    <input class="form-check-input" type="checkbox" id="mode_card_rental" click-emit="modeCardRentalToggle">
-                                    <label class="form-check-label" for="mode_card_rental">Card Rental</label>
-                                </div> -->
-                                <div class="form-check form-switch mb-1">
-                                    <input class="form-check-input" type="checkbox" id="mode_delegate" click-emit="modeDelegateToggle">
-                                    <label class="form-check-label" for="mode_delegate">Card delegation</label>
-                                </div>
-                                <div class="form-check form-switch mb-1">
-                                    <input class="form-check-input" type="checkbox" id="mode_rental" click-emit="modeRentalToggle">
-                                    <label class="form-check-label" for="mode_rental">Card rental</label>
-                                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="section mt-3">
+                            <div class="mt-1 d-flex" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-controls="collapseOne">
+                                <h5>Auto mode </h5>
+                                <h5>▼</h5>
                             </div>
-                            <div class="w-25">
-                                <div class="form-check form-switch mb-1">
-                                    <input class="form-check-input" type="checkbox" id="mode_transfer" click-emit="modeTransferToggle">
-                                    <label class="form-check-label" for="mode_transfer">Transfer DEC & cards</label>
-                                </div>
-                                <div>
-                                    <div class="form-check form-switch mb-1">
-                                        <input class="form-check-input" type="checkbox" id="mode_collect_season_reward" click-emit="modeCollectSeasonRewardToggle">
-                                        <label class="form-check-label" for="mode_collect_season_reward">Claim Season Rewards </label>
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="d-flex">
+                                    <div class="w-50">
+                                        <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" id="mode_play" click-emit="modePlayToggle">
+                                            <label class="form-check-label" for="mode_play">Play game</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" id="mode_claim_quest" click-emit="modeClaimQuestToggle">
+                                            <label class="form-check-label" for="mode_claim_quest">Claim daily quest</label>
+                                        </div>
+                                        <!-- <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" id="mode_card_rental" click-emit="modeCardRentalToggle">
+                                            <label class="form-check-label" for="mode_card_rental">Card Rental</label>
+                                        </div> -->
+                                        <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" id="mode_delegate" click-emit="modeDelegateToggle">
+                                            <label class="form-check-label" for="mode_delegate">Card delegation</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" id="mode_rental" click-emit="modeRentalToggle">
+                                            <label class="form-check-label" for="mode_rental">Card rental</label>
+                                        </div>
                                     </div>
-                                    <div class="mb-1 d-flex" style="margin-left: 40px;">
-                                        <p>Season:</p>
-                                        <input class="form-control" style="padding: 0;width: 40px;height: 26px;margin-left: 6px;" id="season">
-                                        <button id="save_season" class="btn btn-primary active"  click-emit="setSeason">
-                                            <span>save</span>
-                                        </button>
+                                    <div class="w-50">
+                                        <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" id="mode_transfer" click-emit="modeTransferToggle">
+                                            <label class="form-check-label" for="mode_transfer">Transfer DEC & cards</label>
+                                        </div>
+                                        <div>
+                                            <div class="form-check form-switch mb-1">
+                                                <input class="form-check-input" type="checkbox" id="mode_collect_season_reward" click-emit="modeCollectSeasonRewardToggle">
+                                                <label class="form-check-label" for="mode_collect_season_reward">Claim Season Rewards </label>
+                                            </div>
+                                            <div class="mb-1 d-flex" style="margin-left: 40px;">
+                                                <p>Season:</p>
+                                                <input class="form-control" style="padding: 0;width: 40px;height: 26px;margin-left: 6px;" id="season">
+                                                <button id="save_season" class="btn btn-primary active"  click-emit="setSeason">
+                                                    <span>save</span>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                  </div>
+                    <div class="col-md-6">
+                        <div class="section mt-3">
+                            <div class="mt-1 d-flex justify-content-between" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-controls="collapse2">
+                                <h5>Major Account Monitoring<span>▼</span></h5>
+                                <div>
+                                    <lable>DEC: <span id="ma_dec">0</span> - RC: <span id="ma_rc">0</span></lable>
+                                </div>
+                            </div>
+                            <div id="collapse2" class="collapse show" aria-labelledby="headingOne">
+                                <div>
+                                    <div id="card_delegated_list">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div id="player_monitoring">
                     <div class="d-flex mb-3">
                         <h5>Player Table</h5>
