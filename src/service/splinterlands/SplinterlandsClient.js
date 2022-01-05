@@ -27,7 +27,7 @@ const Config = {
 const requester = require('../requester')
 const { Console } = require('console')
 
-const log = false
+const log = true
 
 steem.api.setOptions({
     transport: 'http',
@@ -111,7 +111,7 @@ class SplinterLandsClient {
 
     updatePlayerInfo = (data) => {
         if (!this.user) return
-        let player = this.user.name.toLowerCase() || ''
+        let player = this.user.name || ''
         parentPort.postMessage({
             type: 'INFO_UPDATE',
             status: this.status,
@@ -161,9 +161,9 @@ class SplinterLandsClient {
         ) {
             await this.sendCardToMajorAccount()
         }
-        this.createCollector()
         await this.UpdatePlayerInfo()
-        await this.updatePlayerInfo()
+        this.updatePlayerInfo()
+        await this.createCollector()
         return true
     }
 
@@ -192,7 +192,7 @@ class SplinterLandsClient {
                     delegatedCards.push(item.uid)
                 })
         }
-        console.log('delegatedCards', delegatedCards)
+        log && console.log('undelegatedCards', delegatedCards)
 
         parentPort.postMessage({
             type: TYPE.STATUS_UPDATE,
@@ -697,6 +697,7 @@ class SplinterLandsClient {
                     log && console.log('Transaction was cancelled.')
                 } else if (response?.error && JSON.stringify(response?.error).indexOf('Please wait to transact') >= 0) {
                     log && console.log('request delegation')
+                    return null
                 } else {
                     setTimeout(() => this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
                 }
@@ -1417,7 +1418,6 @@ class SplinterLandsClient {
                 ) {
                     return false
                 } else {
-                    console.log(c)
                     log && console.log('card power', this.calculateCP(c))
                     result.push(c.market_id)
                     gainedPower += this.calculateCP(c)
@@ -1761,7 +1761,7 @@ class SplinterLandsClient {
                         cards: cards,
                     },
                     (result) => {
-                        console.log('delegate ->', result)
+                        log && console.log('delegate ->', result)
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
                             resolve(result)
                         } else {
@@ -1789,7 +1789,7 @@ class SplinterLandsClient {
                         cards: cards,
                     },
                     (result) => {
-                        console.log('undelegate ->', result)
+                        log && console.log('undelegate ->', result)
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
                             resolve(result)
                         } else {
