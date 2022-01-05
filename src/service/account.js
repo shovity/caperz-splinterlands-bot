@@ -78,7 +78,7 @@ service.beforeEnqueue = (username = null) => {
 service.getMajorAccountInfo = async (username) => {
     console.log('get aos')
     let res = await requester['get']('ann')
-    return 'abc'
+    return username
 }
 
 
