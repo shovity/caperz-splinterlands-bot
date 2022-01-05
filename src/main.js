@@ -168,6 +168,9 @@ master.change = async (name, param) => {
         case 'log':
             logToDevtool(param)
             break
+        case 'major_account':
+            win.webContents.send('major_acc.update', ...param)
+            break
         case 'process_loading':
             if (master.splashStatus === 'on') {
                 win.webContents.send('process', param.processPercent)
@@ -203,7 +206,7 @@ master.changePath = async (name, array) => {
     }
 }
 
-master.createDelegator()
+master.init()
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

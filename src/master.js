@@ -2,13 +2,16 @@
 // Master will run in main process
 
 const { Worker } = require('worker_threads')
-const path = require('path')
-const settings = require('./settings')
+const { v4: uuidv4 } = require('uuid')
 const {MaxPriorityQueue} = require('@datastructures-js/priority-queue')
+const path = require('path')
+
+const settings = require('./settings')
 const utils = require('./utils')
 const account = require('./service/account')
-const { v4: uuidv4 } = require('uuid')
+
 const workerService = require('./service/worker')
+const accountService = require('./service/account')
 
 const ACCOUNT_STATUS = {
     PENDING: 'PENDING',
@@ -53,6 +56,7 @@ const master = {
     priorityQueue: new MaxPriorityQueue({ priority: (a) =>  calculatePriority(a) }),
     dailyIntervalId: null,
     hourlyDeqIntervalId: null,
+    minuteMajorIntervalId: null,
     stopECR: 50,
     splashStatus: 'off',
     playerUpdaterStatus: 'stopped',
@@ -620,8 +624,9 @@ master.updateOpeningPlayerInfo = async () => {
 master.calculatePriority = calculatePriority
 master.calculateECR = calculateECR
 
-master.createDelegator = () => {
+master.init = async () => {
     workerService.createDelegator(master)
+    accountService.setMajorInterval(master)
 }
 
 

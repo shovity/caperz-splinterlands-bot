@@ -75,10 +75,21 @@ service.beforeEnqueue = (username = null) => {
     service.handleNotEnoughEcr(username)
 }
 
-service.getMajorAccountInfo = async (username) => {
+service.getMajorAccountInfo = async (username='test_test') => {
     console.log('get aos')
-    let res = await requester['get']('ann')
+    // let res = await requester['get']('ann')
     return username
+}
+
+service.setMajorInterval = async (master) => {
+    const ONE_MINUTE = 5 * 1000
+
+    master.minuteMajorIntervalId = setInterval(async () => {
+        const majorInfo = await service.getMajorAccountInfo()
+        console.log(majorInfo)
+
+        await master.change('major_account', majorInfo)
+    }, ONE_MINUTE)
 }
 
 
