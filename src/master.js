@@ -117,14 +117,16 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
 
     const config = app_setting
 
+    const isAccountPaused = () => [ACCOUNT_STATUS.PAUSED, ACCOUNT_STATUS.STOPPED].includes(
+        settings.data.account_list[accountIndex].status
+    )
+
     if (
         account_list[accountIndex].status === ACCOUNT_STATUS.RUNNING ||
-        (account_list[accountIndex].status === ACCOUNT_STATUS.PAUSED && account.status !== ACCOUNT_STATUS.PAUSED) ||
-        (delegated && account_list[accountIndex].status === ACCOUNT_STATUS.PAUSED)
+        isAccountPaused()
     ) {
         return
     }
-
 
     const proxyIndex = app_setting.proxies.findIndex(p => {
         if (proxyIp) {
@@ -178,10 +180,19 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
             }
         }
 
-        const shouldDelegate = await workerService.checkDelegate(account.username, proxy)
-        const details = await utils.getDetails(account.username)
+        const shouldDelegate = await workerService.checkDelegate(account.username, proxy) 
 
-        if (shouldDelegate && !delegated) {
+        if (isAccountPaused()) {
+            return
+        }
+
+        if (shouldDelegate) {
+            const details = await utils.getDetails(account.username)
+
+            if (isAccountPaused()) {
+                return
+            }
+
             master.delegatorWorker.instance.postMessage({
                 task: 'delegate',
                 data: {
@@ -404,8 +415,6 @@ master.enqAccounts = async () => {
         await master.priorityQueue.enqueue(account_list[i], calculatePriority(account_list[i], i))
     }
 
-    await master.dequeue()
-
     account_list = settings.data.account_list
 
     account_list = account_list.map(a => {
@@ -417,6 +426,8 @@ master.enqAccounts = async () => {
     })
 
     await master.change('account_list', { account_list })
+
+    await master.dequeue()
 }
 
 master.setIntervals = async () => {
