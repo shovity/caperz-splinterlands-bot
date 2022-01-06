@@ -1,5 +1,6 @@
 const settings = require('../settings')
 const requester = require('./requester')
+const utils = require('../utils')
 const ACCOUNT_STATUS = {
     PENDING: 'PENDING',
     DONE: 'DONE',
@@ -7,14 +8,14 @@ const ACCOUNT_STATUS = {
     STOPPED: 'STOPPED',
     NONE: 'NONE',
     PAUSED: 'PAUSED',
-    WAITING_ECR: 'WAITING_ECR'
+    WAITING_ECR: 'WAITING_ECR',
 }
 
 const MATCH_STATUS = {
     MATCHING: 'MATCHING',
     MATCHED: 'MATCHED',
     SUBMITTING: 'SUBMITTING',
-    NONE: 'NONE'
+    NONE: 'NONE',
 }
 
 const service = {}
@@ -23,7 +24,7 @@ service.handleNotEnoughEcr = (username) => {
     const account_list = settings.data.account_list
     const ecrStop = settings.data.app_setting.ecr || 0
     const ecrStart = settings.data.app_setting.startEcr || 80
-    for (let i = 0; i< account_list.length; i++) {
+    for (let i = 0; i < account_list.length; i++) {
         const ecrNow = service.calculateECR(account_list[i].updatedAt, account_list[i].ecr)
 
         if (ecrNow <= ecrStart) {
@@ -31,7 +32,7 @@ service.handleNotEnoughEcr = (username) => {
         } else if (settings.data.account_list[i].status === ACCOUNT_STATUS.WAITING_ECR) {
             settings.data.account_list[i].status = ACCOUNT_STATUS.NONE
         }
-        
+
         if (username === account_list[i].username) {
             break
         }
@@ -50,12 +51,12 @@ service.handleUpdateMatchStatus = (account, status) => {
 service.calculateECR = (lastRewardTime = 0, ecr) => {
     const ONE_MINUTE = 60 * 1000
     const ONE_HOUR = 60 * ONE_MINUTE
-    
+
     const now = Date.now()
     let recoverECR = 0
 
     if (lastRewardTime) {
-        recoverECR = +(((now - lastRewardTime) / ONE_HOUR).toFixed(2))
+        recoverECR = +((now - lastRewardTime) / ONE_HOUR).toFixed(2)
     }
 
     ecr = +(recoverECR + ecr).toFixed(2)
@@ -75,22 +76,82 @@ service.beforeEnqueue = (username = null) => {
     service.handleNotEnoughEcr(username)
 }
 
-service.getMajorAccountInfo = async (username='test_test') => {
-    console.log('get aos')
-    // let res = await requester['get']('ann')
-    return username
+service.getMajorAccountInfo = async () => {
+    const username = settings.data.app_setting.majorAccount?.player
+    if (!username) {
+        return {}
+    }
+    const { result } = await requester['post']('https://api.hive.blog', {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'rc_api.find_rc_accounts',
+        params: {
+            accounts: [username],
+        },
+    })
+    let rc = 0
+    let a = new Date().getTime() - result.rc_accounts[0].rc_manabar.last_update_time * 1000
+    let r = result.rc_accounts[0].max_rc
+    let i = result.rc_accounts[0].rc_manabar.current_mana + (a * r) / 432e6
+    rc = (100 * i) / r
+    let res = await requester['get'](
+        `https://game-api.splinterlands.com/players/balances?token_type=DEC&players=${username}`
+    )
+    const dec = res[0].balance
+    res = await requester['get'](`https://api.splinterlands.io/cards/collection/${username}`)
+
+    const cards = res.cards.filter((c) => {
+        if (
+            c.delegated_to && c.player == username
+        ) {
+            return true
+        }
+    })
+    let availablePower = 0
+    const availableCards = res.cards.filter((c) => {
+        if (
+            !c.delegated_to && utils.calculateCP(c) >= 100
+        ) {
+            availablePower += utils.calculateCP(c)
+            return true
+        }
+    })
+    const formattedList = []
+    cards.forEach(c => {
+        const index = formattedList.findIndex(cd => cd.delegatedTo == c.delegated_to)
+        if (index == -1) {
+            formattedList.push({
+                delegatedTo: c.delegated_to,
+                quantity: 1,
+                totalPower: utils.calculateCP(c)
+            })
+        } else {
+            formattedList[index].quantity++
+            formattedList[index].totalPower += utils.calculateCP(c)
+        }
+    })
+    settings.data.app_setting.majorAccount.rc = rc
+    settings.data.app_setting.majorAccount.availablePower = availablePower
+    console.log({
+        rc: rc || 0,    
+        availablePower: availablePower,
+        delegatedCards: formattedList
+    })
+    return {
+        rc: rc || 0,    
+        availablePower: availablePower,
+        delegatedCards: formattedList
+    }
 }
 
 service.setMajorInterval = async (master) => {
-    const ONE_MINUTE = 5 * 1000
-
+    const ONE_MINUTE = 60 * 1000
+    const majorInfo = await service.getMajorAccountInfo()
+    await master.change('major_account', majorInfo)
     master.minuteMajorIntervalId = setInterval(async () => {
         const majorInfo = await service.getMajorAccountInfo()
-        console.log(majorInfo)
-
         await master.change('major_account', majorInfo)
     }, ONE_MINUTE)
 }
-
 
 module.exports = service

@@ -169,7 +169,7 @@ master.change = async (name, param) => {
             logToDevtool(param)
             break
         case 'major_account':
-            win.webContents.send('major_acc.update', ...param)
+            win.webContents.send('major_acc.update', param)
             break
         case 'process_loading':
             if (master.splashStatus === 'on') {

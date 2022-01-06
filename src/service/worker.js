@@ -24,7 +24,7 @@ service.handleMessage = (worker, message, master) => {
         case 'collector':
             service.collectorMesssageHandler(worker, message, master)
             break
-        
+
         case 'test':
             service.testMessageHandler(worker, message, master)
             break
@@ -61,23 +61,24 @@ service.delegatorMessageHandler = async (worker, message, master) => {
     const account_list = settings.data.account_list
 
     const accountIndex = account_list.findIndex(
-        (a) => a.username === message.player || 
-        a.username === message.data?.username || 
-        a.username === message.data?.player
-    )    
+        (a) =>
+            a.username === message.player ||
+            a.username === message.data?.username ||
+            a.username === message.data?.player
+    )
 
     const account = account_list[accountIndex]
 
     if (message.name === 'delegate' && message.status === 'done') {
         await master.handleAddAccount(
-            { 
+            {
                 username: account.username,
                 postingKey: account.postingKey,
                 masterKey: account.masterKey,
                 token: account.token,
             },
             account.proxy,
-            1,
+            1
         )
     } else if (message.name === 'undelegate') {
         let proxy = account.proxy
@@ -93,7 +94,7 @@ service.delegatorMessageHandler = async (worker, message, master) => {
         if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
             master.delegatorWorker.instance.postMessage({
                 action: 'delegating_continue',
-            })        
+            })
         }
     }
 }
@@ -168,8 +169,8 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 master.delegatorWorker.instance.postMessage({
                     task: 'undelegate',
                     data: {
-                        ...message.param
-                    }
+                        ...message.param,
+                    },
                 })
             }
             break
@@ -263,7 +264,7 @@ service.createDelegator = async (master) => {
         worker: {
             name: 'delegator',
         },
-        config: settings.data.app_setting
+        config: settings.data.app_setting,
     })
 }
 
@@ -272,8 +273,14 @@ service.checkDelegate = async (player, proxy) => {
     const minDlgPower = appSetting.dlgMinPower || 0
     const res = await utils.getDetails(player, proxy)
     const cp = res.collection_power
-    return (minDlgPower > cp) && appSetting.modeDelegate && appSetting.majorAccount?.player && appSetting.majorAccount?.postingKey
+    return (
+        minDlgPower > cp &&
+        appSetting.modeDelegate &&
+        appSetting.majorAccount?.player &&
+        appSetting.majorAccount?.postingKey &&
+        cp <= appSetting.majorAccount.availablePower &&
+        appSetting.majorAccount.rc >= 5
+    )
 }
-
 
 module.exports = service

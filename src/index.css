@@ -344,3 +344,10 @@ button.active {
 .foil-selected {
     opacity: 1;
 }
+#card_delegated_list label {
+    font-size: 10px;
+    line-height: 12px;
+}
+#card_delegated_list >div>div {
+    height: 12px;
+}
