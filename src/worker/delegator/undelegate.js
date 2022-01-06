@@ -5,7 +5,7 @@ const undelegate = async (delegator, task) => {
     const majorClient = delegator.majorAccountClient
     changeStatus(delegator, task, 'running')
     if (majorClient) {
-        const res = await majorClient.undelegatePower(task.data?.cards)
+        const res = await majorClient.undelegatePower(task.data?.cards, task.data?.player || task.data?.username)
         if (res) {
             console.log('undelegate done')
         } else {

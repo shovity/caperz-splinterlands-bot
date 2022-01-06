@@ -1775,7 +1775,7 @@ class SplinterLandsClient {
             log && console.log(error)
         }
     }
-    async undelegatePower(cards) {
+    async undelegatePower(cards, player) {
         try {
             if (cards.length == 0) {
                 return null
@@ -1796,6 +1796,14 @@ class SplinterLandsClient {
                         }
                     }
                 )
+            })
+            const result = await this.sendRequest('players/details', {
+                name: player,
+            })
+            parentPort.postMessage({
+                type: 'INFO_UPDATE',
+                player: player,
+                power: result.collection_power
             })
             const r = await prm
             return r

@@ -681,6 +681,10 @@ ori.use('event store emitter storage', () => {
                 </div>`
             }
         })
+        if (html1 == '' && html2 == '') {
+            $('#card_delegated_list').html('<p>No card delegation</p>')
+            return
+        }
         $('#card_delegated_list').html('<div class="w-50">'+html1+'</div>'+'<div class="w-50">'+html2+'</div>')
     })
 

@@ -3,7 +3,6 @@ const { parentPort, workerData } = require('worker_threads')
 const splinterlandsWorker = require('./splinterlands/worker')
 const test = require('./test/index')
 const delegator = require('./delegator')
-const collector = require('./collector')
 
 
 // const io = require('socket.io-client')
@@ -33,10 +32,6 @@ switch (workerData.worker.name) {
 
     case 'delegator':
         delegator(workerData)
-        break
-
-    case 'collector':
-        collector(workerData)
         break
 
     default:
