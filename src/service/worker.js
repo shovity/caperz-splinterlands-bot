@@ -91,6 +91,14 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
         await master.dequeue()
 
+        if (message.data.power) {
+            account.power = message.data.power
+            await master.changePath('account_list', [{
+                username: account.username,
+                power: account.power,
+            }])
+        }
+
         if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
             master.delegatorWorker.instance.postMessage({
                 action: 'delegating_continue',
@@ -274,7 +282,7 @@ service.checkDelegate = async (player, proxy) => {
     const minDlgPower = appSetting.dlgMinPower || 0
     const res = await utils.getDetails(player, proxy)
     const cp = res.collection_power
-    
+
     return (
         minDlgPower > cp &&
         appSetting.modeDelegate &&
