@@ -165,13 +165,14 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
             if (message.status === 'DONE') {
                 worker.instance.terminate()
-
-                master.delegatorWorker.instance.postMessage({
-                    task: 'undelegate',
-                    data: {
-                        ...message.param,
-                    },
-                })
+                if (app_setting.majorAccount?.rc >= 5) {
+                    master.delegatorWorker.instance.postMessage({
+                        task: 'undelegate',
+                        data: {
+                            ...message.param,
+                        },
+                    })
+                }
             }
             break
 

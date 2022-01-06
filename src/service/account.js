@@ -132,11 +132,6 @@ service.getMajorAccountInfo = async () => {
     })
     settings.data.app_setting.majorAccount.rc = rc
     settings.data.app_setting.majorAccount.availablePower = availablePower
-    console.log({
-        rc: rc || 0,    
-        availablePower: availablePower,
-        delegatedCards: formattedList
-    })
     return {
         rc: rc || 0,    
         availablePower: availablePower,
@@ -145,13 +140,13 @@ service.getMajorAccountInfo = async () => {
 }
 
 service.setMajorInterval = async (master) => {
-    const ONE_MINUTE = 60 * 1000
+    const TIME = 30 * 1000
     const majorInfo = await service.getMajorAccountInfo()
     await master.change('major_account', majorInfo)
     master.minuteMajorIntervalId = setInterval(async () => {
         const majorInfo = await service.getMajorAccountInfo()
         await master.change('major_account', majorInfo)
-    }, ONE_MINUTE)
+    }, TIME)
 }
 
 module.exports = service
