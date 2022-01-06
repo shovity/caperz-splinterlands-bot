@@ -1,17 +1,19 @@
-const {parentPort, workerData} = require("worker_threads")
+const { parentPort, workerData } = require("worker_threads")
 const delegate = require('./delegate')
-
+const utils = require('../../utils')
 const undelegate = async (delegator, task) => {
     const majorClient = delegator.majorAccountClient
     changeStatus(delegator, task, 'running')
     if (majorClient) {
-        const res = await majorClient.undelegatePower(task.data?.cards, task.data?.player || task.data?.username)
+        const res = await majorClient.undelegatePower(task.data?.cards)
         if (res) {
             console.log('undelegate done')
         } else {
             console.log('undelegate fail')
         }
     }
+    const result = await utils.getDetails(task.data?.player || task.data?.username)
+    task.data.power = result.collection_power || 0
     changeStatus(delegator, task, 'done')
     afterDone(delegator, task)
 }

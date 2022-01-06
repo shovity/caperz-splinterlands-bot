@@ -349,9 +349,9 @@ ori.use('event store emitter storage', () => {
                 requireCard.forEach((rc) => {
                     if (require_card.value) {
                         require_card.value += `, `
-                        require_card.value += rc.id.split('_')[1]
+                        require_card.value += rc.name.split('_')[1]
                     } else {
-                        require_card.value = rc.id.split('_')[1]
+                        require_card.value = rc.name.split('_')[1]
                     }
                     const card = document.querySelector(`#${rc.id}`)
                     card.querySelector(`.max-dec-value`).value = rc.maxDec
@@ -738,17 +738,18 @@ ori.use('event store emitter storage', () => {
         const rc = requireCard
         requireCard = []
         rc.forEach((c) => {
-            console.log(c)
-            const card = document.querySelector(`#${c.id}`)
-            const maxDec = card.querySelector(`.max-dec-value`).value
+            const cardSelector = document.querySelector(`#${c.id}`)
+            const maxDec = cardSelector.querySelector(`.max-dec-value`).value
             requireCard.push({
                 id: c.id,
                 maxDec: maxDec,
+                name: capitalizeFirstLetter(card.name.toLowerCase())
             })
         })
         requireCard.push({
             id: id,
             maxDec: 0,
+            name: capitalizeFirstLetter(card.name.toLowerCase())
         })
         let html = `<div class="row mb-3" id="${id}">
         <div class="col-md-2" style="padding: 0;padding-left: 12px;">
@@ -786,15 +787,16 @@ ori.use('event store emitter storage', () => {
         requireCard.forEach((c) => {
             if (require_card.value) {
                 require_card.value += `, `
-                require_card.value += c.id.split('_')[1]
+                require_card.value += c.name
             } else {
-                require_card.value = c.id.split('_')[1]
+                require_card.value = c.name
             }
             const card = document.querySelector(`#${c.id}`)
             const maxDec = card.querySelector(`.max-dec-value`).value
             res.push({
                 id: c.id,
                 maxDec: maxDec,
+                name: c.name,
             })
         })
         requireCard = res
