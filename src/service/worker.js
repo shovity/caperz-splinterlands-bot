@@ -180,6 +180,16 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                             ...message.param,
                         },
                     })
+                } else {
+                    let proxy = account_list[accountIndex].proxy
+
+                    const proxyIndex = app_setting.proxies.findIndex((p) => p.ip === proxy)
+                    if (proxyIndex >= 0) {
+                        app_setting.proxies[proxyIndex].count--
+                        await master.change('app_setting', { app_setting })
+                    }
+
+                    await master.dequeue()
                 }
             }
             break
