@@ -90,9 +90,9 @@ service.getMajorAccountInfo = async () => {
         },
     })
     let rc = 0
-    let a = new Date().getTime() - result.rc_accounts[0].rc_manabar.last_update_time * 1000
-    let r = result.rc_accounts[0].max_rc
-    let i = result.rc_accounts[0].rc_manabar.current_mana + (a * r) / 432e6
+    let a = Math.ceil(new Date().getTime()/1000) - result.rc_accounts[0].rc_manabar.last_update_time
+    let r = parseFloat(result.rc_accounts[0].max_rc)
+    let i = parseFloat(result.rc_accounts[0].rc_manabar.current_mana) + (a * r) / 432e3
     rc = (100 * i) / r
     let res = await requester['get'](
         `https://game-api.splinterlands.com/players/balances?token_type=DEC&players=${username}`
