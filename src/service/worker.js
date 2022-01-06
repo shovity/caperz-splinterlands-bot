@@ -274,12 +274,13 @@ service.checkDelegate = async (player, proxy) => {
     const minDlgPower = appSetting.dlgMinPower || 0
     const res = await utils.getDetails(player, proxy)
     const cp = res.collection_power
+    
     return (
         minDlgPower > cp &&
         appSetting.modeDelegate &&
         appSetting.majorAccount?.player &&
         appSetting.majorAccount?.postingKey &&
-        cp <= appSetting.majorAccount.availablePower &&
+        minDlgPower - cp <= appSetting.majorAccount.availablePower &&
         appSetting.majorAccount.rc >= 5
     )
 }
