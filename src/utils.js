@@ -2,7 +2,8 @@ var steem = require('steem')
 const eosjs_ecc = require('eosjs-ecc')
 const qs = require('qs')
 const requester = require('./service/requester')
-
+const cardsDetail = require('../src/worker/splinterlands/data/cardsDetails.json')
+const gameSettings = require('../src/worker/splinterlands/data/settings.json')
 const utils = {}
 
 const splinterHosts = [
@@ -191,6 +192,56 @@ utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {
             settings.data.account_list[accountIndex].updatedAt = updatedAt
         }
     }
+}
+
+utils.calculateCP = (c) => {
+    const settings = gameSettings
+    function getMaxXp(details, edition, gold) {
+        let rarity = details.rarity
+        let tier = details.tier
+        if (edition == 4 || tier >= 4) {
+            let rates = gold ? settings.combine_rates_gold[rarity - 1] : settings.combine_rates[rarity - 1]
+            return rates[rates.length - 1]
+        } else return settings.xp_levels[rarity - 1][settings.xp_levels[rarity - 1].length - 1]
+    }
+    const card = c.xp > 1 ? { ...c, alpha_xp: 0 } : { ...c, alpha_xp: null }
+    const details = cardsDetail.find((o) => o.id === card.card_detail_id)
+    var alpha_bcx = 0,
+        alpha_dec = 0
+    var xp = Math.max(card.xp - card.alpha_xp, 0)
+    let burn_rate =
+        card.edition == 4 || details.tier >= 4
+            ? settings.dec.untamed_burn_rate[details.rarity - 1]
+            : settings.dec.burn_rate[details.rarity - 1]
+    if (card.alpha_xp) {
+        var alpha_bcx_xp = settings[card.gold ? 'gold_xp' : 'alpha_xp'][details.rarity - 1]
+        alpha_bcx = Math.max(card.gold ? card.alpha_xp / alpha_bcx_xp : card.alpha_xp / alpha_bcx_xp, 1)
+        alpha_dec = burn_rate * alpha_bcx * settings.dec.alpha_burn_bonus
+        if (card.gold) alpha_dec *= settings.dec.gold_burn_bonus
+    }
+    var xp_property =
+        card.edition == 0 || (card.edition == 2 && details.id < 100)
+            ? card.gold
+                ? 'gold_xp'
+                : 'alpha_xp'
+            : card.gold
+            ? 'beta_gold_xp'
+            : 'beta_xp'
+    var bcx_xp = settings[xp_property][details.rarity - 1]
+    var bcx = Math.max(card.gold ? xp / bcx_xp : (xp + bcx_xp) / bcx_xp, 1)
+    if (card.edition == 4 || details.tier >= 4) bcx = card.xp
+    if (card.alpha_xp) bcx--
+    var dec = burn_rate * bcx
+    if (card.gold) {
+        const gold_burn_bonus_prop = details.tier >= 7 ? 'gold_burn_bonus_2' : 'gold_burn_bonus'
+        dec *= settings.dec[gold_burn_bonus_prop]
+    }
+    if (card.edition == 0) dec *= settings.dec.alpha_burn_bonus
+    if (card.edition == 2) dec *= settings.dec.promo_burn_bonus
+    var total_dec = dec + alpha_dec
+    if (card.xp >= getMaxXp(details, card.edition, card.gold)) total_dec *= settings.dec.max_burn_bonus
+    if (details.tier >= 7) total_dec = total_dec / 2
+    return total_dec
 }
 
 

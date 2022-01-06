@@ -330,20 +330,23 @@ ori.use('event store emitter storage', () => {
                             </div>
                             </div>
                             <div class="col-md-8 require-card-dec">
-                                <p style="font-size: 12px;margin: 0px">${capitalizeFirstLetter(rcard.name.toLowerCase())}</p>
+                                <p style="font-size: 12px;margin: 0px">${capitalizeFirstLetter(
+                                    rcard.name.toLowerCase()
+                                )}</p>
                                 <div class="d-flex">
                                 <p class="max-dec">Max DEC: </p>
                                     <input class="form-control max-dec-value">
                                 </div>
                             </div>
                             <div class="col-md-1 d-flex justify-content-center align-items-center">
-                                <button type="button" class="btn-close" click-emit="require_card.remove:${rc.id}"></button>
+                                <button type="button" class="btn-close" click-emit="require_card.remove:${
+                                    rc.id
+                                }"></button>
                             </div>
                         </div>`
                     document.getElementById('require_card_list').innerHTML += html
                 })
                 requireCard.forEach((rc) => {
-                    
                     if (require_card.value) {
                         require_card.value += `, `
                         require_card.value += rc.id.split('_')[1]
@@ -522,9 +525,15 @@ ori.use('event store emitter storage', () => {
                     targets: 9,
                     render: function (data, type, row) {
                         if (
-                            ['RUNNING', 'PENDING', 'DONE', 'RENTING', 'COLLECTING', 'TRANSFERRING', 'DELEGATING'].includes(
-                                data.status
-                            )
+                            [
+                                'RUNNING',
+                                'PENDING',
+                                'DONE',
+                                'RENTING',
+                                'COLLECTING',
+                                'TRANSFERRING',
+                                'DELEGATING',
+                            ].includes(data.status)
                         ) {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
@@ -655,7 +664,24 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('major_acc.update', (event, data) => {
-        console.log('ma', data)
+        const rc = +data.rc
+        const availablePower = +data.availablePower
+        ma_rc.innerText = rc.toFixed(2) + '%'
+        ma_available_power.innerText = availablePower
+        let html1 = ''
+        let html2 = ''
+        data.delegatedCards.slice(0, 14).forEach((card, index) => {
+            if (index < 7) {
+                html1 += `<div class="mb-1">
+                    <label>Delegated ${card.totalPower} power (${card.quantity} card(s)) to ${card.delegatedTo}</label>
+                </div>`
+            } else {
+                html2 += `<div class="mb-1">
+                    <label>Delegated ${card.totalPower} power (${card.quantity} card(s)) to ${card.delegatedTo}</label>
+                </div>`
+            }
+        })
+        $('#card_delegated_list').html('<div class="w-50">'+html1+'</div>'+'<div class="w-50">'+html2+'</div>')
     })
 
     ipc.on('process', (event, data) => {
@@ -764,7 +790,7 @@ ori.use('event store emitter storage', () => {
             const maxDec = card.querySelector(`.max-dec-value`).value
             res.push({
                 id: c.id,
-                maxDec: maxDec
+                maxDec: maxDec,
             })
         })
         requireCard = res
