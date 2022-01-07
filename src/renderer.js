@@ -43,6 +43,8 @@ ori.use('event store emitter storage', () => {
                 return "<span class='status_black'>Not in whitelist</span>"
             case 'DELEGATING':
                 return "<span class='status_yellow'>Delegating</span>"
+            case 'UNDELEGATING':
+                return "<span class='status_yellow'>Undelegating</span>"
             default:
                 return "<span class='status_gray'>None</span>"
         }

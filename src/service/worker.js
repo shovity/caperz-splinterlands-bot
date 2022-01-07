@@ -9,6 +9,17 @@ const MESSAGE_STATUS = {
     CREATE_COLLECTOR: 'CREATE_COLLECTOR',
 }
 
+const ACCOUNT_STATUS = {
+    PENDING: 'PENDING',
+    DONE: 'DONE',
+    RUNNING: 'RUNNING',
+    STOPPED: 'STOPPED',
+    NONE: 'NONE',
+    PAUSED: 'PAUSED',
+    WAITING_ECR: 'WAITING_ECR',
+    UNDELEGATING: 'undelegating',
+}
+
 const service = {}
 
 service.handleMessage = (worker, message, master) => {
@@ -91,13 +102,16 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
         await master.dequeue()
 
-        if (message.data.power) {
-            account.power = message.data.power
-            await master.changePath('account_list', [{
-                username: account.username,
-                power: account.power,
-            }])
+        const accountUpdate = {
+            username: account.username,
+            status: ACCOUNT_STATUS.DONE
         }
+
+        if (message.data.power || message.data.power === 0) {
+            accountUpdate.power = message.data.power
+        }
+
+        await master.changePath('account_list', [accountUpdate])
 
         if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
             master.delegatorWorker.instance.postMessage({
@@ -169,17 +183,19 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
             account_list[accountIndex].status = message.status
 
-            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-
             if (message.status === 'DONE') {
                 worker.instance.terminate()
+
                 if (app_setting.majorAccount?.rc >= 5) {
+                    account_list[accountIndex].status = ACCOUNT_STATUS.UNDELEGATING
+
                     master.delegatorWorker.instance.postMessage({
                         task: 'undelegate',
                         data: {
                             ...message.param,
                         },
                     })
+
                 } else {
                     let proxy = account_list[accountIndex].proxy
 
@@ -192,6 +208,8 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                     await master.dequeue()
                 }
             }
+
+            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
             break
 
         case MESSAGE_STATUS.MESSAGE:
