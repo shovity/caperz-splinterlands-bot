@@ -83,7 +83,7 @@ parentPort.on('message', (message) => {
         const pendingDelegateTasks = delegator.delegateQueue.filter(e => e.status === 'pending')
         const task = pendingDelegateTasks.shift()
 
-        if (task) {
+        if (task && !delegator.isRunning()) {
             delegate(delegator, task)
         }
     }

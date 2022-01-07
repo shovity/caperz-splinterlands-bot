@@ -44,7 +44,7 @@ ori.use('event store emitter storage', () => {
             case 'DELEGATING':
                 return "<span class='status_yellow'>Delegating</span>"
             case 'UNDELEGATING':
-                return "<span class='status_yellow'>Undelegating</span>"
+                return "<span class='status_blue'>Undelegating</span>"
             default:
                 return "<span class='status_gray'>None</span>"
         }
@@ -535,6 +535,7 @@ ori.use('event store emitter storage', () => {
                                 'COLLECTING',
                                 'TRANSFERRING',
                                 'DELEGATING',
+                                'UNDELEGATING',
                             ].includes(data.status)
                         ) {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">

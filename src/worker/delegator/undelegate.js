@@ -6,11 +6,11 @@ const undelegate = async (delegator, task) => {
     changeStatus(delegator, task, 'running')
     if (majorClient) {
         const res = await majorClient.undelegatePower(task.data?.cards)
-        if (res) {
-            console.log('undelegate done')
-        } else {
-            console.log('undelegate fail')
-        }
+        // if (res) {
+        //     console.log('undelegate done')
+        // } else {
+        //     console.log('undelegate fail')
+        // }
     }
     const result = await utils.getDetails(task.data?.player || task.data?.username)
     task.data.power = result.collection_power || 0

@@ -51,7 +51,6 @@ service.collectorMesssageHandler = async (worker, message, master) => {
 
     const accountIndex = account_list.findIndex((a) => a.username === message.player)
     if (typeof account_list[accountIndex] == 'undefined') {
-        console.log('log 124', message.player)
         service.beforeTerminateWorker(worker, master)
         worker.instance.terminate()
         await master.dequeue()
@@ -79,6 +78,10 @@ service.delegatorMessageHandler = async (worker, message, master) => {
     )
 
     const account = account_list[accountIndex]
+
+    master.change('log', {
+        message: `message name: ${message.name}, player: ${message.player || message.data?.username || message.data?.player}`
+    })
 
     if (message.name === 'delegate' && message.status === 'done') {
         await master.handleAddAccount(
@@ -207,9 +210,10 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
                     await master.dequeue()
                 }
+
+                await master.changePath('account_list', [{ ...account_list[accountIndex] }])
             }
 
-            await master.changePath('account_list', [{ ...account_list[accountIndex] }])
             break
 
         case MESSAGE_STATUS.MESSAGE:

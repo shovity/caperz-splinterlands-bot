@@ -180,22 +180,41 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
             }
         }
 
-        const shouldDelegate = await workerService.checkDelegate(account.username, proxy) 
-
-        if (isAccountPaused()) {
-            return
-        }
-
-        if (shouldDelegate) {
-            const details = await utils.getDetails(account.username)
+        try {
+            const shouldDelegate = await workerService.checkDelegate(account.username, proxy) 
 
             if (isAccountPaused()) {
                 return
             }
-
-            master.delegatorWorker.instance.postMessage({
-                task: 'delegate',
-                data: {
+    
+            if (shouldDelegate) {
+                const details = await utils.getDetails(account.username, proxy)
+    
+                if (isAccountPaused()) {
+                    return
+                }
+    
+                master.delegatorWorker.instance.postMessage({
+                    task: 'delegate',
+                    data: {
+                        username: account.username,
+                        postingKey: account.postingKey,
+                        masterKey: account.masterKey,
+                        token: account.token,
+                        proxy,
+                        delegated,
+                        config,
+                        spsToken: user.token,
+                        delegatePower: app_setting.dlgMinPower - details.collection_power,
+                        currentPower: details.collection_power
+                    }
+                })
+                account_list[accountIndex].status = 'DELEGATING'
+            } else {
+                const worker = await master.add({
+                    worker: {
+                        name: 'splinterlands',
+                    },
                     username: account.username,
                     postingKey: account.postingKey,
                     masterKey: account.masterKey,
@@ -203,28 +222,19 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
                     proxy,
                     delegated,
                     config,
-                    spsToken: user.token,
-                    delegatePower: app_setting.dlgMinPower - details.collection_power,
-                    currentPower: details.collection_power
-                }
-            })
-            account_list[accountIndex].status = 'DELEGATING'
-        } else {
-            const worker = await master.add({
-                worker: {
-                    name: 'splinterlands',
-                },
-                username: account.username,
-                postingKey: account.postingKey,
-                masterKey: account.masterKey,
-                token: account.token,
-                proxy,
-                delegated,
-                config,
-                spsToken: user.token
-            })
+                    spsToken: user.token
+                })
+    
+                account_list[accountIndex].workerId = worker.id
+            }
+        } catch (err) {
+            master.change('log', {message: 'handleAddAccount', err})
 
-            account_list[accountIndex].workerId = worker.id
+            if (!delegated) {
+                app_setting.proxies[proxyIndex].count--
+
+                await master.change('app_setting', { app_setting })
+            }
         }
     } else {
         account_list[accountIndex].status = ACCOUNT_STATUS.PENDING
@@ -347,6 +357,10 @@ master.removeAll = async () => {
     master.workers = []
 
     for (const worker of workers) {
+        if (worker.name === 'delegator') {
+            continue
+        }
+        
         master.workers = workers.filter(w => w.id !== worker.id)
         await worker.instance.terminate()
         worker.status = 'stopped'
