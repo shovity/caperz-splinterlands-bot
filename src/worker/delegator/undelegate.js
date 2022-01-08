@@ -4,6 +4,16 @@ const utils = require('../../utils')
 const undelegate = async (delegator, task) => {
     const majorClient = delegator.majorAccountClient
     changeStatus(delegator, task, 'running')
+
+    let timeout = 0 
+    
+    const timeoutInterval = setInterval(() => {
+        timeout = 1
+        changeStatus(delegator, task, 'done')
+        afterDone(delegator, task)
+        clearInterval(timeoutInterval)
+    }, 60000)
+
     if (majorClient) {
         const res = await majorClient.undelegatePower(task.data?.cards)
         // if (res) {
@@ -12,6 +22,13 @@ const undelegate = async (delegator, task) => {
         //     console.log('undelegate fail')
         // }
     }
+
+    if (!timeout) {
+        clearInterval(timeoutInterval)
+    } else {
+        return
+    }
+
     const result = await utils.getDetails(task.data?.player || task.data?.username)
     task.data.power = result.collection_power || 0
     changeStatus(delegator, task, 'done')
