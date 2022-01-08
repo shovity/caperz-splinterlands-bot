@@ -1453,35 +1453,38 @@ class SplinterLandsClient {
                     if (!res) {
                         return
                     }
-                    res.sort((a, b) => {
-                        return +a.buy_price - +b.buy_price
-                    }).filter((c) => {
-                        if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
-                            return false
-                        }
-
-                        if (c.unlock_date && new Date(c.unlock_date) >= Date.now()) {
-                            return false
-                        }
-
-                        if (
-                            c.player != c.last_used_player &&
-                            c.last_used_date &&
-                            Date.now() - new Date(c.last_used_date) < 1000 * 60 * 60 * 24
-                        ) {
-                            if (
-                                c.last_transferred_date &&
-                                Date.now() - new Date(c.last_used_date) > Date.now() - new Date(c.last_transferred_date)
-                            ) {
+                    const cardsList = res
+                        .sort((a, b) => {
+                            return +a.buy_price - +b.buy_price
+                        })
+                        .filter((c) => {
+                            if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
                                 return false
                             }
-                        }
-                        if (c.buy_price > card.dec) {
-                            return false
-                        }
-                        return true
-                    })
-                    if (res[0]) {
+
+                            if (c.unlock_date && new Date(c.unlock_date) >= Date.now()) {
+                                return false
+                            }
+
+                            if (
+                                c.player != c.last_used_player &&
+                                c.last_used_date &&
+                                Date.now() - new Date(c.last_used_date) < 1000 * 60 * 60 * 24
+                            ) {
+                                if (
+                                    c.last_transferred_date &&
+                                    Date.now() - new Date(c.last_used_date) >
+                                        Date.now() - new Date(c.last_transferred_date)
+                                ) {
+                                    return false
+                                }
+                            }
+                            if (parseFloat(c.buy_price) > card.dec) {
+                                return false
+                            }
+                            return true
+                        })
+                    if (cardsList) {
                         const id = res[0].market_id
                         const prm = new Promise((resolve, reject) => {
                             this.broadcastCustomJson(
@@ -1797,7 +1800,7 @@ class SplinterLandsClient {
                     }
                 )
             })
-            
+
             const r = await prm
             return r
         } catch (error) {
@@ -1855,7 +1858,7 @@ class SplinterLandsClient {
             if (res.battles) {
                 const battles = res.battles
                 const r = await requester.post(
-                    'http://103.161.39.188:3332/api/v2/teams',
+                    'https://nftauto.online/api/v2/teams',
                     {
                         battles: battles,
                     },
@@ -1868,6 +1871,102 @@ class SplinterLandsClient {
             }
         } catch (error) {
             log && console.log(error)
+        }
+    }
+    async rankup() {
+        const leagueData = [
+            {
+                minRating: 0,
+                minPower: 0,
+            },
+            {
+                minRating: 100,
+                minPower: 0,
+            },
+            {
+                minRating: 400,
+                minPower: 1000,
+            },
+            {
+                minRating: 700,
+                minPower: 5000,
+            },
+            {
+                minRating: 1000,
+                minPower: 15000,
+            },
+            {
+                minRating: 1300,
+                minPower: 40000,
+            },
+            {
+                minRating: 1600,
+                minPower: 70000,
+            },
+            {
+                minRating: 1900,
+                minPower: 100000,
+            },
+            {
+                minRating: 2200,
+                minPower: 150000,
+            },
+            {
+                minRating: 2500,
+                minPower: 200000,
+            },
+            {
+                minRating: 2800,
+                minPower: 250000,
+            },
+            {
+                minRating: 3100,
+                minPower: 325000,
+            },
+            {
+                minRating: 3400,
+                minPower: 400000,
+            },
+            {
+                minRating: 3700,
+                minPower: 500000,
+            },
+            {
+                minRating: 4200,
+                minPower: 500000,
+            },
+            {
+                minRating: 4700,
+                minPower: 500000,
+            },
+        ]
+        try {
+            const power = this.user.collection_power
+            const rating = this.user.rating
+            let rank = -1
+            leagueData.forEach((league) => {
+                if (power >= league.minPower && rating >= league.minRating) {
+                    rank++
+                }
+            })
+            if (rank > this.user.season_max_league) {
+                const prm = new Promise((resolve, reject) => {
+                    this.broadcastCustomJson('sm_advance_league', 'Advance League', {}, (result) => {
+                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                            resolve(result)
+                        } else {
+                            resolve(null)
+                        }
+                    })
+                })
+                const r = await prm
+                return r
+            } else {
+                return
+            }
+        } catch (error) {
+            log && console.log(error)
+            return error
         }
     }
 }

@@ -182,6 +182,11 @@ ori.use('event store emitter storage', () => {
             modeTransfer: mode_transfer.checked,
         })
     })
+    event.listen('modeRankupToggle', () => {
+        ipc.send('setting.save', {
+            modeRankup: mode_rankup.checked,
+        })
+    })
     event.listen('modeClaimQuestToggle', () => {
         ipc.send('setting.save', {
             modeClaimQuest: mode_claim_quest.checked,
@@ -311,6 +316,7 @@ ori.use('event store emitter storage', () => {
         mode_rental.checked = data.modeRental
         mode_delegate.checked = data.modeDelegate
         mode_transfer.checked = data.modeTransfer
+        mode_rankup.checked = data.modeRankup
         mode_claim_quest.checked = data.modeClaimQuest
         mode_collect_season_reward.checked = data.modeCollectSeasonReward
         transfer_keep_dec.value = data.transferKeepDec
@@ -333,7 +339,7 @@ ori.use('event store emitter storage', () => {
                             </div>
                             <div class="col-md-8 require-card-dec">
                                 <p style="font-size: 12px;margin: 0px">${capitalizeFirstLetter(
-                                    rcard.name.toLowerCase()
+                                    rc.name.toLowerCase()
                                 )}</p>
                                 <div class="d-flex">
                                 <p class="max-dec">Max DEC: </p>
@@ -351,9 +357,9 @@ ori.use('event store emitter storage', () => {
                 requireCard.forEach((rc) => {
                     if (require_card.value) {
                         require_card.value += `, `
-                        require_card.value += rc.name.split('_')[1]
+                        require_card.value += rc.name
                     } else {
-                        require_card.value = rc.name.split('_')[1]
+                        require_card.value = rc.name
                     }
                     const card = document.querySelector(`#${rc.id}`)
                     card.querySelector(`.max-dec-value`).value = rc.maxDec
@@ -746,7 +752,7 @@ ori.use('event store emitter storage', () => {
             requireCard.push({
                 id: c.id,
                 maxDec: maxDec,
-                name: capitalizeFirstLetter(card.name.toLowerCase())
+                name: capitalizeFirstLetter(c.name.toLowerCase())
             })
         })
         requireCard.push({

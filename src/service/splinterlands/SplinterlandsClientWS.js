@@ -166,6 +166,9 @@ class WSSplinterlandsClient {
         const userName = this.client.getUserName()
         const currentTimestamp = new Date().getTime() / 1000
         log && console.log('CheckCondition->>', userName)
+        if (this.config.modeRankup) {
+            await this.client.rankup()
+        }
         if (this.initialDec == null) {
             this.initialDec =
                 this.client.getBalance('DEC') +
