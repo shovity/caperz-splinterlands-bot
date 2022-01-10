@@ -179,17 +179,13 @@ class WSSplinterlandsClient {
                     this.config.expectedPower
         }
         if (
-            (this.client.masterKey &&
-                this.config.modeRental &&
-                this.config.expectedPower &&
-                this.config.maxDec &&
-                this.config.maxDec * this.config.rentalDay > this.initialDec - this.client.getBalance('DEC') &&
-                this.config.rentalDay &&
-                this.client.user.collection_power < this.config.expectedPower) ||
-            (this.client.masterKey &&
-                !this.client.rentRequireCardDone &&
-                this.config.modeRental &&
-                this.config.requireCard.length)
+            this.client.masterKey &&
+            this.config.modeRental &&
+            this.config.expectedPower &&
+            this.config.maxDec &&
+            this.config.maxDec * this.config.rentalDay > this.initialDec - this.client.getBalance('DEC') &&
+            this.config.rentalDay &&
+            this.client.user.collection_power < this.config.expectedPower
         ) {
             parentPort.postMessage({
                 type: 'INFO_UPDATE',
@@ -281,7 +277,7 @@ class WSSplinterlandsClient {
             } else {
                 this.startQuest = false
             }
-            
+
             this.client.updatePlayerInfo({
                 matchStatus: MATCH_STATUS.MATCHING,
                 questClaimed: this.questClaimed,

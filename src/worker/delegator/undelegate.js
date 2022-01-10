@@ -15,12 +15,7 @@ const undelegate = async (delegator, task) => {
     }, 60000)
 
     if (majorClient) {
-        const res = await majorClient.undelegatePower(task.data?.cards)
-        // if (res) {
-        //     console.log('undelegate done')
-        // } else {
-        //     console.log('undelegate fail')
-        // }
+        const res = await majorClient.undelegatePower(task.data?.cards, task.data.proxy)
     }
 
     if (!timeout) {
@@ -29,7 +24,7 @@ const undelegate = async (delegator, task) => {
         return
     }
 
-    const result = await utils.getDetails(task.data?.player || task.data?.username)
+    const result = await utils.getDetails(task.data?.player || task.data?.username, task.data.proxy)
     task.data.power = result.collection_power || 0
     changeStatus(delegator, task, 'done')
     afterDone(delegator, task)

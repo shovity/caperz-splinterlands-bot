@@ -1485,7 +1485,7 @@ class SplinterLandsClient {
                             return true
                         })
                     if (cardsList) {
-                        const id = res[0].market_id
+                        const id = cardsList.market_id
                         const prm = new Promise((resolve, reject) => {
                             this.broadcastCustomJson(
                                 'sm_market_rent',
@@ -1546,7 +1546,7 @@ class SplinterLandsClient {
                 if (e.weight > weight) {
                     return false
                 }
-                if (e.power > remainingPower + 200) {
+                if (e.power > remainingPower + 100) {
                     return false
                 }
                 return true
@@ -1778,7 +1778,7 @@ class SplinterLandsClient {
             log && console.log(error)
         }
     }
-    async undelegatePower(cards) {
+    async undelegatePower(cards, proxy) {
         try {
             if (cards.length == 0) {
                 return null
