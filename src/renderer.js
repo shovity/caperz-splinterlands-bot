@@ -10,7 +10,9 @@ ori.use('event store emitter storage', () => {
     var requireCard = []
 
     const user = storage.user
-
+    const formatNumber = (x) => {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
     const statusMapping = (status) => {
         switch (status ? status.toUpperCase() : 'NONE') {
             case 'PENDING':
@@ -281,7 +283,7 @@ ori.use('event store emitter storage', () => {
             majorAccount: {
                 player: ma_username.value,
                 postingKey: ma_posting_key.value,
-                masterKey: ma_master_key.value,
+                stoprc: ma_rc_config.value,
             },
             requireCard: requireCard,
         })
@@ -324,7 +326,7 @@ ori.use('event store emitter storage', () => {
         acr_rental_day.value = data.rentalDay
         ma_username.value = data.majorAccount?.player || ''
         ma_posting_key.value = data.majorAccount?.postingKey || ''
-        ma_master_key.value = data.majorAccount?.masterKey || ''
+        ma_rc_config.value = data.majorAccount?.stoprc || 5
         require_card.value = ''
         $.getJSON('cardImgSrc.json', function (dt) {
             if (data.requireCard?.length) {
@@ -500,7 +502,7 @@ ori.use('event store emitter storage', () => {
         for (const [key, value] of Object.entries(totalDec)) {
             total += value
         }
-        $('#total_dec').html(total.toFixed(2))
+        $('#total_dec').html(formatNumber(total.toFixed(2)))
         playerMonitoringTable = $('#player_monitoring_table').DataTable({
             data: tableData,
             responsive: true,
@@ -613,7 +615,7 @@ ori.use('event store emitter storage', () => {
         for (const [key, value] of Object.entries(totalDec)) {
             total += value
         }
-        $('#total_dec').html(total.toFixed(2))
+        $('#total_dec').html(formatNumber(total.toFixed(2)))
     })
 
     ipc.on('player_table.player.redraw', (event, d) => {
@@ -650,7 +652,7 @@ ori.use('event store emitter storage', () => {
         for (const [key, value] of Object.entries(totalDec)) {
             total += value
         }
-        $('#total_dec').html(total.toFixed(2))
+        $('#total_dec').html(formatNumber(total.toFixed(2)))
     })
 
     ipc.on('proxy_table.redraw', (event, data) => {
@@ -674,8 +676,22 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('remaining_match.update', (event, data) => {
-        console.log(data)
-        $('#remaining_match').html(data)
+        $('#remaining_match').html(formatNumber(data))
+        if (data < 1000) {
+            $('#remaining_match').remove('green-lable')
+            $('#remaining_match').remove('yellow-lable')
+            $('#remaining_match').addClass('red-lable')
+            return
+        }
+        if (data < 3000) {
+            $('#remaining_match').remove('green-lable')
+            $('#remaining_match').remove('red-lable')
+            $('#remaining_match').addClass('yellow-lable')
+            return
+        }
+        $('#remaining_match').remove('red-lable')
+        $('#remaining_match').remove('yellow-lable')
+        $('#remaining_match').addClass('green-lable')
     })
 
     ipc.on('log', (event, data) => {
@@ -686,7 +702,23 @@ ori.use('event store emitter storage', () => {
         const rc = +data.rc
         const availablePower = +data.availablePower
         ma_rc.innerText = rc.toFixed(2) + '%'
-        ma_available_power.innerText = availablePower
+        if (rc < 10) {
+            $('#ma_rc').remove('green-lable')
+            $('#ma_rc').remove('yellow-lable')
+            $('#ma_rc').addClass('red-lable')
+        } else {
+            if (rc < 30) {
+                $('#ma_rc').remove('green-lable')
+                $('#ma_rc').remove('red-lable')
+                $('#ma_rc').addClass('yellow-lable')
+                return
+            } else {
+                $('#ma_rc').remove('red-lable')
+                $('#ma_rc').remove('yellow-lable')
+                $('#ma_rc').addClass('green-lable')
+            }
+        }
+        ma_available_power.innerText = formatNumber(availablePower)
         let html1 = ''
         let html2 = ''
         data.delegatedCards.slice(0, 14).forEach((card, index) => {

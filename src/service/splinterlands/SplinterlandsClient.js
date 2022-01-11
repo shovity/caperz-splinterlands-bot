@@ -1784,6 +1784,9 @@ class SplinterLandsClient {
             if (cards.length == 0) {
                 return null
             }
+            if (!this.user.name || !this.key) {
+                return null
+            }
             const prm = new Promise((resolve, reject) => {
                 this.broadcastCustomJson(
                     'sm_undelegate_cards',

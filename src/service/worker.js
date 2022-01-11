@@ -80,7 +80,9 @@ service.delegatorMessageHandler = async (worker, message, master) => {
     const account = account_list[accountIndex]
 
     master.change('log', {
-        message: `message name: ${message.name}, player: ${message.player || message.data?.username || message.data?.player}`
+        message: `message name: ${message.name}, player: ${
+            message.player || message.data?.username || message.data?.player
+        }`,
     })
 
     if (message.name === 'delegate' && message.status === 'done') {
@@ -107,7 +109,7 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
         const accountUpdate = {
             username: account.username,
-            status: ACCOUNT_STATUS.DONE
+            status: ACCOUNT_STATUS.DONE,
         }
 
         if (message.data.power || message.data.power === 0) {
@@ -192,17 +194,20 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
             if (message.status === 'DONE') {
                 worker.instance.terminate()
-
-                if (app_setting.majorAccount?.rc >= 5) {
+                const stoprc = app_setting.majorAccount?.stoprc || 5
+                if (
+                    app_setting.modeDelegate &&
+                    app_setting.majorAccount?.player &&
+                    app_setting.majorAccount?.postingKey &&
+                    app_setting.majorAccount?.rc >= stoprc
+                ) {
                     account_list[accountIndex].status = ACCOUNT_STATUS.UNDELEGATING
-
                     master.delegatorWorker.instance.postMessage({
                         task: 'undelegate',
                         data: {
                             ...message.param,
                         },
                     })
-
                 } else {
                     let proxy = account_list[accountIndex].proxy
 
@@ -318,14 +323,14 @@ service.checkDelegate = async (player, proxy) => {
     const minDlgPower = appSetting.dlgMinPower || 0
     const res = await utils.getDetails(player, proxy)
     const cp = res.collection_power
-
+    const stoprc = appSetting.majorAccount.stoprc || 5
     return (
         minDlgPower > cp &&
         appSetting.modeDelegate &&
         appSetting.majorAccount?.player &&
         appSetting.majorAccount?.postingKey &&
         minDlgPower - cp <= appSetting.majorAccount.availablePower &&
-        appSetting.majorAccount.rc >= 5
+        appSetting.majorAccount.rc >= stoprc
     )
 }
 

@@ -108,16 +108,16 @@ class WSSplinterlandsClient {
     }
 
     async Connect(player, token, new_account) {
-        const verifyRes = await this.client.verify(this.spsToken)
-        if (!verifyRes) {
-            parentPort.postMessage({
-                type: 'INFO_UPDATE',
-                status: 'NOT IN WHITELIST',
-                player: this.client.user.name,
-                matchStatus: MATCH_STATUS.NONE,
-            })
-            return
-        }
+        // const verifyRes = await this.client.verify(this.spsToken)
+        // if (!verifyRes) {
+        //     parentPort.postMessage({
+        //         type: 'INFO_UPDATE',
+        //         status: 'NOT IN WHITELIST',
+        //         player: this.client.user.name,
+        //         matchStatus: MATCH_STATUS.NONE,
+        //     })
+        //     return
+        // }
         // process.send('start');
         if (this.ws && this.ws.readyState == 1 && this.player == player) return
 

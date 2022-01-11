@@ -351,3 +351,12 @@ button.active {
 #card_delegated_list >div>div {
     height: 12px;
 }
+.red-lable {
+    color: #dc3545
+}
+.yellow-lable {
+    color: #eac200
+}
+.green-lable {
+    color: #48a300
+}

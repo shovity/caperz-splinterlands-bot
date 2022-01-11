@@ -136,7 +136,7 @@ service.getMajorAccountInfo = async () => {
 }
 service.getRemainingMatch = async () => {
     const username = settings.data.user.userData.username
-    const {data} = await requester['get'](`http://103.161.39.188:3332/api/v1/users/remain?username=${username}`)
+    const {data} = await requester['get'](`https://nftauto.online/api/v1/users/remain?username=${username}`)
     return data.spsGetTeam
 }
 service.setMajorInterval = async (master) => {
