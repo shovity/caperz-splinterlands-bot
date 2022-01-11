@@ -118,6 +118,7 @@ class SplinterLandsClient {
             ecr: this.getEcr(),
             rating: this.getRating(),
             dec: this.getBalance('DEC'),
+            credits: this.getBalance('CREDITS'),
             power: this.user.collection_power,
             lastRewardTime: this.getLastRewardTime(),
             quest: this.user.quest.completed_items,
@@ -1680,7 +1681,7 @@ class SplinterLandsClient {
         let remainingPw = power
         let smallCurrentPower = false
         let dlgPw = 0
-        if (currentPower <= 100) {
+        if (currentPower <= 200) {
             smallCurrentPower = true
         }
         try {

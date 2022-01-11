@@ -171,6 +171,9 @@ master.change = async (name, param) => {
         case 'major_account':
             win.webContents.send('major_acc.update', param)
             break
+        case 'remaining_match':
+            win.webContents.send('remaining_match.update', param)
+            break
         case 'process_loading':
             if (master.splashStatus === 'on') {
                 win.webContents.send('process', param.processPercent)

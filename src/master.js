@@ -588,9 +588,11 @@ master.updateOpeningPlayerInfo = async () => {
             const lastRewardTime = new Date(accountBalances.find((b) => b.token == 'ECR').last_reward_time).getTime()
 
             const dec = accountBalances.find((b) => b.token == 'DEC')?.balance || 0
+            const credits = accountBalances.find((b) => b.token == 'CREDITS')?.balance || 0
 
             newAccount.ecr = calculateECR(lastRewardTime, ecr / 100)
             newAccount.dec = dec
+            newAccount.credits = credits
             newAccount.lastRewardTime = lastRewardTime
 
             if (

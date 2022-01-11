@@ -68,19 +68,22 @@
                 <div class="d-flex justify-content-between">
                     <h4 style="margin-right: 16px;">Dashboard</h4>
                     <div class="d-flex align-items-center">
-                        <h6 style="margin: 0px;margin-right: 16px;">Total DEC: <span id="total_dec">0</span></h6>
-                            <button id="startButton" class="btn btn-primary active" click-emit="account.start_all">
-                                <div class="d-flex align-items-center">
-                                    <img src="./assets/img/play.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
-                                    <span>Start All</span>
-                                </div>
-                            </button>
-                            <button id="stopButton" class="btn btn-primary active d-none" click-emit="account.stop_all">
-                                <div class="d-flex align-items-center">
-                                    <img src="./assets/img/pause.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
-                                    <span>Pause All</span>
-                                </div>
-                            </button>
+                        <div>
+                            <p style="margin: 0px; font-size: 13px;margin-right: 16px;">Total: <span id="total_dec">0</span> DEC</>
+                            <p style="margin: 0px; font-size: 13px;margin-right: 16px;">Remaining: <span id="remaining_match">0</span> matchs</>
+                        </div>
+                        <button id="startButton" class="btn btn-primary active" click-emit="account.start_all">
+                            <div class="d-flex align-items-center">
+                                <img src="./assets/img/play.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
+                                <span>Start All</span>
+                            </div>
+                        </button>
+                        <button id="stopButton" class="btn btn-primary active d-none" click-emit="account.stop_all">
+                            <div class="d-flex align-items-center">
+                                <img src="./assets/img/pause.svg" width="12" height="12" style="margin-right: 4px;" alt="Play  free icon" title="Play free icon">
+                                <span>Pause All</span>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -169,8 +172,9 @@
                         <thead>
                           <tr>
                             <th class="th-sm">Player</th>
-                            <th class="th-sm">ECR (%)</th>
+                            <th class="th-sm">ECR</th>
                             <th class="th-sm">DEC</th>
+                            <th class="th-sm">Credits</th>
                             <th class="th-sm">Power</th>
                             <th class="th-sm">Rating</th>
                             <th class="th-sm">Quest</th>

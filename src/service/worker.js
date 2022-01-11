@@ -150,6 +150,10 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 account_list[accountIndex].dec = message.dec
             }
 
+            if (typeof message.credits != 'undefined') {
+                account_list[accountIndex].credits = message.credits
+            }
+
             if (message.lastRewardTime) {
                 account_list[accountIndex].lastRewardTime = message.lastRewardTime
             }

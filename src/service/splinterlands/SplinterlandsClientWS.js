@@ -378,6 +378,7 @@ class WSSplinterlandsClient {
             ecr: this.client.getEcr(),
             rating: this.client.getRating(),
             dec: this.client.getBalance('DEC'),
+            credits: this.client.getBalance('CREDITS'),
             lastRewardTime: this.client.getLastRewardTime(),
             matchStatus: MATCH_STATUS.MATCHED,
         })
@@ -479,6 +480,7 @@ class WSSplinterlandsClient {
                     ecr: this.client.getEcr(),
                     rating: this.client.getRating(),
                     dec: this.client.getBalance('DEC'),
+                    credits: this.client.getBalance('CREDITS'),
                     lastRewardTime: this.client.getLastRewardTime(),
                     matchStatus: MATCH_STATUS.SUBMITTING,
                 })

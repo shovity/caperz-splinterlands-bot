@@ -481,7 +481,8 @@ ori.use('event store emitter storage', () => {
                 id: 'player_' + d.username,
                 username: d.username,
                 ecr: d.ecr || 0,
-                dec: d.dec.toFixed(3) || 0,
+                dec: d.dec ? d.dec?.toFixed(3) : 0,
+                credits: d.credits ? Math.floor(d.credits) : 0,
                 power: d.power || 0,
                 rating: d.rating || 0,
                 lastUpdate: new Date().toLocaleTimeString(),
@@ -508,6 +509,7 @@ ori.use('event store emitter storage', () => {
                 { data: 'username' },
                 { data: 'ecr' },
                 { data: 'dec' },
+                { data: 'credits' },
                 { data: 'power' },
                 { data: 'rating' },
                 { data: 'quest' },
@@ -524,13 +526,14 @@ ori.use('event store emitter storage', () => {
                 { width: '60px', targets: 3 },
                 { width: '60px', targets: 4 },
                 { width: '60px', targets: 5 },
-                { width: '100px', targets: 6 },
-                { width: '90px', targets: 7 },
-                { width: '110px', targets: 8 },
+                { width: '60px', targets: 6 },
+                { width: '100px', targets: 7 },
+                { width: '90px', targets: 8 },
+                { width: '110px', targets: 9 },
                 {
                     orderable: false,
                     width: '40px',
-                    targets: 9,
+                    targets: 10,
                     render: function (data, type, row) {
                         if (
                             [
@@ -590,7 +593,8 @@ ori.use('event store emitter storage', () => {
                 id: 'player_' + d.username,
                 username: d.username,
                 ecr: d.ecr || 0,
-                dec: d.dec.toFixed(3) || 0,
+                dec: d.dec ? d.dec?.toFixed(3) : 0,
+                credits: d.credits ? Math.floor(d.credits) : 0,
                 power: d.power || 0,
                 rating: d.rating || 0,
                 quest: d.questClaimed
@@ -620,7 +624,8 @@ ori.use('event store emitter storage', () => {
             id: 'player_' + d.username,
             username: d.username,
             ecr: d.ecr || 0,
-            dec: d.dec.toFixed(3) || 0,
+            dec: d.dec ? d.dec?.toFixed(3) : 0,
+            credits: d.credits ? Math.floor(d.credits) : 0,
             power: d.power || 0,
             rating: d.rating || 0,
             quest: d.questClaimed
@@ -668,6 +673,11 @@ ori.use('event store emitter storage', () => {
         }
     })
 
+    ipc.on('remaining_match.update', (event, data) => {
+        console.log(data)
+        $('#remaining_match').html(data)
+    })
+
     ipc.on('log', (event, data) => {
         console.log(data)
     })
@@ -694,7 +704,9 @@ ori.use('event store emitter storage', () => {
             $('#card_delegated_list').html('<p>No card delegation</p>')
             return
         }
-        $('#card_delegated_list').html('<div class="w-50">'+html1+'</div>'+'<div class="w-50">'+html2+'</div>')
+        $('#card_delegated_list').html(
+            '<div class="w-50">' + html1 + '</div>' + '<div class="w-50">' + html2 + '</div>'
+        )
     })
 
     ipc.on('process', (event, data) => {
@@ -752,13 +764,13 @@ ori.use('event store emitter storage', () => {
             requireCard.push({
                 id: c.id,
                 maxDec: maxDec,
-                name: capitalizeFirstLetter(c.name.toLowerCase())
+                name: capitalizeFirstLetter(c.name.toLowerCase()),
             })
         })
         requireCard.push({
             id: id,
             maxDec: 0,
-            name: capitalizeFirstLetter(card.name.toLowerCase())
+            name: capitalizeFirstLetter(card.name.toLowerCase()),
         })
         let html = `<div class="row mb-3" id="${id}">
         <div class="col-md-2" style="padding: 0;padding-left: 12px;">

@@ -90,6 +90,7 @@ const account = ({ win, ipc, settings }) => {
             token: res.token,
             ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
             dec: res.balances.find((b) => b.token == 'DEC') ? res.balances.find((b) => b.token == 'DEC').balance : null,
+            credits: res.balances.find((b) => b.token == 'CREDITS') ? res.balances.find((b) => b.token == 'CREDITS').balance : null,
             status: 'NONE',
         })
         settings.data.account_list = newList
@@ -111,6 +112,7 @@ const account = ({ win, ipc, settings }) => {
                 token: res.token,
                 ecr: master.calculateECR(new Date(res.last_reward_time).getTime(), ecr / 100),
                 dec: res.balances.find((b) => b.token == 'DEC').balance,
+                credits: res.balances.find((b) => b.token == 'CREDITS').balance,
                 status: 'PENDING',
             }
     

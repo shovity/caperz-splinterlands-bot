@@ -90,7 +90,7 @@ service.getMajorAccountInfo = async () => {
         },
     })
     let rc = 0
-    let a = Math.ceil(new Date().getTime()/1000) - result.rc_accounts[0].rc_manabar.last_update_time
+    let a = Math.ceil(new Date().getTime() / 1000) - result.rc_accounts[0].rc_manabar.last_update_time
     let r = parseFloat(result.rc_accounts[0].max_rc)
     let i = parseFloat(result.rc_accounts[0].rc_manabar.current_mana) + (a * r) / 432e3
     rc = (100 * i) / r
@@ -101,29 +101,25 @@ service.getMajorAccountInfo = async () => {
     res = await requester['get'](`https://api.splinterlands.io/cards/collection/${username}`)
 
     const cards = res.cards.filter((c) => {
-        if (
-            c.delegated_to && c.player == username
-        ) {
+        if (c.delegated_to && c.player == username) {
             return true
         }
     })
     let availablePower = 0
     const availableCards = res.cards.filter((c) => {
-        if (
-            !c.delegated_to && utils.calculateCP(c) >= 100
-        ) {
+        if (!c.delegated_to && utils.calculateCP(c) >= 100) {
             availablePower += utils.calculateCP(c)
             return true
         }
     })
     const formattedList = []
-    cards.forEach(c => {
-        const index = formattedList.findIndex(cd => cd.delegatedTo == c.delegated_to)
+    cards.forEach((c) => {
+        const index = formattedList.findIndex((cd) => cd.delegatedTo == c.delegated_to)
         if (index == -1) {
             formattedList.push({
                 delegatedTo: c.delegated_to,
                 quantity: 1,
-                totalPower: utils.calculateCP(c)
+                totalPower: utils.calculateCP(c),
             })
         } else {
             formattedList[index].quantity++
@@ -133,18 +129,26 @@ service.getMajorAccountInfo = async () => {
     settings.data.app_setting.majorAccount.rc = rc
     settings.data.app_setting.majorAccount.availablePower = availablePower
     return {
-        rc: rc || 0,    
+        rc: rc || 0,
         availablePower: availablePower,
-        delegatedCards: formattedList
+        delegatedCards: formattedList,
     }
 }
-
+service.getRemainingMatch = async () => {
+    const username = settings.data.user.userData.username
+    const {data} = await requester['get'](`http://103.161.39.188:3332/api/v1/users/remain?username=${username}`)
+    return data.spsGetTeam
+}
 service.setMajorInterval = async (master) => {
-    const TIME = 30 * 1000
+    const TIME = 60 * 1000
     const majorInfo = await service.getMajorAccountInfo()
+    const remainingMatch = await service.getRemainingMatch()
+    await master.change('remaining_match', remainingMatch)
     await master.change('major_account', majorInfo)
     master.minuteMajorIntervalId = setInterval(async () => {
         const majorInfo = await service.getMajorAccountInfo()
+        const remainingMatch = await service.getRemainingMatch()
+        await master.change('remaining_match', remainingMatch)
         await master.change('major_account', majorInfo)
     }, TIME)
 }
