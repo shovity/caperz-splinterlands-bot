@@ -1,7 +1,7 @@
 {
     "name": "nftauto-desktop",
     "productName": "NFTauto Desktop",
-    "version": "2.2.1",
+    "version": "2.3.2",
     "description": "NFTauto Desktop",
     "main": "src/main.js",
     "scripts": {
@@ -14,8 +14,8 @@
         "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=dist --icon=./src/assets/img/icon.ic --ignore=\"(fuck/*)\"",
         "create-installer-mac": "electron-installer-dmg ./dist/NFTauto\\ Desktop-darwin-x64/NFTauto\\ Desktop.app NFTauto-Desktop --out=dist --overwrite --icon=./src/assets/img/icon.ico",
         "fuck": "cd fuck && yarn fuck && cd ..",
-        "normal": "yarn package-win && yarn create-installer-win",
-        "encode": "yarn package-win && yarn fuck && yarn create-installer-win"
+        "nor": "yarn package-win && yarn create-installer-win",
+        "fuc": "yarn package-win && yarn fuck && yarn create-installer-win"
     },
     "author": {
         "name": "shovity",
