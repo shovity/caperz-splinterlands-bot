@@ -105,8 +105,6 @@ service.delegatorMessageHandler = async (worker, message, master) => {
             await master.change('app_setting', { app_setting })
         }
 
-        await master.dequeue()
-
         const accountUpdate = {
             username: account.username,
             status: ACCOUNT_STATUS.DONE,
@@ -117,6 +115,10 @@ service.delegatorMessageHandler = async (worker, message, master) => {
         }
 
         await master.changePath('account_list', [accountUpdate])
+
+        await master.delay(5000)
+
+        await master.dequeue()
 
         if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
             master.delegatorWorker.instance.postMessage({
