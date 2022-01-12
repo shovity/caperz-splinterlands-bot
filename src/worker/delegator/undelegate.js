@@ -27,7 +27,7 @@ const undelegate = async (delegator, task) => {
     }
 
     const result = await utils.getDetails(task.data?.player || task.data?.username, task.data.proxy)
-    task.data.power = result.collection_power || 0
+    task.data.power = result?.collection_power || 0
     changeStatus(delegator, task, 'done')
     afterDone(delegator, task)
 }
