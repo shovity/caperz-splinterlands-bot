@@ -324,11 +324,12 @@ service.checkDelegate = async (player, proxy) => {
     const appSetting = settings.data.app_setting
     const minDlgPower = appSetting.dlgMinPower || 0
     const res = await utils.getDetails(player, proxy)
-    const cards = await utils.getCollection(player, proxy)
+    const cards = await utils.getCollection(appSetting.majorAccount?.player, proxy)
     let availablePower = 0
-    cards.forEach((c) => {
+    const availableCards = cards.filter((c) => {
         if (!c.delegated_to && utils.calculateCP(c) >= 100) {
             availablePower += utils.calculateCP(c)
+            return true
         }
     })
     const cp = res.collection_power
