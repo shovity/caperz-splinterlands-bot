@@ -324,6 +324,13 @@ service.checkDelegate = async (player, proxy) => {
     const appSetting = settings.data.app_setting
     const minDlgPower = appSetting.dlgMinPower || 0
     const res = await utils.getDetails(player, proxy)
+    const cards = await utils.getCollection(player, proxy)
+    let availablePower = 0
+    cards.forEach((c) => {
+        if (!c.delegated_to && utils.calculateCP(c) >= 100) {
+            availablePower += utils.calculateCP(c)
+        }
+    })
     const cp = res.collection_power
     const stoprc = appSetting.majorAccount.stoprc || 5
     return (
@@ -331,7 +338,7 @@ service.checkDelegate = async (player, proxy) => {
         appSetting.modeDelegate &&
         appSetting.majorAccount?.player &&
         appSetting.majorAccount?.postingKey &&
-        minDlgPower - cp <= appSetting.majorAccount.availablePower &&
+        minDlgPower - cp <= availablePower &&
         appSetting.majorAccount.rc >= stoprc
     )
 }

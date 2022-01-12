@@ -16,7 +16,7 @@ const undelegate = async (delegator, task) => {
     console.log('23')
 
     if (majorClient) {
-        const res = await majorClient.undelegatePower(task.data?.cards, task.data.proxy)
+        const res = await majorClient.undelegatePower(task.data?.cards, task.data.proxy, task.data?.player || task.data?.username)
     }
     console.log('2334')
 
