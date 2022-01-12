@@ -206,8 +206,7 @@ utils.getDetails = async (username, proxy) => {
 
 utils.getCollection = async (username, proxy) => {
     const res = await sendRequest(`cards/collection/${username}`, {}, 'get', proxy)
-
-    return res.cards || []
+    return res.cards
 }
 utils.getQuestDetails = async (username, proxy) => {
     const params = {
