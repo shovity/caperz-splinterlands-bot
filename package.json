@@ -1,7 +1,7 @@
 {
     "name": "nftauto-desktop",
     "productName": "NFTauto Desktop",
-    "version": "2.3.2",
+    "version": "2.3.0",
     "description": "NFTauto Desktop",
     "main": "src/main.js",
     "scripts": {

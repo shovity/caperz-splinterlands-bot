@@ -1678,6 +1678,7 @@ class SplinterLandsClient {
     }
 
     async delegatePower(player, power, currentPower) {
+        console.log('delegate to', player)
         let remainingPw = power
         let smallCurrentPower = false
         let dlgPw = 0
@@ -1780,6 +1781,7 @@ class SplinterLandsClient {
         }
     }
     async undelegatePower(cards, proxy) {
+        console.log('undelegate')
         try {
             if (cards.length == 0) {
                 return null
@@ -1809,6 +1811,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
+            return null
         }
     }
 

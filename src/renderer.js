@@ -711,7 +711,6 @@ ori.use('event store emitter storage', () => {
                 $('#ma_rc').remove('green-lable')
                 $('#ma_rc').remove('red-lable')
                 $('#ma_rc').addClass('yellow-lable')
-                return
             } else {
                 $('#ma_rc').remove('red-lable')
                 $('#ma_rc').remove('yellow-lable')
