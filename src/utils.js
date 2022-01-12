@@ -203,6 +203,12 @@ utils.getDetails = async (username, proxy) => {
 
     return await sendRequest('players/details', params, method, proxy)
 }
+
+utils.getCollection = async (username, proxy) => {
+    const res = await sendRequest(`cards/collection/${username}`, {}, 'get', proxy)
+
+    return res.cards || []
+}
 utils.getQuestDetails = async (username, proxy) => {
     const params = {
         username: username,

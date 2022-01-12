@@ -1082,7 +1082,8 @@ class SplinterLandsClient {
 
             return res
         } catch (error) {
-            // throw error
+            log && console.log('error 156', error)
+            return null
         }
     }
     async sendRequestBattle(url, params, method = 'get') {
@@ -1131,7 +1132,8 @@ class SplinterLandsClient {
 
             return res
         } catch (error) {
-            throw error
+            log && console.log('error 196', error)
+            return
         }
     }
 
@@ -1678,6 +1680,7 @@ class SplinterLandsClient {
     }
 
     async delegatePower(player, power, currentPower) {
+        console.log('delegate',this.user.name,'->', player)
         let remainingPw = power
         let smallCurrentPower = false
         let dlgPw = 0
@@ -1779,7 +1782,8 @@ class SplinterLandsClient {
             log && console.log(error)
         }
     }
-    async undelegatePower(cards, proxy) {
+    async undelegatePower(cards, proxy, player) {
+        console.log('undelegate',this.user.name,'<-', player)
         try {
             if (cards.length == 0) {
                 return null
@@ -1809,6 +1813,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
+            return null
         }
     }
 

@@ -46,7 +46,7 @@ ori.use('event store emitter storage', () => {
             case 'DELEGATING':
                 return "<span class='status_yellow'>Delegating</span>"
             case 'UNDELEGATING':
-                return "<span class='status_blue'>Undelegating</span>"
+                return "<span class='status_yellow'>Undelegating</span>"
             default:
                 return "<span class='status_gray'>None</span>"
         }
@@ -547,7 +547,7 @@ ori.use('event store emitter storage', () => {
                                 'TRANSFERRING',
                                 'DELEGATING',
                                 'UNDELEGATING',
-                            ].includes(data.status)
+                            ].includes(data.status.toUpperCase())
                         ) {
                             return `<button class="btn btn-primary active" click-emit="account.stop:${data.username}">
                             <img src="./assets/img/pause.svg" width="12" height="12" style="background-color: unset;" alt="Play  free icon" title="Play free icon">
@@ -711,7 +711,6 @@ ori.use('event store emitter storage', () => {
                 $('#ma_rc').remove('green-lable')
                 $('#ma_rc').remove('red-lable')
                 $('#ma_rc').addClass('yellow-lable')
-                return
             } else {
                 $('#ma_rc').remove('red-lable')
                 $('#ma_rc').remove('yellow-lable')

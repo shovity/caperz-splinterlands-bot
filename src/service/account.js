@@ -77,67 +77,75 @@ service.beforeEnqueue = (username = null) => {
 }
 
 service.getMajorAccountInfo = async () => {
-    const username = settings.data.app_setting.majorAccount?.player
-    if (!username) {
-        return {}
-    }
-    const { result } = await requester['post']('https://api.hive.blog', {
-        id: 1,
-        jsonrpc: '2.0',
-        method: 'rc_api.find_rc_accounts',
-        params: {
-            accounts: [username],
-        },
-    })
-    let rc = 0
-    let a = Math.ceil(new Date().getTime() / 1000) - result.rc_accounts[0].rc_manabar.last_update_time
-    let r = parseFloat(result.rc_accounts[0].max_rc)
-    let i = parseFloat(result.rc_accounts[0].rc_manabar.current_mana) + (a * r) / 432e3
-    rc = (100 * i) / r
-    let res = await requester['get'](
-        `https://game-api.splinterlands.com/players/balances?token_type=DEC&players=${username}`
-    )
-    const dec = res[0].balance
-    res = await requester['get'](`https://api.splinterlands.io/cards/collection/${username}`)
-
-    const cards = res.cards.filter((c) => {
-        if (c.delegated_to && c.player == username) {
-            return true
+    try {
+        const username = settings.data.app_setting.majorAccount?.player
+        if (!username) {
+            return {}
         }
-    })
-    let availablePower = 0
-    const availableCards = res.cards.filter((c) => {
-        if (!c.delegated_to && utils.calculateCP(c) >= 100) {
-            availablePower += utils.calculateCP(c)
-            return true
+        const { result } = await requester['post']('https://api.hive.blog', {
+            id: 1,
+            jsonrpc: '2.0',
+            method: 'rc_api.find_rc_accounts',
+            params: {
+                accounts: [username],
+            },
+        })
+        let rc = 0
+        let a = Math.ceil(new Date().getTime() / 1000) - result.rc_accounts[0].rc_manabar.last_update_time
+        let r = parseFloat(result.rc_accounts[0].max_rc)
+        let i = parseFloat(result.rc_accounts[0].rc_manabar.current_mana) + (a * r) / 432e3
+        rc = (100 * i) / r
+        let res = await requester['get'](
+            `https://game-api.splinterlands.com/players/balances?token_type=DEC&players=${username}`
+        )
+        const dec = res[0].balance
+        res = await requester['get'](`https://api.splinterlands.io/cards/collection/${username}`)
+        const cards = res.cards.filter((c) => {
+            if (c.delegated_to && c.player == username) {
+                return true
+            }
+        })
+        let availablePower = 0
+        const availableCards = res.cards.filter((c) => {
+            if (!c.delegated_to && utils.calculateCP(c) >= 100) {
+                availablePower += utils.calculateCP(c)
+                return true
+            }
+        })
+        const formattedList = []
+        cards.forEach((c) => {
+            const index = formattedList.findIndex((cd) => cd.delegatedTo == c.delegated_to)
+            if (index == -1) {
+                formattedList.push({
+                    delegatedTo: c.delegated_to,
+                    quantity: 1,
+                    totalPower: utils.calculateCP(c),
+                })
+            } else {
+                formattedList[index].quantity++
+                formattedList[index].totalPower += utils.calculateCP(c)
+            }
+        })
+        settings.data.app_setting.majorAccount.rc = rc
+        settings.data.app_setting.majorAccount.availablePower = availablePower
+        return {
+            rc: rc || 0,
+            availablePower: availablePower,
+            delegatedCards: formattedList,
         }
-    })
-    const formattedList = []
-    cards.forEach((c) => {
-        const index = formattedList.findIndex((cd) => cd.delegatedTo == c.delegated_to)
-        if (index == -1) {
-            formattedList.push({
-                delegatedTo: c.delegated_to,
-                quantity: 1,
-                totalPower: utils.calculateCP(c),
-            })
-        } else {
-            formattedList[index].quantity++
-            formattedList[index].totalPower += utils.calculateCP(c)
-        }
-    })
-    settings.data.app_setting.majorAccount.rc = rc
-    settings.data.app_setting.majorAccount.availablePower = availablePower
-    return {
-        rc: rc || 0,
-        availablePower: availablePower,
-        delegatedCards: formattedList,
+    } catch (error) {
+        console.log(error)
     }
 }
 service.getRemainingMatch = async () => {
-    const username = settings.data.user.userData.username
-    const {data} = await requester['get'](`https://nftauto.online/api/v1/users/remain?username=${username}`)
-    return data.spsGetTeam
+    try {
+        const username = settings.data.user.userData.username
+        const { data } = await requester['get'](`https://nftauto.online/api/v1/users/remain?username=${username}`)
+        return data.spsGetTeam
+    } catch (error) {
+        console.log(error)
+        return 0
+    }
 }
 service.setMajorInterval = async (master) => {
     const TIME = 60 * 1000

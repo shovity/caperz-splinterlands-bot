@@ -185,8 +185,7 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
 
             if (delegated && isAccountPaused()) {
                 return
-            }
-    
+            }    
             if (shouldDelegate) {
                 const details = await utils.getDetails(account.username, proxy)
     
