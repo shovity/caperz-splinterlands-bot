@@ -11,6 +11,39 @@ const splinterHosts = [
     'https://api2.splinterlands.com/'
 ]
 
+const sendRequestProxy = async (url, params, method = 'get', proxy, settings) => {
+    if (!proxy) {
+        const proxies = settings.data.app_setting.proxies
+        const proxyIndex = Math.floor(Math.random() * (proxies.length - 1))
+
+        if (app_setting.proxies[proxyIndex].ip === 'Default IP') {
+            proxy = null
+        } else {
+            const [auth, address] = app_setting.proxies[proxyIndex].ip.split('@')
+
+            if (auth && address) {
+                const [account, password] = auth.split(':')
+                const [host, port] = address.split(':')
+    
+                proxy = {
+                    account,
+                    password,
+                    host,
+                    port,
+                }
+
+                proxy.protocol = app_setting.proxies[proxyIndex].protocol || 'https://'
+            } else {
+                const [host, port] = account_list[accountIndex].ip.split(':')
+                proxy = { host, port }
+                proxy.protocol = app_setting.proxies[proxyIndex].protocol || 'https://'
+            }
+        }
+    }
+
+    sendRequest(url, param, method, proxy)
+}
+
 const sendRequest = async (url, params, method = 'get', proxy) => {
     let host = 'https://api2.splinterlands.com/'
 
