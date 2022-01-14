@@ -108,6 +108,12 @@ class SplinterLandsClient {
         parentPort.postMessage({ ...data, player })
     }
 
+    delay = (time) => {
+        return new Promise(resolve => {
+            setTimeout(() => resolve(), time)
+        })
+    }
+
     updatePlayerInfo = (data) => {
         if (!this.user) return
         let player = this.user.name || ''
@@ -121,8 +127,8 @@ class SplinterLandsClient {
             credits: this.getBalance('CREDITS'),
             power: this.user.collection_power,
             lastRewardTime: this.getLastRewardTime(),
-            quest: this.user.quest.completed_items,
-            maxQuest: this.user.quest.total_items,
+            quest: this.user.quest?.completed_items|| 0,
+            maxQuest: this.user.quest?.total_items || 1,
             ...data,
         })
     }
@@ -1302,6 +1308,9 @@ class SplinterLandsClient {
     }
     calculateCPOld(card) {
         const details = cardsDetail.find((o) => o.id === card.card_detail_id)
+        if (!details) {
+            return 1
+        }
         const SM_dec = {
             gold_burn_bonus_2: 25,
             alpha_bonus: 0.1,
@@ -1333,6 +1342,9 @@ class SplinterLandsClient {
     calculateCP(c) {
         const card = c.xp > 1 ? { ...c, alpha_xp: 0 } : { ...c, alpha_xp: null }
         const details = cardsDetail.find((o) => o.id === card.card_detail_id)
+        if (!details) {
+            return 1
+        }
         var alpha_bcx = 0,
             alpha_dec = 0
         var xp = Math.max(card.xp - card.alpha_xp, 0)
@@ -1590,6 +1602,7 @@ class SplinterLandsClient {
             await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay, initialDec)
             return
         }
+        this.delay(5000)
         parentPort.postMessage({
             type: 'INFO_UPDATE',
             status: 'RUNNING',

@@ -4,7 +4,6 @@ const utils = require('../../utils')
 const undelegate = async (delegator, task) => {
     const majorClient = delegator.majorAccountClient
     changeStatus(delegator, task, 'running')
-    console.log('change status')
     let timeout = 0 
     
     const timeoutInterval = setInterval(() => {
@@ -13,12 +12,10 @@ const undelegate = async (delegator, task) => {
         afterDone(delegator, task)
         clearInterval(timeoutInterval)
     }, 60000)
-    console.log('23')
 
     if (majorClient) {
         const res = await majorClient.undelegatePower(task.data?.cards, task.data.proxy, task.data?.player || task.data?.username)
     }
-    console.log('2334')
 
     if (!timeout) {
         clearInterval(timeoutInterval)

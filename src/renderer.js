@@ -678,19 +678,19 @@ ori.use('event store emitter storage', () => {
     ipc.on('remaining_match.update', (event, data) => {
         $('#remaining_match').html(formatNumber(data))
         if (data < 1000) {
-            $('#remaining_match').remove('green-lable')
-            $('#remaining_match').remove('yellow-lable')
+            $('#remaining_match').removeClass('green-lable')
+            $('#remaining_match').removeClass('yellow-lable')
             $('#remaining_match').addClass('red-lable')
             return
         }
         if (data < 3000) {
-            $('#remaining_match').remove('green-lable')
-            $('#remaining_match').remove('red-lable')
+            $('#remaining_match').removeClass('green-lable')
+            $('#remaining_match').removeClass('red-lable')
             $('#remaining_match').addClass('yellow-lable')
             return
         }
-        $('#remaining_match').remove('red-lable')
-        $('#remaining_match').remove('yellow-lable')
+        $('#remaining_match').removeClass('red-lable')
+        $('#remaining_match').removeClass('yellow-lable')
         $('#remaining_match').addClass('green-lable')
     })
 
@@ -703,17 +703,17 @@ ori.use('event store emitter storage', () => {
         const availablePower = +data.availablePower
         ma_rc.innerText = rc.toFixed(2) + '%'
         if (rc < 10) {
-            $('#ma_rc').remove('green-lable')
-            $('#ma_rc').remove('yellow-lable')
+            $('#ma_rc').removeClass('green-lable')
+            $('#ma_rc').removeClass('yellow-lable')
             $('#ma_rc').addClass('red-lable')
         } else {
             if (rc < 30) {
-                $('#ma_rc').remove('green-lable')
-                $('#ma_rc').remove('red-lable')
+                $('#ma_rc').removeClass('green-lable')
+                $('#ma_rc').removeClass('red-lable')
                 $('#ma_rc').addClass('yellow-lable')
             } else {
-                $('#ma_rc').remove('red-lable')
-                $('#ma_rc').remove('yellow-lable')
+                $('#ma_rc').removeClass('red-lable')
+                $('#ma_rc').removeClass('yellow-lable')
                 $('#ma_rc').addClass('green-lable')
             }
         }
