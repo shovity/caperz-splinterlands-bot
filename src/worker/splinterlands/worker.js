@@ -8,7 +8,6 @@ const defaultConfig = {
 }
 
 async function main({ username, password, account, emailPass, proxy, config = null, postingKey, masterKey , spsToken, delegated }) {
-
     config = config || defaultConfig
     const client = new SplinterLandsClient(proxy, config, masterKey)
     parentPort.postMessage({
@@ -28,6 +27,7 @@ async function main({ username, password, account, emailPass, proxy, config = nu
         const resAuth = await client.auth(user.name, user.token)
     
         if (resAuth && resAuth.success) {
+
             // console.log('success login', user.name, client.getEcr(), client.getBalance('DEC'))
     
             await client.updateSettings()

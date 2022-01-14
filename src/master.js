@@ -235,6 +235,8 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
 
                 await master.change('app_setting', { app_setting })
             }
+
+            account_list[accountIndex].status = 'ERROR'
         }
     } else {
         account_list[accountIndex].status = ACCOUNT_STATUS.PENDING
@@ -242,7 +244,7 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
         master.priorityQueue.enqueue(account)
     }
 
-    await master.changePath('account_list', [{ ...account_list[accountIndex] }], 1)
+    await master.changePath('account_list', [{ ...account_list[accountIndex] }])
 }
 
 master.start = async (worker) => {
