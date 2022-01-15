@@ -109,7 +109,7 @@ class SplinterLandsClient {
     }
 
     delay = (time) => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             setTimeout(() => resolve(), time)
         })
     }
@@ -127,7 +127,7 @@ class SplinterLandsClient {
             credits: this.getBalance('CREDITS'),
             power: this.user.collection_power,
             lastRewardTime: this.getLastRewardTime(),
-            quest: this.user.quest?.completed_items|| 0,
+            quest: this.user.quest?.completed_items || 0,
             maxQuest: this.user.quest?.total_items || 1,
             ...data,
         })
@@ -510,6 +510,7 @@ class SplinterLandsClient {
     }
 
     trxLookup(trx_id, details, callback, timeout, suppressError) {
+        console.log('this._transactions[trx_id]', this._transactions[trx_id])
         if (this._transactions[trx_id]) {
             if (this._transactions[trx_id].status == 'complete') {
                 if (callback(this._transactions[trx_id].data)) {
@@ -528,10 +529,6 @@ class SplinterLandsClient {
         if (timeout > 0) {
             this._transactions[trx_id].timeout = setTimeout(() => {
                 if (this._transactions[trx_id] && this._transactions[trx_id].status != 'complete') {
-                    log &&
-                        console.log(
-                            'Your transaction could not be found. This may be an issue with the game server. Please try refreshing the site to see if the transaction went through.'
-                        )
                     delete this._transactions[trx_id]
                     if (callback) callback(null)
                 }
@@ -618,7 +615,7 @@ class SplinterLandsClient {
         const res = await this.sendRequestUrl(`https://api2.splinterlands.com/players/details`, {
             name: this.user.name,
         })
-        const quest = await this.sendRequestUrl(`https://api.splinterlands.io/players/quests`, {
+        const quest = await this.sendRequestUrl(`https://api2.splinterlands.com/players/quests`, {
             username: this.user.name,
         })
 
@@ -928,7 +925,7 @@ class SplinterLandsClient {
                     return
                 }
                 let bcast_url = Config.tx_broadcast_urls[Math.floor(Math.random() * Config.tx_broadcast_urls.length)]
-
+                console.log('bcast_url', bcast_url)
                 const dataSend = this.sendRequestUrl(
                     `${bcast_url}/send`,
                     {
@@ -943,6 +940,7 @@ class SplinterLandsClient {
                     reject(null)
                 }
             } catch (err) {
+                log && console.log('sbtx error', err)
                 reject(err)
             }
         })
@@ -1036,6 +1034,7 @@ class SplinterLandsClient {
 
             return res
         } catch (e) {
+            console.log('err 12452', e)
             return null
         }
     }
@@ -1693,12 +1692,12 @@ class SplinterLandsClient {
     }
 
     async delegatePower(player, power, currentPower) {
-        console.log('delegate',this.user.name,'->', player)
+        console.log('delegate', this.user.name, '->', player)
         let remainingPw = power
         let smallCurrentPower = false
         let dlgPw = 0
         if (currentPower <= 200) {
-            smallCurrentPower = true
+            remainingPw += currentPower
         }
         try {
             const result = await this.sendRequest(`cards/collection/${this.user.name}`, {
@@ -1706,6 +1705,7 @@ class SplinterLandsClient {
                 token: this.token,
             })
             let formattedCards = []
+            let filteredFormattedCards = []
             let cards = []
             result.cards.forEach((e) => {
                 if (e.delegated_to != null) {
@@ -1723,12 +1723,25 @@ class SplinterLandsClient {
                     })
                 }
             })
-            if (smallCurrentPower) {
-                formattedCards.sort((a, b) => {
+
+            filteredFormattedCards = formattedCards
+                .sort((a, b) => {
                     return a.power - b.power
                 })
+                .filter((c) => c.power >= remainingPw)
+            if (filteredFormattedCards.length) {
+                cards.push(filteredFormattedCards[0].uid)
+                remainingPw -= filteredFormattedCards[0].power
+                dlgPw += filteredFormattedCards[0].power
+            }
+
+            if (remainingPw > 0) {
+                formattedCards.sort((a, b) => {
+                    return b.power - a.power
+                })
+
                 formattedCards.forEach((e) => {
-                    if (remainingPw <= 0 || remainingPw - e.power > 0) {
+                    if (remainingPw <= 0 || remainingPw < e.power) {
                         return
                     }
                     cards.push(e.uid)
@@ -1736,18 +1749,6 @@ class SplinterLandsClient {
                     dlgPw += e.power
                 })
             }
-            formattedCards.sort((a, b) => {
-                return b.power - a.power
-            })
-
-            formattedCards.forEach((e) => {
-                if (remainingPw <= 0 || remainingPw - e.power < 0) {
-                    return
-                }
-                cards.push(e.uid)
-                remainingPw -= e.power
-                dlgPw += e.power
-            })
 
             if (remainingPw > 0) {
                 formattedCards.sort((a, b) => {
@@ -1796,7 +1797,7 @@ class SplinterLandsClient {
         }
     }
     async undelegatePower(cards, proxy, player) {
-        console.log('undelegate',this.user.name,'<-', player)
+        console.log('undelegate', this.user.name, '<-', player)
         try {
             if (cards.length == 0) {
                 return null

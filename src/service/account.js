@@ -96,7 +96,7 @@ service.getMajorAccountInfo = async () => {
         let i = parseFloat(result.rc_accounts[0].rc_manabar.current_mana) + (a * r) / 432e3
         rc = (100 * i) / r
         let res
-        res = await requester['get'](`https://api.splinterlands.io/cards/collection/${username}`)
+        res = await requester['get'](`https://api2.splinterlands.com/cards/collection/${username}`)
         const cards = res.cards.filter((c) => {
             if (c.delegated_to && c.player == username) {
                 return true

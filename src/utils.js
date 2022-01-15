@@ -98,7 +98,7 @@ const sendRequest = async (url, params, method = 'get', proxy) => {
         let res = await requester[method](host + url, params, option)
         return res
     } catch (err) {
-        console.error('utils ', err.status || err.code, err.statusText)
+        console.error('utils ', url,err.status || err.code, err.statusText || '')
     }
 }
 const generatePassword = (length, rng) => {
