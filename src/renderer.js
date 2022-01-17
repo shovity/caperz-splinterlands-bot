@@ -6,6 +6,7 @@ ori.use('event store emitter storage', () => {
     var playerMonitoringTable
     var proxyMonitoringTable
     let totalDec = {}
+    let maRc = 0
     var cardData
     var requireCard = []
 
@@ -284,6 +285,7 @@ ori.use('event store emitter storage', () => {
                 player: ma_username.value,
                 postingKey: ma_posting_key.value,
                 stoprc: ma_rc_config.value,
+                rc: maRc
             },
             requireCard: requireCard,
         })
@@ -701,6 +703,7 @@ ori.use('event store emitter storage', () => {
     ipc.on('major_acc.update', (event, data) => {
         const rc = +data.rc
         const availablePower = +data.availablePower
+        maRc = rc.toFixed(2)
         ma_rc.innerText = rc.toFixed(2) + '%'
         if (rc < 10) {
             $('#ma_rc').removeClass('green-lable')

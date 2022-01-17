@@ -215,6 +215,7 @@ class WSSplinterlandsClient {
         if (this.config.modeCollectSeasonReward && !this.collectSeasonRewardDone) {
             this.collectSeasonRewardDone = true
             try {
+                log && console.log('claim season',this.config.season)
                 await this.client.collectSeasonReward(this.config.season)
             } catch (error) {
                 log && console.log('err', error)

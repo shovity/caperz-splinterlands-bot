@@ -510,7 +510,7 @@ class SplinterLandsClient {
     }
 
     trxLookup(trx_id, details, callback, timeout, suppressError) {
-        console.log('this._transactions[trx_id]', this._transactions[trx_id])
+        log && console.log('this._transactions[trx_id]', this._transactions[trx_id])
         if (this._transactions[trx_id]) {
             if (this._transactions[trx_id].status == 'complete') {
                 if (callback(this._transactions[trx_id].data)) {
@@ -925,7 +925,7 @@ class SplinterLandsClient {
                     return
                 }
                 let bcast_url = Config.tx_broadcast_urls[Math.floor(Math.random() * Config.tx_broadcast_urls.length)]
-                console.log('bcast_url', bcast_url)
+                log && console.log('bcast_url', bcast_url)
                 const dataSend = this.sendRequestUrl(
                     `${bcast_url}/send`,
                     {
@@ -1498,8 +1498,8 @@ class SplinterLandsClient {
                             }
                             return true
                         })
-                    if (cardsList) {
-                        const id = cardsList.market_id
+                    if (cardsList[0]) {
+                        const id = cardsList[0].market_id
                         const prm = new Promise((resolve, reject) => {
                             this.broadcastCustomJson(
                                 'sm_market_rent',
@@ -1876,7 +1876,7 @@ class SplinterLandsClient {
         try {
             const res = await this.sendRequest(`battle/history2`, {
                 player: player,
-                limit: 50,
+                limit: 20,
             })
             if (res.battles) {
                 const battles = res.battles

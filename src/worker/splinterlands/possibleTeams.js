@@ -75,19 +75,25 @@ const getTeamDefault = (matchDetails) => {
 const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opponent) => {
     try {
         const { data } = await getBattlesWithRuleset(matchDetails, account, spsToken, opponent)
-
+        const cards = matchDetails.cards.split(',')
         log && console.log('matchDetails', matchDetails)
         log && console.log('data', data)
 
         if (data && data.length > 0) {
-            return data
+            return data.map((d) => {
+                const cardsNum = (d.match(/-/g) || []).length / 2
+                if (cards.includes('131-3-c') && !d.includes('131-3-c') && cardsNum < 7) {
+                    const newData = d.split('::')
+                    return newData[0] + '::' + '131-3-c:' + newData[1]
+                } else {
+                    return d
+                }
+            })
         } else {
             return getTeamDefault(matchDetails)
         }
     } catch (e) {
-        console.error('getTeamsFromAPI: ', e.status || e.code, e.statusText)
-        console.log(getTeamDefault(matchDetails))
-
+        console.log('getTeamsFromAPI error',e)
         return getTeamDefault(matchDetails)
     }
 }
