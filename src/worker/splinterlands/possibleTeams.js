@@ -187,13 +187,14 @@ const askFormation = function ({ matchDetails, account, config, ecr, spsToken, o
 }
 
 const possibleTeams = async ({ matchDetails, account, config, ecr, spsToken, opponent }) => {
-    let possibleTeams = []
-    possibleTeams = await askFormation({ matchDetails, account, config, ecr, spsToken, opponent })
-
-    if (possibleTeams.length > 0) {
+    try {
+        let possibleTeams = []
+        possibleTeams = await askFormation({ matchDetails, account, config, ecr, spsToken, opponent })
         return possibleTeams
+    }  catch (e) {
+        console.log('possibleTeams error',e)
+        return []
     }
-    return possibleTeams
 }
 
 const teamSelection = async (possibleTeams, matchDetails, quest) => {

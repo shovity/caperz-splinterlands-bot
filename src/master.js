@@ -206,6 +206,7 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
                         config,
                         spsToken: user.token,
                         delegatePower: app_setting.dlgMinPower - details.collection_power,
+                        minDelegatePower: app_setting.dlgMinPower,
                         currentPower: details.collection_power
                     }
                 })

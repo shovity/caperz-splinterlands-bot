@@ -179,13 +179,17 @@ class WSSplinterlandsClient {
                     this.config.expectedPower
         }
         if (
-            this.client.masterKey &&
-            this.config.modeRental &&
-            this.config.expectedPower &&
-            this.config.maxDec &&
-            this.config.maxDec * this.config.rentalDay > this.initialDec - this.client.getBalance('DEC') &&
-            this.config.rentalDay &&
-            this.client.user.collection_power < this.config.expectedPower
+            (this.client.masterKey &&
+                this.config.modeRental &&
+                this.config.expectedPower &&
+                this.config.maxDec &&
+                this.config.maxDec * this.config.rentalDay > this.initialDec - this.client.getBalance('DEC') &&
+                this.config.rentalDay &&
+                this.client.user.collection_power < this.config.expectedPower) ||
+            (this.client.masterKey &&
+                !this.client.rentRequireCardDone &&
+                this.config.modeRental &&
+                this.config.requireCard.length)
         ) {
             parentPort.postMessage({
                 type: 'INFO_UPDATE',
@@ -209,13 +213,18 @@ class WSSplinterlandsClient {
                 this.initialDec,
                 this.config.requireCard
             )
-            this.CheckCondition()
-            return
+            if ((this.client.user.collection_power < this.config.expectedPower)) {
+                this.CheckCondition()
+                return
+            } else {
+                await this.client.UpdatePlayerInfo()
+                await this.client.updatePlayerInfo()
+            }
         }
         if (this.config.modeCollectSeasonReward && !this.collectSeasonRewardDone) {
             this.collectSeasonRewardDone = true
             try {
-                log && console.log('claim season',this.config.season)
+                log && console.log('claim season', this.config.season)
                 await this.client.collectSeasonReward(this.config.season)
             } catch (error) {
                 log && console.log('err', error)

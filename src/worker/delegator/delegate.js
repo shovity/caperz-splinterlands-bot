@@ -4,7 +4,7 @@ const delegate = async (delegator, task) => {
     const majorClient = delegator.majorAccountClient
     changeStatus(delegator, task, 'running')
     if (majorClient) {
-        const res = await majorClient.delegatePower(task.data?.username, task.data.delegatePower, task.data.currentPower)
+        const res = await majorClient.delegatePower(task.data?.username, task.data.minDelegatePower)
         // if (res) {
         //     console.log('delegate done')
         // } else {

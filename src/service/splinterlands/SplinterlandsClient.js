@@ -1393,7 +1393,7 @@ class SplinterLandsClient {
         let retry = false
         let blackList = bl
         let gainedPower = 0
-        let remainingPower = expectedPower - curPower
+        let remainingPower = expectedPower > curPower ? expectedPower - curPower : 0
         let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
         let weight = remainingDec / rentalDay / remainingPower
         let cardRemaining = []
@@ -1522,7 +1522,6 @@ class SplinterLandsClient {
                     }
                 })
             )
-            return
         } else {
             this.rentRequireCardDone = true
         }
@@ -1542,6 +1541,13 @@ class SplinterLandsClient {
             token: this.token,
         })
         if (!res) {
+            parentPort.postMessage({
+                type: 'INFO_UPDATE',
+                status: 'RUNNING',
+                player: this.user.name,
+                matchStatus: 'NONE',
+            })
+            log && console.log('done ne')
             return
         }
         const data = res
@@ -1594,14 +1600,12 @@ class SplinterLandsClient {
                 })
                 r = await prm
             }
-        } else {
-            retry = true
         }
         if (retry) {
             await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay, initialDec)
             return
         }
-        this.delay(5000)
+        this.delay(3000)
         parentPort.postMessage({
             type: 'INFO_UPDATE',
             status: 'RUNNING',
@@ -1691,15 +1695,18 @@ class SplinterLandsClient {
         }
     }
 
-    async delegatePower(player, power, currentPower) {
-        console.log('delegate', this.user.name, '->', player)
-        let remainingPw = power
-        let smallCurrentPower = false
-        let dlgPw = 0
-        if (currentPower <= 200) {
-            remainingPw += currentPower
-        }
+    async delegatePower(player, minDelegatePower) {
         try {
+            log && console.log('delegate', this.user.name, '->', player)
+            const playerDetail = await this.sendRequest(`players/details`, {
+                name: player,
+            })
+            let currentPower = playerDetail.collection_power
+            let remainingPw = minDelegatePower - currentPower
+            let dlgPw = 0
+            if (currentPower <= 200) {
+                remainingPw += currentPower
+            }
             const result = await this.sendRequest(`cards/collection/${this.user.name}`, {
                 username: this.user.name,
                 token: this.token,
@@ -1794,6 +1801,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
+            throw error
         }
     }
     async undelegatePower(cards, proxy, player) {
