@@ -13,20 +13,45 @@ const undelegate = async (delegator, task) => {
         clearInterval(timeoutInterval)
     }, 60000)
 
-    if (majorClient) {
-        const res = await majorClient.undelegatePower(task.data?.cards, task.data.proxy, task.data?.player || task.data?.username)
-    }
-
-    if (!timeout) {
+    try {
+        if (majorClient) {
+            const res = await majorClient.undelegatePower(
+                task.data?.cards, 
+                task.data.proxy, 
+                task.data?.player || task.data?.username
+            )
+        }
+    
+        if (!timeout) {
+            clearInterval(timeoutInterval)
+        } else {
+            changeStatus(delegator, task, 'done')
+            
+            return
+        }
+    
+        const result = await utils.getDetails(task.data?.player || task.data?.username, task.data.proxy)
+        task.data.power = result?.collection_power || 0
+        changeStatus(delegator, task, 'done')
+        afterDone(delegator, task)
+    } catch (err) {
         clearInterval(timeoutInterval)
-    } else {
-        return
-    }
+        changeStatus(delegator, task, 'done')
 
-    const result = await utils.getDetails(task.data?.player || task.data?.username, task.data.proxy)
-    task.data.power = result?.collection_power || 0
-    changeStatus(delegator, task, 'done')
-    afterDone(delegator, task)
+        let errMessage = err.statusText || err.message
+
+        if (typeof err === 'string') {
+            errMessage = err
+        }
+
+        afterError(
+            errMessage,
+            err.status || err.code,
+            err,
+            task,
+            delegator,
+        )
+    }
 }
 
 const delay = (time) => {
@@ -63,6 +88,28 @@ const afterDone = (delegator, task) => {
     }
 
     parentPort.postMessage(message)
+}
+
+const afterError = (message, code, cause, task, delegator) => {
+    const pendingUndelegateTasks = delegator.undelegateQueue.filter(e => e.status === 'pending')
+    const pendingDelegateTasks = delegator.delegateQueue.filter(e => e.status === 'pending')
+
+    if (pendingUndelegateTasks.length && !delegator.isRunning()) {
+        const task = pendingUndelegateTasks.shift()
+        delegator.undelegate(delegator, task)
+    }
+
+    parentPort.postMessage({
+        id: task.id,
+        name: task.name,
+        type: 'error',
+        code,
+        message,
+        cause,
+        data: task.data,
+        pendingDelegateTasks: pendingDelegateTasks.length,
+        pendingUndelegateTasks: pendingUndelegateTasks.length
+    })
 }
 
 

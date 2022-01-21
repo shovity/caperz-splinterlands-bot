@@ -18,6 +18,7 @@ const ACCOUNT_STATUS = {
     PAUSED: 'PAUSED',
     WAITING_ECR: 'WAITING_ECR',
     UNDELEGATING: 'undelegating',
+    ERROR: 'ERROR'
 }
 
 const service = {}
@@ -32,10 +33,6 @@ service.handleMessage = (worker, message, master) => {
             service.delegatorMessageHandler(worker, message, master)
             break
 
-        case 'collector':
-            service.collectorMesssageHandler(worker, message, master)
-            break
-
         case 'test':
             service.testMessageHandler(worker, message, master)
             break
@@ -44,26 +41,6 @@ service.handleMessage = (worker, message, master) => {
 
 service.testMessageHandler = async (worker, message, master) => {
     console.log(message)
-}
-
-service.collectorMesssageHandler = async (worker, message, master) => {
-    const account_list = settings.data.account_list
-
-    const accountIndex = account_list.findIndex((a) => a.username === message.player)
-    if (typeof account_list[accountIndex] == 'undefined') {
-        service.beforeTerminateWorker(worker, master)
-        worker.instance.terminate()
-        await master.dequeue()
-        return
-    }
-    account_list[accountIndex].power = message.newPower
-    await master.changePath('account_list', [{ ...account_list[accountIndex] }])
-
-    service.beforeTerminateWorker(worker, master)
-
-    worker.instance.terminate()
-
-    await master.dequeue()
 }
 
 service.delegatorMessageHandler = async (worker, message, master) => {
@@ -79,11 +56,37 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
     const account = account_list[accountIndex]
 
-    master.change('log', {
-        message: `message name: ${message.name}, player: ${
-            message.player || message.data?.username || message.data?.player
-        }`,
-    })
+    if (message.type === 'error') {
+        master.change('log', {
+            message: message.message,
+            type: 'error',
+        })
+        let proxy = account.proxy
+
+        const proxyIndex = app_setting.proxies.findIndex((p) => p.ip === proxy)
+        if (proxyIndex >= 0) {
+            app_setting.proxies[proxyIndex].count--
+            await master.change('app_setting', { app_setting })
+        }
+
+        const accountUpdate = {
+            username: account.username,
+            status: ACCOUNT_STATUS.ERROR,
+        }
+
+        await master.changePath('account_list', [accountUpdate])
+        
+        return
+    }
+
+    if (message.type === 'info') {
+        master.change('log', {
+            message: message.message,
+            type: 'info',
+        })
+        
+        return
+    }
 
     if (message.name === 'delegate' && message.status === 'done') {
         await master.handleAddAccount(
@@ -115,8 +118,6 @@ service.delegatorMessageHandler = async (worker, message, master) => {
         }
 
         await master.changePath('account_list', [accountUpdate])
-
-        await master.delay(5000)
 
         await master.dequeue()
 
@@ -249,7 +250,10 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 account_list[accountIndex].status = 'MULTI_REQUEST_ERROR'
             }
 
-            await master.change('log', message)
+            await master.change('log', {
+                message: message,
+                type: 'error'
+            })
 
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
             break
