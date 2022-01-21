@@ -6,10 +6,7 @@ const cardsDetail = require('../src/worker/splinterlands/data/cardsDetails.json'
 const gameSettings = require('../src/worker/splinterlands/data/settings.json')
 const utils = {}
 
-const splinterHosts = [
-    'https://steemmonsters.com/',
-    'https://api2.splinterlands.com/'
-]
+const splinterHosts = ['https://steemmonsters.com/', 'https://api2.splinterlands.com/']
 
 const sendRequestProxy = async (url, params, method = 'get', proxy, settings) => {
     if (!proxy) {
@@ -24,7 +21,7 @@ const sendRequestProxy = async (url, params, method = 'get', proxy, settings) =>
             if (auth && address) {
                 const [account, password] = auth.split(':')
                 const [host, port] = address.split(':')
-    
+
                 proxy = {
                     account,
                     password,
@@ -54,38 +51,33 @@ const sendRequest = async (url, params, method = 'get', proxy) => {
     try {
         let option = {
             headers: {
-                authority: "api2.splinterlands.com",
+                authority: 'api2.splinterlands.com',
                 method: method.toUpperCase(),
                 path: url,
-                scheme: "https",
-                accept:
-                method === "post"
-                    ? "*/*"
-                    : "application/json, text/javascript, */*; q=0.01",
-                "accept-encoding": "gzip, deflate, br",
-                "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-                "content-type":
-                method === "post" ? "application/x-www-form-urlencoded" : "",
-                origin: "https://splinterlands.com",
-                referer: "https://splinterlands.com",
-                "sec-ch-ua":
-                '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
-                "sec-ch-ua-mobile": "?0",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                "user-agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+                scheme: 'https',
+                accept: method === 'post' ? '*/*' : 'application/json, text/javascript, */*; q=0.01',
+                'accept-encoding': 'gzip, deflate, br',
+                'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                'content-type': method === 'post' ? 'application/x-www-form-urlencoded' : '',
+                origin: 'https://splinterlands.com',
+                referer: 'https://splinterlands.com',
+                'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-origin',
+                'user-agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
             },
         }
-  
+
         if (method === 'get') {
             params.v = new Date().getTime()
         }
         if (proxy) {
             option.proxy = {
                 url: `${proxy.host}:${proxy.port}`,
-                protocol: `${proxy.protocol}`
+                protocol: `${proxy.protocol}`,
             }
             if (proxy.account) {
                 option.proxy.url = `${proxy.account}:${proxy.password}@${proxy.host}:${proxy.port}`
@@ -98,7 +90,7 @@ const sendRequest = async (url, params, method = 'get', proxy) => {
         let res = await requester[method](host + url, params, option)
         return res
     } catch (err) {
-        console.error('utils ', url,err.status || err.code, err.statusText || '')
+        console.error('utils ', url, err.status || err.code, err.statusText || '')
     }
 }
 const generatePassword = (length, rng) => {
@@ -129,7 +121,7 @@ utils.login = async (username, posting_key, re) => {
 
     return {
         ...result,
-        posting_key
+        posting_key,
     }
 }
 
@@ -185,7 +177,7 @@ utils.statusMapping = (status) => {
 }
 
 utils.getBalances = async (username, proxy) => {
-    const params =  {
+    const params = {
         username,
     }
 
@@ -206,7 +198,7 @@ utils.getDetails = async (username, proxy) => {
 
 utils.getCollection = async (username, proxy) => {
     const res = await sendRequest(`cards/collection/${username}`, {}, 'get', proxy)
-    return res.cards
+    return res ? res.cards : null
 }
 utils.getQuestDetails = async (username, proxy) => {
     const params = {
@@ -221,12 +213,12 @@ utils.getQuestDetails = async (username, proxy) => {
 utils.updatePathArraySetting = async ({ array, name, settings, updatedAt }) => {
     for (let i = 0; i < array.length; i++) {
         if (name === 'account_list') {
-            const accountIndex = settings.data[name].findIndex(a => a.username === array[i].username)
+            const accountIndex = settings.data[name].findIndex((a) => a.username === array[i].username)
 
             for (let key in array[i]) {
                 settings.data.account_list[accountIndex][key] = array[i][key]
             }
-        
+
             settings.data.account_list[accountIndex].updatedAt = updatedAt
         }
     }
@@ -281,6 +273,5 @@ utils.calculateCP = (c) => {
     if (details.tier >= 7) total_dec = total_dec / 2
     return total_dec
 }
-
 
 module.exports = utils

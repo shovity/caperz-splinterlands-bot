@@ -15,9 +15,13 @@ ori.use('event store emitter storage', () => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
     const logError = (data) => {
-        let html = $('#log').html()
-        html += `<p>${data}</p>`
-        $('#log').html(html)
+        console.log(data)
+        if (data.type == 'info') {
+            $('#log').append(`<p><span class='info'>INFO/ </span>${data.message}</p>`)
+        }
+        if (data.type == 'error') {
+            $('#log').append(`<p><span class='error'>ERROR/ </span>${data.message}</p>`)
+        }
     }
     const statusMapping = (status) => {
         switch (status ? status.toUpperCase() : 'NONE') {

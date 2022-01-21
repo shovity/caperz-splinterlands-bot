@@ -104,7 +104,6 @@ class WSSplinterlandsClient {
         this.retryTimeout = null
         this.delegated = delegated
         this.opponent = null
-        this.initialDec = null
     }
 
     async Connect(player, token, new_account) {
@@ -169,56 +168,60 @@ class WSSplinterlandsClient {
         if (this.config.modeRankup) {
             await this.client.rankup()
         }
-        if (this.initialDec == null) {
-            this.initialDec =
-                this.client.getBalance('DEC') +
-                this.config.maxDec * this.config.rentalDay -
-                (this.config.maxDec *
-                    this.config.rentalDay *
-                    (this.config.expectedPower - this.client.user.collection_power)) /
-                    this.config.expectedPower
-        }
-        if (
-            (this.client.masterKey &&
-                this.config.modeRental &&
-                this.config.expectedPower &&
-                this.config.maxDec &&
-                this.config.maxDec * this.config.rentalDay > this.initialDec - this.client.getBalance('DEC') &&
-                this.config.rentalDay &&
-                this.client.user.collection_power < this.config.expectedPower) ||
-            (this.client.masterKey &&
-                !this.client.rentRequireCardDone &&
-                this.config.modeRental &&
-                this.config.requireCard.length)
-        ) {
+
+        if (this.config.modeRental) {
             parentPort.postMessage({
-                type: 'INFO_UPDATE',
-                status: 'RENTING',
-                player: this.client.user.name,
-                matchStatus: MATCH_STATUS.NONE,
+                type: 'info',
+                message: `${userName}: Rent failed - cannot read collection power`,
             })
+            if (!this.client.masterKey) {
+                parentPort.postMessage({
+                    type: 'info',
+                    message: `${userName}: Rent failed - missing masterkey`,
+                })
+            }
+            if (typeof this.client.user.collection_power != 'number') {
+                parentPort.postMessage({
+                    type: 'info',
+                    message: `${userName}: Rent failed - cannot read collection power`,
+                })
+            }
+            if (
+                (this.config.expectedPower &&
+                    this.client.masterKey &&
+                    this.config.maxDec &&
+                    this.config.rentalDay &&
+                    this.client.user.collection_power < this.config.expectedPower) ||
+                (!this.client.rentRequireCardDone && this.client.masterKey && this.config.requireCard.length)
+            ) {
+                parentPort.postMessage({
+                    type: 'INFO_UPDATE',
+                    status: 'RENTING',
+                    player: this.client.user.name,
+                    matchStatus: MATCH_STATUS.NONE,
+                })
 
-            let dec =
-                (this.config.maxDec *
-                    this.config.rentalDay *
-                    (this.config.expectedPower - this.client.user.collection_power)) /
-                this.config.expectedPower
-
-            let r = await this.client.cardRental(
-                this.client.user.collection_power,
-                this.config.expectedPower,
-                dec,
-                [],
-                this.config.rentalDay,
-                this.initialDec,
-                this.config.requireCard
-            )
-            if ((this.client.user.collection_power < this.config.expectedPower)) {
-                this.CheckCondition()
-                return
-            } else {
-                await this.client.UpdatePlayerInfo()
-                await this.client.updatePlayerInfo()
+                let dec =
+                    (this.config.maxDec *
+                        this.config.rentalDay *
+                        (this.config.expectedPower - this.client.user.collection_power)) /
+                    this.config.expectedPower
+                dec = dec < this.client.getBalance('DEC') ? dec : this.client.getBalance('DEC')  
+                await this.client.cardRental(
+                    this.client.user.collection_power,
+                    this.config.expectedPower,
+                    dec,
+                    [],
+                    this.config.rentalDay,
+                    this.config.requireCard
+                )
+                if (this.client.user.collection_power < this.config.expectedPower) {
+                    this.CheckCondition()
+                    return
+                } else {
+                    await this.client.UpdatePlayerInfo()
+                    await this.client.updatePlayerInfo()
+                }
             }
         }
         if (this.config.modeCollectSeasonReward && !this.collectSeasonRewardDone) {
@@ -496,6 +499,7 @@ class WSSplinterlandsClient {
                 })
             } else {
                 log && console.log('Empty teams to play:', matchDetails)
+                console.log('Empty teams to play 2:', possibleTeams)
                 // empty result
                 this.client.surrender(idMatch, () => {})
             }

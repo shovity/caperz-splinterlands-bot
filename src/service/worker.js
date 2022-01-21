@@ -19,7 +19,7 @@ const ACCOUNT_STATUS = {
     PAUSED: 'PAUSED',
     WAITING_ECR: 'WAITING_ECR',
     UNDELEGATING: 'undelegating',
-    ERROR: 'ERROR'
+    ERROR: 'ERROR',
 }
 
 const service = {}
@@ -77,6 +77,7 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
         await master.changePath('account_list', [accountUpdate])
 
+<<<<<<< Updated upstream
         await master.dequeue()
 
         if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
@@ -85,6 +86,8 @@ service.delegatorMessageHandler = async (worker, message, master) => {
             })
         }
         
+=======
+>>>>>>> Stashed changes
         return
     }
 
@@ -93,7 +96,7 @@ service.delegatorMessageHandler = async (worker, message, master) => {
             message: message.message,
             type: 'info',
         })
-        
+
         return
     }
 
@@ -261,7 +264,7 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
 
             await master.change('log', {
                 message: message,
-                type: 'error'
+                type: 'error',
             })
 
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
@@ -342,11 +345,31 @@ service.createDelegator = async (master) => {
     })
 }
 
-service.checkDelegate = async (player, proxy) => {
+service.checkDelegate = async (player, proxy, master) => {
     const appSetting = settings.data.app_setting
     const minDlgPower = appSetting.dlgMinPower || 0
-    const res = await utils.getDetails(player, proxy)
+
+    if (!appSetting.modeDelegate) {
+        return false
+    }
+
+    if (!appSetting.majorAccount?.player && !appSetting.majorAccount?.postingKey) {
+        master.change('log', { type: 'info', message: `${player}: Delegate failed - missing major account` })
+        return false
+    }
+
+    const res = (await utils.getDetails(player, proxy)) || {}
+    if (typeof res.collection_power == 'undefined') {
+        master.change('log', { type: 'error', message: `${player}: Delegate failed - get player details error` })
+        return false
+    }
+    const cp = res.collection_power
+
     const cards = await utils.getCollection(appSetting.majorAccount?.player, proxy)
+    if (cards == null) {
+        master.change('log', { type: 'error', message: `${player}: Delegate failed - get major collection error` })
+        return false
+    }
     let availablePower = 0
     const availableCards = cards.filter((c) => {
         if (!c.delegated_to && utils.calculateCP(c) >= 100) {
@@ -354,16 +377,17 @@ service.checkDelegate = async (player, proxy) => {
             return true
         }
     })
-    const cp = res.collection_power
+
+    if (typeof appSetting.majorAccount.rc == 'undefined') {
+        master.change('log', { type: 'error', message: `${player}: Delegate failed - cannot read major account RC` })
+        return false
+    }
+    if (minDlgPower - cp > availablePower) {
+        master.change('log', { type: 'info', message: `${player}: Delegate failed - major power run out` })
+        return false
+    }
     const stoprc = appSetting.majorAccount.stoprc || 5
-    return (
-        minDlgPower > cp &&
-        appSetting.modeDelegate &&
-        appSetting.majorAccount?.player &&
-        appSetting.majorAccount?.postingKey &&
-        minDlgPower - cp <= availablePower &&
-        appSetting.majorAccount.rc >= stoprc
-    )
+    return minDlgPower > cp && minDlgPower - cp <= availablePower && appSetting.majorAccount.rc >= stoprc
 }
 
 module.exports = service

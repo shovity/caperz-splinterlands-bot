@@ -181,7 +181,7 @@ master.handleAddAccount = async (account, proxyIp, delegated=0) => {
         }
 
         try {
-            const shouldDelegate = await workerService.checkDelegate(account.username, proxy) 
+            const shouldDelegate = await workerService.checkDelegate(account.username, proxy, master) 
 
             if (isAccountPaused()) {
                 return

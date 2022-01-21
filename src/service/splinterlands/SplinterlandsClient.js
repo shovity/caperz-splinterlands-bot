@@ -1389,231 +1389,236 @@ class SplinterLandsClient {
             return rates[rates.length - 1]
         } else return this.settings.xp_levels[rarity - 1][this.settings.xp_levels[rarity - 1].length - 1]
     }
-    async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1, initialDec, requireCard) {
-        let retry = false
-        let blackList = bl
-        let gainedPower = 0
-        let remainingPower = expectedPower > curPower ? expectedPower - curPower : 0
-        let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
-        let weight = remainingDec / rentalDay / remainingPower
-        let cardRemaining = []
-        log && console.log('weight ', weight)
-        log && console.log('remainingPower', remainingPower)
+    async cardRental(curPower, expectedPower, maxDec, bl, rentalDay = 1, requireCard) {
+        try {
+            let retry = false
+            let blackList = bl
+            let gainedPower = 0
+            let remainingPower = expectedPower > curPower ? expectedPower - curPower : 0
+            let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
+            let weight = remainingDec / rentalDay / remainingPower
+            let cardRemaining = []
+            log && console.log('weight ', weight)
+            log && console.log('remainingPower', remainingPower)
 
-        const getCardMarketIdArray = async (card) => {
-            if (!card) {
-                return []
+            const getCardMarketIdArray = async (card) => {
+                if (!card) {
+                    return []
+                }
+                let result = []
+                const res = await this.sendRequest('market/for_rent_by_card', {
+                    card_detail_id: card.card_detail_id,
+                    gold: card.gold,
+                    edition: card.edition,
+                    v: Date.now(),
+                    username: this.user.name,
+                    token: this.token,
+                })
+                if (!res) {
+                    return []
+                }
+                res.sort((a, b) => {
+                    return +a.buy_price - +b.buy_price
+                })
+                if (res[0].buy_price / this.calculateCP(res[0]) > weight) {
+                    blackList.push(card.formated)
+                    retry = true
+                    return []
+                }
+                res.every((c) => {
+                    if (
+                        c.buy_price / this.calculateCP(c) > weight ||
+                        gainedPower + this.calculateCP(c) > remainingPower + 100
+                    ) {
+                        return false
+                    } else {
+                        log && console.log('card power', this.calculateCP(c))
+                        result.push(c.market_id)
+                        gainedPower += this.calculateCP(c)
+                        log && console.log('price', c.buy_price)
+                        return true
+                    }
+                })
+                return result
             }
-            let result = []
-            const res = await this.sendRequest('market/for_rent_by_card', {
-                card_detail_id: card.card_detail_id,
-                gold: card.gold,
-                edition: card.edition,
+            if (requireCard?.length) {
+                const pc = await this.getPlayerCardsUID()
+                const playerCards = pc.map((c) => this.getCardId(c))
+                requireCard.forEach((c) => {
+                    const cid = c.id.split('_')[1]
+                    if (!playerCards.includes(cid)) {
+                        cardRemaining.push({
+                            id: cid,
+                            dec: c.maxDec,
+                        })
+                    }
+                })
+            }
+            if (cardRemaining.length) {
+                await Promise.all(
+                    cardRemaining.map(async (card) => {
+                        const res = await this.sendRequest('market/for_rent_by_card', {
+                            card_detail_id: card.id.split('-')[0],
+                            gold: card.id.split('-')[2] == 'c' ? false : true,
+                            edition: card.id.split('-')[1],
+                            v: Date.now(),
+                            username: this.user.name,
+                            token: this.token,
+                        })
+                        if (!res) {
+                            return
+                        }
+                        const cardsList = res
+                            .sort((a, b) => {
+                                return +a.buy_price - +b.buy_price
+                            })
+                            .filter((c) => {
+                                if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+                                    return false
+                                }
+
+                                if (c.unlock_date && new Date(c.unlock_date) >= Date.now()) {
+                                    return false
+                                }
+
+                                if (
+                                    c.player != c.last_used_player &&
+                                    c.last_used_date &&
+                                    Date.now() - new Date(c.last_used_date) < 1000 * 60 * 60 * 24
+                                ) {
+                                    if (
+                                        c.last_transferred_date &&
+                                        Date.now() - new Date(c.last_used_date) >
+                                        Date.now() - new Date(c.last_transferred_date)
+                                    ) {
+                                        return false
+                                    }
+                                }
+                                if (parseFloat(c.buy_price) > card.dec) {
+                                    return false
+                                }
+                                return true
+                            })
+                        if (cardsList[0]) {
+                            const id = cardsList[0].market_id
+                            const prm = new Promise((resolve, reject) => {
+                                this.broadcastCustomJson(
+                                    'sm_market_rent',
+                                    '',
+                                    {
+                                        items: [id],
+                                        currency: 'DEC',
+                                        days: rentalDay,
+                                    },
+                                    (result) => {
+                                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                                            resolve(result)
+                                        } else {
+                                            resolve(null)
+                                        }
+                                    }
+                                )
+                            })
+                            return prm
+                        }
+                    })
+                )
+            } else {
+                this.rentRequireCardDone = true
+            }
+            if (remainingPower <= 0) {
+                parentPort.postMessage({
+                    type: 'INFO_UPDATE',
+                    status: 'RUNNING',
+                    player: this.user.name,
+                    matchStatus: 'NONE',
+                })
+                log && console.log('done ne')
+                return
+            }
+            const res = await this.sendRequest('market/for_rent_grouped', {
                 v: Date.now(),
                 username: this.user.name,
                 token: this.token,
             })
             if (!res) {
-                return []
+                parentPort.postMessage({
+                    type: 'INFO_UPDATE',
+                    status: 'RUNNING',
+                    player: this.user.name,
+                    matchStatus: 'NONE',
+                })
+                log && console.log('done ne')
+                return
             }
-            res.sort((a, b) => {
-                return +a.buy_price - +b.buy_price
-            })
-            if (res[0].buy_price / this.calculateCP(res[0]) > weight) {
-                blackList.push(card.formated)
-                retry = true
-                return []
-            }
-            res.every((c) => {
-                if (
-                    c.buy_price / this.calculateCP(c) > weight ||
-                    gainedPower + this.calculateCP(c) > remainingPower + 100
-                ) {
-                    return false
-                } else {
-                    log && console.log('card power', this.calculateCP(c))
-                    result.push(c.market_id)
-                    gainedPower += this.calculateCP(c)
-                    log && console.log('price', c.buy_price)
+            const data = res
+                .map((e) => {
+                    return {
+                        ...e,
+                        power: this.calculateCPOld({ ...e, xp: 1, alpha_xp: null }),
+                        weight: e.low_price / this.calculateCPOld({ ...e, xp: 1, alpha_xp: null }),
+                        formated: `${e.card_detail_id}-${e.edition}-${e.gold}`,
+                    }
+                })
+                .filter((e) => {
+                    if (blackList.includes(e.formated)) {
+                        return false
+                    }
+                    if (e.weight > weight) {
+                        return false
+                    }
+                    if (e.power > remainingPower + 100) {
+                        return false
+                    }
                     return true
-                }
-            })
-            return result
-        }
-        if (requireCard?.length) {
-            const pc = await this.getPlayerCardsUID()
-            const playerCards = pc.map((c) => this.getCardId(c))
-            requireCard.forEach((c) => {
-                const cid = c.id.split('_')[1]
-                if (!playerCards.includes(cid)) {
-                    cardRemaining.push({
-                        id: cid,
-                        dec: c.maxDec,
-                    })
-                }
-            })
-        }
-        if (cardRemaining.length) {
-            await Promise.all(
-                cardRemaining.map(async (card) => {
-                    const res = await this.sendRequest('market/for_rent_by_card', {
-                        card_detail_id: card.id.split('-')[0],
-                        gold: card.id.split('-')[2] == 'c' ? false : true,
-                        edition: card.id.split('-')[1],
-                        v: Date.now(),
-                        username: this.user.name,
-                        token: this.token,
-                    })
-                    if (!res) {
-                        return
-                    }
-                    const cardsList = res
-                        .sort((a, b) => {
-                            return +a.buy_price - +b.buy_price
-                        })
-                        .filter((c) => {
-                            if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
-                                return false
-                            }
+                })
+                .sort((a, b) => {
+                    return b.power - a.power
+                })
 
-                            if (c.unlock_date && new Date(c.unlock_date) >= Date.now()) {
-                                return false
-                            }
-
-                            if (
-                                c.player != c.last_used_player &&
-                                c.last_used_date &&
-                                Date.now() - new Date(c.last_used_date) < 1000 * 60 * 60 * 24
-                            ) {
-                                if (
-                                    c.last_transferred_date &&
-                                    Date.now() - new Date(c.last_used_date) >
-                                        Date.now() - new Date(c.last_transferred_date)
-                                ) {
-                                    return false
+            let r
+            if (data.length > 0) {
+                const marketIdArray = await getCardMarketIdArray(data[0])
+                const ids = marketIdArray.filter((e) => e != 0)
+                if (ids.length > 0) {
+                    const prm = new Promise((resolve, reject) => {
+                        this.broadcastCustomJson(
+                            'sm_market_rent',
+                            '',
+                            {
+                                items: marketIdArray.filter((e) => e != 0),
+                                currency: 'DEC',
+                                days: rentalDay,
+                            },
+                            (result) => {
+                                if (result && !result.error && result.trx_info && result.trx_info.success) {
+                                    resolve(result)
+                                } else {
+                                    resolve(null)
                                 }
                             }
-                            if (parseFloat(c.buy_price) > card.dec) {
-                                return false
-                            }
-                            return true
-                        })
-                    if (cardsList[0]) {
-                        const id = cardsList[0].market_id
-                        const prm = new Promise((resolve, reject) => {
-                            this.broadcastCustomJson(
-                                'sm_market_rent',
-                                '',
-                                {
-                                    items: [id],
-                                    currency: 'DEC',
-                                    days: rentalDay,
-                                },
-                                (result) => {
-                                    if (result && !result.error && result.trx_info && result.trx_info.success) {
-                                        resolve(result)
-                                    } else {
-                                        resolve(null)
-                                    }
-                                }
-                            )
-                        })
-                        return prm
-                    }
-                })
-            )
-        } else {
-            this.rentRequireCardDone = true
-        }
-        if (remainingPower <= 0) {
-            parentPort.postMessage({
-                type: 'INFO_UPDATE',
-                status: 'RUNNING',
-                player: this.user.name,
-                matchStatus: 'NONE',
-            })
-            log && console.log('done ne')
-            return
-        }
-        const res = await this.sendRequest('market/for_rent_grouped', {
-            v: Date.now(),
-            username: this.user.name,
-            token: this.token,
-        })
-        if (!res) {
-            parentPort.postMessage({
-                type: 'INFO_UPDATE',
-                status: 'RUNNING',
-                player: this.user.name,
-                matchStatus: 'NONE',
-            })
-            log && console.log('done ne')
-            return
-        }
-        const data = res
-            .map((e) => {
-                return {
-                    ...e,
-                    power: this.calculateCPOld({ ...e, xp: 1, alpha_xp: null }),
-                    weight: e.low_price / this.calculateCPOld({ ...e, xp: 1, alpha_xp: null }),
-                    formated: `${e.card_detail_id}-${e.edition}-${e.gold}`,
+                        )
+                    })
+                    r = await prm
                 }
-            })
-            .filter((e) => {
-                if (blackList.includes(e.formated)) {
-                    return false
-                }
-                if (e.weight > weight) {
-                    return false
-                }
-                if (e.power > remainingPower + 100) {
-                    return false
-                }
-                return true
-            })
-            .sort((a, b) => {
-                return b.power - a.power
-            })
-
-        let r
-        if (data.length > 0) {
-            const marketIdArray = await getCardMarketIdArray(data[0])
-            const ids = marketIdArray.filter((e) => e != 0)
-            if (ids.length > 0) {
-                const prm = new Promise((resolve, reject) => {
-                    this.broadcastCustomJson(
-                        'sm_market_rent',
-                        '',
-                        {
-                            items: marketIdArray.filter((e) => e != 0),
-                            currency: 'DEC',
-                            days: rentalDay,
-                        },
-                        (result) => {
-                            if (result && !result.error && result.trx_info && result.trx_info.success) {
-                                resolve(result)
-                            } else {
-                                resolve(null)
-                            }
-                        }
-                    )
-                })
-                r = await prm
             }
+            if (retry) {
+                await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay)
+                return
+            }
+            this.delay(5000)
+            parentPort.postMessage({
+                type: 'INFO_UPDATE',
+                status: 'RUNNING',
+                player: this.user.name,
+                matchStatus: 'NONE',
+            })
+            log && console.log('done ne')
+            return r
         }
-        if (retry) {
-            await this.cardRental(curPower + gainedPower, expectedPower, remainingDec, blackList, rentalDay, initialDec)
-            return
+        catch (error) {
+            throw `${this.user.name}: Rent failed - ${error.message||'Unknow error'}`
         }
-        this.delay(3000)
-        parentPort.postMessage({
-            type: 'INFO_UPDATE',
-            status: 'RUNNING',
-            player: this.user.name,
-            matchStatus: 'NONE',
-        })
-        log && console.log('done ne')
-        return r
     }
     async transferDEC(dec) {
         try {
@@ -1648,6 +1653,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
+            throw `${this.user.name}: Transfer dec failed - ${error.message||'Unknow error'}`
         }
     }
     async sendCardToMajorAccount() {
@@ -1692,6 +1698,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
+            throw `${this.user.name}: Transfer cards failed - ${error.message||'Unknow error'}`
         }
     }
 
@@ -1801,7 +1808,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
-            throw error
+            throw `${this.user.name}: Delegate process failed - ${error.message||'Unknow error'}`
         }
     }
     async undelegatePower(cards, proxy, player) {
@@ -1835,7 +1842,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
-            return null
+            throw `${this.user.name}: Undelegate process failed - ${error.message||'Unknow error'}`
         }
     }
 
