@@ -147,30 +147,53 @@ class SplinterLandsClient {
         return +(recoverECR + ecr).toFixed(2)
     }
 
+    throwError = (error) => {
+        throw error
+    }
+
     processDone = async () => {
-        if (!this.user) return
-        let d = this.getBalance('DEC')
-        if (
-            this.config.modeTransfer &&
-            this.config.majorAccount.player &&
-            this.config.majorAccount.player != this.user.name.toLowerCase() &&
-            this.config.transferStartDec &&
-            this.config.transferKeepDec &&
-            this.config.transferStartDec <= d
-        ) {
-            await this.transferDEC(d - this.config.transferKeepDec)
+        try {
+            if (!this.user) return
+            let d = this.getBalance('DEC')
+            if (this.config.modeTransfer) {
+                // if (typeof this.config.transferKeepDec != 'number') {
+                //     this.throwError(`${this.user.name}: Transfer failed - keep dec not a number`)
+                // }
+
+                // if (typeof this.config.transferStartDec != 'number') {
+                //     this.throwError(`${this.user.name}: Transfer failed - start dec not a number`)
+                // }
+
+                // if (typeof d != 'number') {
+                //     this.throwError(`${this.user.name}: Transfer failed - can not get current DEC`)
+                // }
+
+                if (
+                    this.config.majorAccount.player &&
+                    this.config.majorAccount.player != this.user.name.toLowerCase() &&
+                    this.config.transferStartDec &&
+                    this.config.transferKeepDec &&
+                    this.config.transferStartDec <= d
+                ) {
+                    await this.transferDEC(d - this.config.transferKeepDec)
+                }
+            }
+
+            if (
+                this.config.majorAccount.player &&
+                this.config.modeTransfer &&
+                this.config.majorAccount.player != this.user.name.toLowerCase()
+            ) {
+                await this.sendCardToMajorAccount()
+            }
+            await this.UpdatePlayerInfo()
+            this.updatePlayerInfo()
+            await this.createCollector()
+            return true
+        } 
+        catch (error) {
+            throw `${this.user.name}: Process done failed - ${error.message || 'Unknown error'}`
         }
-        if (
-            this.config.majorAccount.player &&
-            this.config.modeTransfer &&
-            this.config.majorAccount.player != this.user.name.toLowerCase()
-        ) {
-            await this.sendCardToMajorAccount()
-        }
-        await this.UpdatePlayerInfo()
-        this.updatePlayerInfo()
-        await this.createCollector()
-        return true
     }
 
     async createCollector() {
@@ -1489,7 +1512,7 @@ class SplinterLandsClient {
                                     if (
                                         c.last_transferred_date &&
                                         Date.now() - new Date(c.last_used_date) >
-                                        Date.now() - new Date(c.last_transferred_date)
+                                            Date.now() - new Date(c.last_transferred_date)
                                     ) {
                                         return false
                                     }
@@ -1615,9 +1638,8 @@ class SplinterLandsClient {
             })
             log && console.log('done ne')
             return r
-        }
-        catch (error) {
-            throw `${this.user.name}: Rent failed - ${error.message||'Unknow error'}`
+        } catch (error) {
+            throw `${this.user.name}: Rent failed - ${error.message || 'Unknown error'}`
         }
     }
     async transferDEC(dec) {
@@ -1653,7 +1675,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
-            throw `${this.user.name}: Transfer dec failed - ${error.message||'Unknow error'}`
+            throw `${this.user.name}: Transfer dec failed - ${error.message || 'Unknown error'}`
         }
     }
     async sendCardToMajorAccount() {
@@ -1698,7 +1720,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
-            throw `${this.user.name}: Transfer cards failed - ${error.message||'Unknow error'}`
+            throw `${this.user.name}: Transfer cards failed - ${error.message || 'Unknown error'}`
         }
     }
 
@@ -1808,7 +1830,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
-            throw `${this.user.name}: Delegate process failed - ${error.message||'Unknow error'}`
+            throw `${this.user.name}: Delegate process failed - ${error.message || 'Unknown error'}`
         }
     }
     async undelegatePower(cards, proxy, player) {
@@ -1842,7 +1864,7 @@ class SplinterLandsClient {
             return r
         } catch (error) {
             log && console.log(error)
-            throw `${this.user.name}: Undelegate process failed - ${error.message||'Unknow error'}`
+            throw `${this.user.name}: Undelegate process failed - ${error.message || 'Unknown error'}`
         }
     }
 

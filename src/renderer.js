@@ -92,7 +92,7 @@ ori.use('event store emitter storage', () => {
         app.removeClass('d-none')
     })
 
-    store.g_username = user?.userData?.username || 'Unknow'
+    store.g_username = user?.userData?.username || 'Unknown'
 
     const tabs = [...document.querySelectorAll('[tab]')]
     const navs = [...document.querySelectorAll('.nav-item a')]
