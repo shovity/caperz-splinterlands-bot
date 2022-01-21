@@ -7,6 +7,7 @@ const MESSAGE_STATUS = {
     ERROR: 'ERROR',
     CREATE_DELEGATOR: 'CREATE_DELEGATOR',
     CREATE_COLLECTOR: 'CREATE_COLLECTOR',
+    INFO: 'info',
 }
 
 const ACCOUNT_STATUS = {
@@ -283,6 +284,13 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
                 },
                 param: message.param,
                 config: app_setting,
+            })
+            break
+        
+        case MESSAGE_STATUS.INFO:
+            master.change('log', {
+                message: message.message,
+                type: 'info',
             })
             break
     }
