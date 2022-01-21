@@ -14,6 +14,11 @@ ori.use('event store emitter storage', () => {
     const formatNumber = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
+    const logError = (data) => {
+        let html = $('#log').html()
+        html += `<p>${data}</p>`
+        $('#log').html(html)
+    }
     const statusMapping = (status) => {
         switch (status ? status.toUpperCase() : 'NONE') {
             case 'PENDING':
@@ -285,7 +290,7 @@ ori.use('event store emitter storage', () => {
                 player: ma_username.value,
                 postingKey: ma_posting_key.value,
                 stoprc: ma_rc_config.value,
-                rc: maRc
+                rc: maRc,
             },
             requireCard: requireCard,
         })
@@ -697,10 +702,12 @@ ori.use('event store emitter storage', () => {
     })
 
     ipc.on('log', (event, data) => {
-        console.log(data)
+        logError(data)
     })
-
     ipc.on('major_acc.update', (event, data) => {
+        if (!data) {
+            return
+        }
         const rc = +data.rc
         const availablePower = +data.availablePower
         maRc = rc.toFixed(2)

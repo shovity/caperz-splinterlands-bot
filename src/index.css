@@ -172,6 +172,9 @@ button.active {
 .nav-item .nav-link:hover {
     color: #ffb320 !important;
 }
+.nav-link {
+    padding: .5rem 0;
+}
 .table {
     color: inherit;
     counter-reset: section;
@@ -359,4 +362,9 @@ button.active {
 }
 .green-lable {
     color: #48a300
+}
+#log p {
+    margin: 0px;
+    font-size: 10px;
+    font-family: monospace;
 }

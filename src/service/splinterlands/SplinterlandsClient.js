@@ -1697,7 +1697,7 @@ class SplinterLandsClient {
 
     async delegatePower(player, minDelegatePower) {
         try {
-            log && console.log('delegate', this.user.name, '->', player)
+            console.log('delegate', this.user.name, '->', player)
             const playerDetail = await this.sendRequest(`players/details`, {
                 name: player,
             })
