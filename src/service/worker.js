@@ -76,6 +76,14 @@ service.delegatorMessageHandler = async (worker, message, master) => {
         }
 
         await master.changePath('account_list', [accountUpdate])
+
+        await master.dequeue()
+
+        if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
+            master.delegatorWorker.instance.postMessage({
+                action: 'delegating_continue',
+            })
+        }
         
         return
     }
@@ -257,6 +265,8 @@ service.splinterlandMessageHandler = async (worker, message, master) => {
             })
 
             await master.changePath('account_list', [{ ...account_list[accountIndex] }])
+
+            await master.dequeue()
             break
         //TODO: clear status create delegator
         case MESSAGE_STATUS.CREATE_DELEGATOR:
