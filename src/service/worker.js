@@ -77,7 +77,6 @@ service.delegatorMessageHandler = async (worker, message, master) => {
 
         await master.changePath('account_list', [accountUpdate])
 
-<<<<<<< Updated upstream
         await master.dequeue()
 
         if (!message.pendingUndelegateTasks && message.pendingDelegateTasks) {
@@ -86,8 +85,6 @@ service.delegatorMessageHandler = async (worker, message, master) => {
             })
         }
         
-=======
->>>>>>> Stashed changes
         return
     }
 

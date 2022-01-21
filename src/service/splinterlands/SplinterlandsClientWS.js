@@ -170,10 +170,6 @@ class WSSplinterlandsClient {
         }
 
         if (this.config.modeRental) {
-            parentPort.postMessage({
-                type: 'info',
-                message: `${userName}: Rent failed - cannot read collection power`,
-            })
             if (!this.client.masterKey) {
                 parentPort.postMessage({
                     type: 'info',
