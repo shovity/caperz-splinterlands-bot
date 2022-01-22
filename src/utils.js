@@ -236,6 +236,9 @@ utils.calculateCP = (c) => {
     }
     const card = c.xp > 1 ? { ...c, alpha_xp: 0 } : { ...c, alpha_xp: null }
     const details = cardsDetail.find((o) => o.id === card.card_detail_id)
+    if (!details) {
+        return 1
+    }
     var alpha_bcx = 0,
         alpha_dec = 0
     var xp = Math.max(card.xp - card.alpha_xp, 0)

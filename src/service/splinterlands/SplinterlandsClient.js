@@ -2,7 +2,6 @@ var steem = require('steem')
 const eosjs_ecc = require('eosjs-ecc')
 const { parentPort } = require('worker_threads')
 var md5 = require('md5')
-const cardsDetail = require('../../worker/splinterlands/data/cardsDetails.json')
 const Config = {
     api_url: 'https://api2.splinterlands.com',
     battle_url: 'https://battle.splinterlands.com',
@@ -99,6 +98,7 @@ class SplinterLandsClient {
         this._active_auth_tx_callbacks = {}
         this.masterKey = masterKey
         this.rentRequireCardDone = false
+        this.cardsDetails = null
     }
     sendMessage = ({ player, ...data }) => {
         if (!this.user && !player) return
@@ -613,6 +613,9 @@ class SplinterLandsClient {
         })
 
         this.settings = result
+        const res = await this.sendRequest('cards/get_details', {})
+
+        this.cardsDetails = res
 
         if (this.settings.rpc_nodes && Array.isArray(this.settings.rpc_nodes) && this.settings.rpc_nodes.length > 0) {
             Config.rpc_nodes = this.settings.rpc_nodes.filter((n) => n.startsWith('https://'))
@@ -1329,7 +1332,7 @@ class SplinterLandsClient {
         }
     }
     calculateCPOld(card) {
-        const details = cardsDetail.find((o) => o.id === card.card_detail_id)
+        const details = this.cardsDetails.find((o) => o.id === card.card_detail_id)
         if (!details) {
             return 1
         }
@@ -1363,7 +1366,7 @@ class SplinterLandsClient {
 
     calculateCP(c) {
         const card = c.xp > 1 ? { ...c, alpha_xp: 0 } : { ...c, alpha_xp: null }
-        const details = cardsDetail.find((o) => o.id === card.card_detail_id)
+        const details = this.cardsDetails.find((o) => o.id === card.card_detail_id)
         if (!details) {
             return 1
         }
