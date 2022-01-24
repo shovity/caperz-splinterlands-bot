@@ -1,6 +1,7 @@
 var steem = require('steem')
 const eosjs_ecc = require('eosjs-ecc')
 const { parentPort } = require('worker_threads')
+const cardsDetail = require('../../worker/splinterlands/data/cardsDetails.json')
 var md5 = require('md5')
 const Config = {
     api_url: 'https://api2.splinterlands.com',
@@ -98,7 +99,7 @@ class SplinterLandsClient {
         this._active_auth_tx_callbacks = {}
         this.masterKey = masterKey
         this.rentRequireCardDone = false
-        this.cardsDetails = null
+        this.cardsDetails = cardsDetail
     }
     sendMessage = ({ player, ...data }) => {
         if (!this.user && !player) return
@@ -1729,7 +1730,7 @@ class SplinterLandsClient {
 
     async delegatePower(player, minDelegatePower) {
         try {
-            console.log('delegate', this.user.name, '->', player)
+            log && console.log('delegate', this.user.name, '->', player)
             const playerDetail = await this.sendRequest(`players/details`, {
                 name: player,
             })
@@ -1808,6 +1809,7 @@ class SplinterLandsClient {
             }
 
             if (cards.length == 0) {
+                console.log(`delegate ${this.user.name} empty card list`)
                 return null
             }
             log && console.log('card for delegate', cards)
@@ -1837,12 +1839,13 @@ class SplinterLandsClient {
         }
     }
     async undelegatePower(cards, proxy, player) {
-        console.log('undelegate', this.user.name, '<-', player)
+        log && console.log('undelegate', this.user.name, '<-', player)
         try {
             if (cards.length == 0) {
                 return null
             }
             if (!this.user.name || !this.key) {
+                console.log(`undelegate ${this.user.name} missing key or username`)
                 return null
             }
             const prm = new Promise((resolve, reject) => {
@@ -1857,7 +1860,7 @@ class SplinterLandsClient {
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
                             resolve(result)
                         } else {
-                            resolve(null)
+                            resolve(result.error || null)
                         }
                     }
                 )
