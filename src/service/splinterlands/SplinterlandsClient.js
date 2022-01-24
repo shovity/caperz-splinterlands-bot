@@ -1860,7 +1860,7 @@ class SplinterLandsClient {
                         if (result && !result.error && result.trx_info && result.trx_info.success) {
                             resolve(result)
                         } else {
-                            resolve(result.error || null)
+                            resolve(result?.error || null)
                         }
                     }
                 )
