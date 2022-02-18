@@ -191,8 +191,7 @@ class SplinterLandsClient {
             this.updatePlayerInfo()
             await this.createCollector()
             return true
-        } 
-        catch (error) {
+        } catch (error) {
             throw `${this.user.name}: Process done failed - ${error.message || 'Unknown error'}`
         }
     }
@@ -269,30 +268,35 @@ class SplinterLandsClient {
             token: this.token,
         })
         if (result) {
-            return result.cards.filter((c) => {
-                if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
-                    return false
-                }
-
-                if (c.unlock_date && new Date(c.unlock_date) >= Date.now()) {
-                    return false
-                }
-
-                if (
-                    c.player != c.last_used_player &&
-                    c.last_used_date &&
-                    Date.now() - new Date(c.last_used_date) < 1000 * 60 * 60 * 24
-                ) {
-                    if (
-                        c.last_transferred_date &&
-                        Date.now() - new Date(c.last_used_date) > Date.now() - new Date(c.last_transferred_date)
-                    ) {
+            return result.cards
+                .filter((c) => {
+                    if (this.getCardLevelInfo(c).level > 3) {
                         return false
                     }
-                }
+                    if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
+                        return false
+                    }
 
-                return true
-            })
+                    if (c.unlock_date && new Date(c.unlock_date) >= Date.now()) {
+                        return false
+                    }
+
+                    if (
+                        c.player != c.last_used_player &&
+                        c.last_used_date &&
+                        Date.now() - new Date(c.last_used_date) < 1000 * 60 * 60 * 24
+                    ) {
+                        if (
+                            c.last_transferred_date &&
+                            Date.now() - new Date(c.last_used_date) > Date.now() - new Date(c.last_transferred_date)
+                        ) {
+                            return false
+                        }
+                    }
+
+                    return true
+                })
+                .sort((a, b) => this.getCardLevelInfo(b).level - this.getCardLevelInfo(a).level)
         } else {
             return []
         }
@@ -325,6 +329,9 @@ class SplinterLandsClient {
         if (result) {
             result.cards
                 .filter((c) => {
+                    if (this.getCardLevelInfo(c).level > 3) {
+                        return false
+                    }
                     if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
                         return false
                     }
@@ -1408,6 +1415,61 @@ class SplinterLandsClient {
         if (details.tier >= 7) total_dec = total_dec / 2
         return total_dec
     }
+
+    getCardLevelInfo(card) {
+        const details = this.cardsDetails.find((o) => o.id === card.card_detail_id)
+        if (isNaN(card.xp)) card.xp = (card.edition == 4 || details.tier) == 4 ? 1 : 0
+        if (card.edition == 4 || details.tier >= 4) {
+            let rates = card.gold
+                ? this.settings.combine_rates_gold[details.rarity - 1]
+                : this.settings.combine_rates[details.rarity - 1]
+            let level = 0
+            for (let i = 0; i < rates.length; i++) {
+                if (rates[i] > card.xp) break
+                level++
+            }
+            if (card.xp == 0) level = 1
+            return {
+                level: level,
+                xp_to_next_level: card.xp - rates[level - 1],
+                cards_to_next_level: card.xp - rates[level - 1],
+                xp_needed: level >= rates.length ? -1 : rates[level] - rates[level - 1],
+                cards_needed: level >= rates.length ? -1 : rates[level] - rates[level - 1],
+            }
+        }
+        var levels = this.settings.xp_levels[details.rarity - 1]
+        var level = 0
+        for (var i = 0; i < levels.length; i++) {
+            if (card.xp < levels[i]) {
+                level = i + 1
+                break
+            }
+        }
+        if (level == 0) level = levels.length + 1
+        var xp_to_next_level =
+            level > levels.length ? card.xp - levels[levels.length - 1] : card.xp - (level == 1 ? 0 : levels[level - 2])
+        var xp_needed =
+            level > levels.length ? -1 : level == 1 ? levels[level - 1] : levels[level - 1] - levels[level - 2]
+        var xp_array =
+            card.edition == 1 || card.edition == 3 || (card.edition == 2 && details.id > 100)
+                ? card.gold
+                    ? 'beta_gold_xp'
+                    : 'beta_xp'
+                : card.gold
+                ? 'gold_xp'
+                : 'alpha_xp'
+        var xp_per_card = this.settings[xp_array][details.rarity - 1]
+        var cards_needed = Math.ceil(xp_needed / xp_per_card)
+        var cards_to_next_level = cards_needed - Math.ceil((xp_needed - xp_to_next_level) / xp_per_card)
+        return {
+            level: level,
+            xp_to_next_level: xp_to_next_level,
+            cards_to_next_level: cards_to_next_level,
+            xp_needed: xp_needed,
+            cards_needed: cards_needed,
+        }
+    }
+
     getMaxXp(details, edition, gold) {
         let rarity = details.rarity
         let tier = details.tier
