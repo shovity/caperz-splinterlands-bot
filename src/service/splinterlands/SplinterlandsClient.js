@@ -270,9 +270,6 @@ class SplinterLandsClient {
         if (result) {
             return result.cards
                 .filter((c) => {
-                    if (this.getCardLevelInfo(c).level > 3) {
-                        return false
-                    }
                     if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
                         return false
                     }
@@ -296,9 +293,29 @@ class SplinterLandsClient {
 
                     return true
                 })
-                .sort((a, b) => this.getCardLevelInfo(b).level - this.getCardLevelInfo(a).level)
+                .map((c) => {
+                    const details = this.cardsDetails.find((o) => o.id === c.card_detail_id)
+                    return {
+                        ...c,
+                        level: this.getCardLevelInfo(c).level,
+                        rarity: details.rarity,
+                    }
+                })
+                .sort((a, b) => b.level - a.level)
         } else {
             return []
+        }
+    }
+
+    getMonsterMaxLevel = (summoner) => {
+        const details = this.cardsDetails.find((o) => o.id === summoner.card_detail_id)
+        var max_level = 10 - (details.rarity - 1) * 2
+        const i = this.getCardLevelInfo(summoner).level || 1
+        return {
+            1: Math.round((10 / max_level) * i) || 1,
+            2: Math.round((8 / max_level) * i) || 1,
+            3: Math.round((6 / max_level) * i) || 1,
+            4: Math.round((4 / max_level) * i) || 1,
         }
     }
 
@@ -308,6 +325,7 @@ class SplinterLandsClient {
                 return items[i].uid
             }
         }
+        return `starter-${id}-${generatePassword(5)}`
     }
 
     getCardId = (card) => {
@@ -329,9 +347,6 @@ class SplinterLandsClient {
         if (result) {
             result.cards
                 .filter((c) => {
-                    if (this.getCardLevelInfo(c).level > 3) {
-                        return false
-                    }
                     if (c.delegated_to && c.player === this.user.name && c.player !== c.delegated_to) {
                         return false
                     }
@@ -753,7 +768,7 @@ class SplinterLandsClient {
             }
             var that = this
             steem.broadcast.customJson(mKey, [this.user.name], [], id, JSON.stringify(data), (err, result) => {
-                log && console.log('3', err)
+                log && console.log('3t', err)
                 log && console.log('result 21', result)
                 if (result && !err) {
                     that.trxLookup(result.id, null, callback, 10, supressErrors)
@@ -761,7 +776,7 @@ class SplinterLandsClient {
                     if (err && JSON.stringify(err).indexOf('Please wait to transact') >= 0) {
                         // this.RequestDelegation(id, title, data, callback, retries);
                         log && console.log('request delegation 123')
-                        return
+                        if (callback) callback(null)
                     } else if (retries > 0) {
                         let rpc_node = Config.rpc_nodes[++that._rpc_index % Config.rpc_nodes.length]
                         steem.api.setOptions({
@@ -1068,7 +1083,7 @@ class SplinterLandsClient {
 
             return res
         } catch (e) {
-            console.log('err 12452', e)
+            log && console.log('err 12452', e)
             return null
         }
     }
@@ -1485,7 +1500,7 @@ class SplinterLandsClient {
             let gainedPower = 0
             let remainingPower = expectedPower > curPower ? expectedPower - curPower : 0
             let remainingDec = remainingPower <= 100 ? 1 * rentalDay : maxDec
-            let weight = remainingDec / rentalDay / remainingPower
+            let weight = remainingPower ? remainingDec / rentalDay / remainingPower : 0
             let cardRemaining = []
             log && console.log('weight ', weight)
             log && console.log('remainingPower', remainingPower)

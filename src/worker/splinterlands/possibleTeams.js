@@ -76,13 +76,21 @@ const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opp
     try {
         const { data } = await getBattlesWithRuleset(matchDetails, account, spsToken, opponent)
         const cards = matchDetails.cards.split(',')
-        log && console.log('matchDetails', matchDetails)
         log && console.log('data', data)
-
         if (data && data.length > 0) {
             return data.map((d) => {
                 const cardsNum = (d.match(/-/g) || []).length / 2
-                if (cards.includes('131-3-c') && !d.includes('131-3-c') && cardsNum < 7) {
+                if (
+                    cards.includes('131-3-c') &&
+                    !d.includes('131-3-c') &&
+                    cardsNum < 7 &&
+                    ((matchDetails.rules &&
+                        !matchDetails.rules.includes('odd') &&
+                        !matchDetails.rules.includes('taking') &&
+                        !matchDetails.rules.includes('distance') &&
+                        !matchDetails.rules.includes('personal')) ||
+                        !matchDetails.rules)
+                ) {
                     const newData = d.split('::')
                     return newData[0] + '::' + '131-3-c:' + newData[1]
                 } else {
@@ -93,7 +101,7 @@ const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opp
             return getTeamDefault(matchDetails)
         }
     } catch (e) {
-        console.log('getTeamsFromAPI error',e)
+        console.log('getTeamsFromAPI error', e)
         return getTeamDefault(matchDetails)
     }
 }
@@ -191,26 +199,42 @@ const possibleTeams = async ({ matchDetails, account, config, ecr, spsToken, opp
         let possibleTeams = []
         possibleTeams = await askFormation({ matchDetails, account, config, ecr, spsToken, opponent })
         return possibleTeams
-    }  catch (e) {
-        console.log('possibleTeams error',e)
+    } catch (e) {
+        console.log('possibleTeams error', e)
         return []
     }
 }
 
-const teamSelection = async (possibleTeams, matchDetails, quest) => {
+const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel) => {
     //check if daily quest is not completed
     if (possibleTeams.length > 0) {
-        let team = possibleTeams[0]
-        // const filteredTeams = possibleTeams.filter(team=> team[7] !== 'gold')
-        const filteredTeams = possibleTeams
-
-        if (filteredTeams.length > 0) {
-            team = filteredTeams[0]
+        for (let i = 0; i < possibleTeams.length; i++) {
+            let team = possibleTeams[i]
+            let summoner = team[0]
+            const summonerDetail = cardList.find((c) => c.card_detail_id == summoner)
+            let maxLevel
+            if (summonerDetail) {
+                maxLevel = getMonsterMaxLevel(summonerDetail)
+            } else {
+                maxLevel = {
+                    1: 1,
+                    2: 1,
+                    3: 1,
+                    4: 1,
+                }
+            }
+            let arr = team.slice(1, 7)
+            const checkCards = arr.every((card) => {
+                const cardDetail = cardList.find((c) => c.card_detail_id == card)
+                if (cardDetail) {
+                    return cardDetail.level <= maxLevel[cardDetail.rarity]
+                }
+                return true
+            })
+            if (checkCards || i == possibleTeams.length - 1) {
+                return { summoner, cards: arr, color: team[team.length - 1] }
+            }
         }
-
-        let summoner = team[0]
-        let arr = team.slice(1, 7)
-        return { summoner, cards: arr, color: team[team.length - 1] }
     }
 
     throw new Error('NO TEAM available to be played.')

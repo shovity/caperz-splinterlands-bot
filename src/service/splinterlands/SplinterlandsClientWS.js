@@ -55,6 +55,7 @@ const getCardIdFromString = (str) => {
 }
 
 const basicCards = require('../../worker/splinterlands/data/basicCards.js')
+const { turn } = require('../../worker/splinterlands/data/basicCards.js')
 let baseCards = basicCards.map((card) => getCardIdFromString(card).id)
 
 function sleep(ms) {
@@ -202,7 +203,7 @@ class WSSplinterlandsClient {
                         this.config.rentalDay *
                         (this.config.expectedPower - this.client.user.collection_power)) /
                     this.config.expectedPower
-                dec = dec < this.client.getBalance('DEC') ? dec : this.client.getBalance('DEC')  
+                dec = dec < this.client.getBalance('DEC') ? dec : this.client.getBalance('DEC')
                 await this.client.cardRental(
                     this.client.user.collection_power,
                     this.config.expectedPower,
@@ -461,21 +462,13 @@ class WSSplinterlandsClient {
 
             if (possibleTeams && possibleTeams.length) {
                 log && console.log('Possible Teams: ', possibleTeams.length)
-                let teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest)
+                let teamToPlay = await ask.teamSelection(possibleTeams, myCardsUID, this.client.getMonsterMaxLevel)
                 const monstersSliced = teamToPlay.cards
-
-                const summoner = `starter-${teamToPlay.summoner}-${generatePassword(5)}`
+                const summoner = this.client.getUIDbyId(myCardsUID, teamToPlay.summoner)
                 const monsters = []
-
                 monstersSliced.map((item) => {
                     if (item !== '') {
-                        if (baseCards.indexOf(item) !== -1) {
-                            // starter
-                            monsters.push(`starter-${item}-${generatePassword(5)}`)
-                        } else {
-                            // uid
-                            monsters.push(this.client.getUIDbyId(myCardsUID, item))
-                        }
+                        monsters.push(this.client.getUIDbyId(myCardsUID, item))
                     }
                 })
 
