@@ -11,7 +11,7 @@ const undelegate = async (delegator, task) => {
         changeStatus(delegator, task, 'done')
         afterDone(delegator, task)
         clearInterval(timeoutInterval)
-    }, 60000)
+    }, 120000)
 
     try {
         if (majorClient) {

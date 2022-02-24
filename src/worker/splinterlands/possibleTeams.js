@@ -60,6 +60,15 @@ const defaultDataForNoTeams = {
     gold: 'gold_0_12_224-4-c::190-4-c:191-4-c',
 }
 
+const colorMapping = {
+    Green: 'earth',
+    Red: 'fire',
+    Blue: 'water',
+    Black: 'death',
+    White: 'life',
+    Gold: 'dragon'
+}
+
 const getTeamDefault = (matchDetails) => {
     let rs = []
     if (matchDetails.active.length > 0) {
@@ -205,7 +214,7 @@ const possibleTeams = async ({ matchDetails, account, config, ecr, spsToken, opp
     }
 }
 
-const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel) => {
+const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel, matchDetails, cardsDetails) => {
     //check if daily quest is not completed
     if (possibleTeams.length > 0) {
         for (let i = 0; i < possibleTeams.length; i++) {
@@ -231,6 +240,15 @@ const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel) => {
                 }
                 return true
             })
+            if (team[team.length - 1] == 'gold') {
+                if (!matchDetails?.active?.includes('gold')) {
+                    continue
+                }
+                const cardDetail = cardsDetails.find((c) => c.id == arr[0])
+                if (!matchDetails?.active?.includes(colorMapping[cardDetail?.color])) {
+                    continue
+                }
+            }
             if (checkCards || i == possibleTeams.length - 1) {
                 return { summoner, cards: arr, color: team[team.length - 1] }
             }

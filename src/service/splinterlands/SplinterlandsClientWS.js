@@ -462,7 +462,7 @@ class WSSplinterlandsClient {
 
             if (possibleTeams && possibleTeams.length) {
                 log && console.log('Possible Teams: ', possibleTeams.length)
-                let teamToPlay = await ask.teamSelection(possibleTeams, myCardsUID, this.client.getMonsterMaxLevel)
+                let teamToPlay = await ask.teamSelection(possibleTeams, myCardsUID, this.client.getMonsterMaxLevel, matchDetails, this.client.cardsDetails)
                 const monstersSliced = teamToPlay.cards
                 const summoner = this.client.getUIDbyId(myCardsUID, teamToPlay.summoner)
                 const monsters = []

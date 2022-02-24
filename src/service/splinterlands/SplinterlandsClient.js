@@ -299,6 +299,7 @@ class SplinterLandsClient {
                         ...c,
                         level: this.getCardLevelInfo(c).level,
                         rarity: details.rarity,
+                        color: details.color,
                     }
                 })
                 .sort((a, b) => b.level - a.level)
@@ -537,7 +538,7 @@ class SplinterLandsClient {
 
         this.broadcastCustomJson('sm_submit_team', 'Steem Monsters Submit Team', data, (result) => {
             // log && console.log(result)
-            if (result && !result.error && result.trx_info && result.trx_info.success) {
+            if (result && !result.error) {
                 log && console.log('sm_submit_team', result.trx_info.id)
             } else {
                 if (result) {
@@ -556,26 +557,27 @@ class SplinterLandsClient {
     }
 
     trxLookup(trx_id, details, callback, timeout, suppressError) {
-        log && console.log('this._transactions[trx_id]', this._transactions[trx_id])
-        if (this._transactions[trx_id]) {
-            if (this._transactions[trx_id].status == 'complete') {
-                if (callback(this._transactions[trx_id].data)) {
-                    setTimeout(callback(this._transactions[trx_id].data), 6000)
+        var that = this
+        log && console.log('this._transactions[trx_id]', that._transactions[trx_id])
+        if (that._transactions[trx_id]) {
+            if (that._transactions[trx_id].status == 'complete') {
+                if (callback) {
+                    setTimeout(callback(that._transactions[trx_id].data), 4000)
                 }
-                delete this._transactions[trx_id]
+                delete that._transactions[trx_id]
             }
             return
         }
         if (timeout == null || timeout == undefined) timeout = 60
-        this._transactions[trx_id] = {
+        that._transactions[trx_id] = {
             details: details,
             callback: callback,
             suppressError: suppressError,
         }
         if (timeout > 0) {
-            this._transactions[trx_id].timeout = setTimeout(() => {
-                if (this._transactions[trx_id] && this._transactions[trx_id].status != 'complete') {
-                    delete this._transactions[trx_id]
+            that._transactions[trx_id].timeout = setTimeout(() => {
+                if (that._transactions[trx_id] && that._transactions[trx_id].status != 'complete') {
+                    delete that._transactions[trx_id]
                     if (callback) callback(null)
                 }
             }, timeout * 1e3)
@@ -749,7 +751,7 @@ class SplinterLandsClient {
                     log && console.log('Transaction was cancelled.')
                 } else if (response?.error && JSON.stringify(response?.error).indexOf('Please wait to transact') >= 0) {
                     log && console.log('request delegation')
-                    return null
+                    if (callback) callback(null)
                 } else {
                     setTimeout(() => this.broadcastCustomJsonLocal(id, title, data, callback, 2, supressErrors), 3e3)
                 }
@@ -1016,7 +1018,7 @@ class SplinterLandsClient {
                     quest_id: id,
                 },
                 (result) => {
-                    if (result && !result.error && result.trx_info && result.trx_info.success) {
+                    if (result && !result.error) {
                         resolve(result)
                     } else {
                         resolve(null)
@@ -1211,7 +1213,7 @@ class SplinterLandsClient {
                     settings: settings,
                 },
                 (result) => {
-                    if (result && !result.error && result.trx_info && result.trx_info.success) {
+                    if (result && !result.error) {
                         resolve(result)
                     } else if (result) {
                         if (result && result.error && result.error.indexOf('Please refresh the page to resume') >= 0) {
@@ -1615,7 +1617,7 @@ class SplinterLandsClient {
                                         days: rentalDay,
                                     },
                                     (result) => {
-                                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                                        if (result && !result.error) {
                                             resolve(result)
                                         } else {
                                             resolve(null)
@@ -1695,7 +1697,7 @@ class SplinterLandsClient {
                                 days: rentalDay,
                             },
                             (result) => {
-                                if (result && !result.error && result.trx_info && result.trx_info.success) {
+                                if (result && !result.error) {
                                     resolve(result)
                                 } else {
                                     resolve(null)
@@ -1743,7 +1745,7 @@ class SplinterLandsClient {
                         memo: this.config.majorAccount.player,
                     },
                     (result) => {
-                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        if (result && !result.error) {
                             resolve(result)
                         } else {
                             resolve(null)
@@ -1789,7 +1791,7 @@ class SplinterLandsClient {
                         cards: cards,
                     },
                     (result) => {
-                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        if (result && !result.error) {
                             resolve(result)
                         } else {
                             resolve(null)
@@ -1900,7 +1902,7 @@ class SplinterLandsClient {
                     },
                     (result) => {
                         log && console.log('delegate ->', result)
-                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        if (result && !result.error) {
                             resolve(result)
                         } else {
                             resolve(null)
@@ -1934,16 +1936,39 @@ class SplinterLandsClient {
                     },
                     (result) => {
                         log && console.log('undelegate ->', result)
-                        if (result && !result.error && result.trx_info && result.trx_info.success) {
-                            resolve(result)
+                        if (result && !result.error) {
+                            setTimeout(() => resolve(result), 3000)
                         } else {
-                            resolve(result?.error || null)
+                            setTimeout(() => resolve(null), 3000)
                         }
                     }
                 )
             })
 
             const r = await prm
+
+            let delegatedCards = []
+
+            const res = await this.sendRequest(`cards/collection/${player}`, {
+                username: player,
+                token: this.token,
+            })
+
+            if (res) {
+                delegatedCards = res.cards
+                    .filter((c) => {
+                        if (c.delegated_to && c.player === this.user.name && c.delegated_to == player) {
+                            return true
+                        }
+                    })
+                    .map((item) => {
+                        return item.uid
+                    })
+            }
+            if (delegatedCards.length) {
+                const rs = await undelegatePower(cards, proxy, player)
+                return rs
+            }
             return r
         } catch (error) {
             log && console.log(error)
@@ -1968,7 +1993,7 @@ class SplinterLandsClient {
                         season: season,
                     },
                     (result) => {
-                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        if (result && !result.error) {
                             resolve(result)
                         } else {
                             resolve(null)
@@ -2095,7 +2120,7 @@ class SplinterLandsClient {
             if (rank > this.user.season_max_league) {
                 const prm = new Promise((resolve, reject) => {
                     this.broadcastCustomJson('sm_advance_league', 'Advance League', {}, (result) => {
-                        if (result && !result.error && result.trx_info && result.trx_info.success) {
+                        if (result && !result.error) {
                             resolve(result)
                         } else {
                             resolve(null)
