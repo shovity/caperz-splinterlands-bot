@@ -17,10 +17,10 @@ ori.use('event store emitter storage', () => {
     const logError = (data) => {
         console.log(data)
         if (data.type == 'info') {
-            $('#log').append(`<p><span class='info'>INFO/ </span>${data.message}</p>`)
+            $('#log').append(`<p><span class='info'>INFO/ </span>${data?.message?.message || data.message}</p>`)
         }
         if (data.type == 'error') {
-            $('#log').append(`<p><span class='error'>ERROR/ </span>${data.message}</p>`)
+            $('#log').append(`<p><span class='error'>ERROR/ </span>${data?.message?.message || data.message}</p>`)
         }
     }
     const statusMapping = (status) => {

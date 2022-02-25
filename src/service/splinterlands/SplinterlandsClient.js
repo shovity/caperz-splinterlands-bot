@@ -557,27 +557,26 @@ class SplinterLandsClient {
     }
 
     trxLookup(trx_id, details, callback, timeout, suppressError) {
-        var that = this
-        log && console.log('this._transactions[trx_id]', that._transactions[trx_id])
-        if (that._transactions[trx_id]) {
-            if (that._transactions[trx_id].status == 'complete') {
+        log && console.log('this._transactions[trx_id]', this._transactions[trx_id])
+        if (this._transactions[trx_id]) {
+            if (this._transactions[trx_id].status == 'complete') {
                 if (callback) {
-                    setTimeout(callback(that._transactions[trx_id].data), 4000)
+                    callback(this._transactions[trx_id].data)
                 }
-                delete that._transactions[trx_id]
+                delete this._transactions[trx_id]
             }
             return
         }
         if (timeout == null || timeout == undefined) timeout = 60
-        that._transactions[trx_id] = {
+        this._transactions[trx_id] = {
             details: details,
             callback: callback,
             suppressError: suppressError,
         }
         if (timeout > 0) {
-            that._transactions[trx_id].timeout = setTimeout(() => {
-                if (that._transactions[trx_id] && that._transactions[trx_id].status != 'complete') {
-                    delete that._transactions[trx_id]
+            this._transactions[trx_id].timeout = setTimeout(() => {
+                if (this._transactions[trx_id] && this._transactions[trx_id].status != 'complete') {
+                    delete this._transactions[trx_id]
                     if (callback) callback(null)
                 }
             }, timeout * 1e3)
@@ -719,7 +718,7 @@ class SplinterLandsClient {
                     'post'
                 )
 
-                if (response && response.id) this.trxLookup(response.id, null, callback, 10, supressErrors)
+                if (response && response.id) this.trxLookup(response.id, null, callback, 20, supressErrors)
                 else log && console.log(`Error sending transaction: ${response ? response.error : 'Unknown error'}`)
 
                 return
@@ -737,7 +736,7 @@ class SplinterLandsClient {
             )
             log && console.log('response && response.id', response && response.id)
             if (response && response.id) {
-                // this.trxLookup(response.id, null, callback, 10);
+                // this.trxLookup(response.id, null, callback, 20);
             } else {
                 log && console.log(`Error sending transaction: ${response ? response.error : 'Unknown error'}`)
             }
@@ -746,7 +745,7 @@ class SplinterLandsClient {
             try {
                 let response = await this.serverBroadcastTx(tx, active_auth)
                 log && console.log('response ------------ > 381', response)
-                if (response && response?.id) return this.trxLookup(response?.id, null, callback, 10, supressErrors)
+                if (response && response?.id) return this.trxLookup(response?.id, null, callback, 20, supressErrors)
                 if (response?.error == 'user_cancel') {
                     log && console.log('Transaction was cancelled.')
                 } else if (response?.error && JSON.stringify(response?.error).indexOf('Please wait to transact') >= 0) {
@@ -773,12 +772,13 @@ class SplinterLandsClient {
                 log && console.log('3t', err)
                 log && console.log('result 21', result)
                 if (result && !err) {
-                    that.trxLookup(result.id, null, callback, 10, supressErrors)
+                    that.trxLookup(result.id, null, callback, 20, supressErrors)
                 } else {
                     if (err && JSON.stringify(err).indexOf('Please wait to transact') >= 0) {
                         // this.RequestDelegation(id, title, data, callback, retries);
                         log && console.log('request delegation 123')
                         if (callback) callback(null)
+                        return
                     } else if (retries > 0) {
                         let rpc_node = Config.rpc_nodes[++that._rpc_index % Config.rpc_nodes.length]
                         steem.api.setOptions({
@@ -823,7 +823,7 @@ class SplinterLandsClient {
                     json: data,
                 },
                 (response) => {
-                    if (response && response.id) this.trxLookup(response.id, null, callback, 10, supressErrors)
+                    if (response && response.id) this.trxLookup(response.id, null, callback, 20, supressErrors)
                     // else
                     //     alert(`Error sending transaction: ${response ? response.error : "Unknown error"}`)
                 }
@@ -844,7 +844,7 @@ class SplinterLandsClient {
                 log && console.log('3', err)
                 log && console.log('result 22', result)
                 if (result && !err) {
-                    that.trxLookup(result.id, null, callback, 10, supressErrors)
+                    that.trxLookup(result.id, null, callback, 20, supressErrors)
                 } else {
                     if (err && JSON.stringify(err).indexOf('Please wait to transact') >= 0) {
                         // this.RequestDelegation(id, title, data, callback, retries);
@@ -881,7 +881,7 @@ class SplinterLandsClient {
             log && console.log('334', err)
             log && console.log('result 23', result)
             if (result && !err) {
-                that.trxLookup(result.id, null, callback, 10, supressErrors)
+                that.trxLookup(result.id, null, callback, 20, supressErrors)
             } else {
                 if (err && JSON.stringify(err).indexOf('Please wait to transact') >= 0) {
                     // this.RequestDelegation(id, title, data, callback, retries);
@@ -1754,7 +1754,6 @@ class SplinterLandsClient {
                 )
             })
             const r = await prm
-
             return r
         } catch (error) {
             log && console.log(error)
@@ -1808,6 +1807,9 @@ class SplinterLandsClient {
     }
 
     async delegatePower(player, minDelegatePower) {
+        if (this.user.name == player) {
+            return null
+        }
         try {
             log && console.log('delegate', this.user.name, '->', player)
             const playerDetail = await this.sendRequest(`players/details`, {
@@ -1918,11 +1920,12 @@ class SplinterLandsClient {
         }
     }
     async undelegatePower(cards, proxy, player) {
+        if (cards.length == 0 || this.user.name == player) {
+            return null
+        }
         log && console.log('undelegate', this.user.name, '<-', player)
         try {
-            if (cards.length == 0) {
-                return null
-            }
+            
             if (!this.user.name || !this.key) {
                 console.log(`undelegate ${this.user.name} missing key or username`)
                 return null
@@ -1957,16 +1960,17 @@ class SplinterLandsClient {
             if (res) {
                 delegatedCards = res.cards
                     .filter((c) => {
-                        if (c.delegated_to && c.player === this.user.name && c.delegated_to == player) {
+                        if (c.delegated_to && c.player == this.user.name && c.delegated_to == player) {
                             return true
                         }
+                        return false
                     })
                     .map((item) => {
                         return item.uid
                     })
             }
             if (delegatedCards.length) {
-                const rs = await undelegatePower(cards, proxy, player)
+                const rs = await this.undelegatePower(cards, proxy, player)
                 return rs
             }
             return r

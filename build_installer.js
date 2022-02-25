@@ -9,7 +9,7 @@ const msiCreator = new MSICreator({
     exe: 'NFTauto Desktop',
     name: 'SPS NFTAuto Desktop',
     manufacturer: 'Caper Team',
-    version: '2.3.9',
+    version: '2.3.10',
     outputDirectory: OUT_DIR,
     ui: {
         chooseDirectory: true,

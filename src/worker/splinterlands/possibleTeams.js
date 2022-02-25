@@ -66,7 +66,7 @@ const colorMapping = {
     Blue: 'water',
     Black: 'death',
     White: 'life',
-    Gold: 'dragon'
+    Gold: 'dragon',
 }
 
 const getTeamDefault = (matchDetails) => {
@@ -233,6 +233,9 @@ const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel, matchD
                 }
             }
             let arr = team.slice(1, 7)
+            if (i == possibleTeams.length - 1) {
+                return { summoner, cards: arr, color: team[team.length - 1] }
+            }
             const checkCards = arr.every((card) => {
                 const cardDetail = cardList.find((c) => c.card_detail_id == card)
                 if (cardDetail) {
@@ -240,6 +243,9 @@ const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel, matchD
                 }
                 return true
             })
+            if (!checkCards) {
+                continue
+            }
             if (team[team.length - 1] == 'gold') {
                 if (!matchDetails?.active?.includes('gold')) {
                     continue
@@ -249,9 +255,8 @@ const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel, matchD
                     continue
                 }
             }
-            if (checkCards || i == possibleTeams.length - 1) {
-                return { summoner, cards: arr, color: team[team.length - 1] }
-            }
+
+            return { summoner, cards: arr, color: team[team.length - 1] }
         }
     }
 
