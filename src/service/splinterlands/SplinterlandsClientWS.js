@@ -169,8 +169,13 @@ class WSSplinterlandsClient {
         if (this.config.modeRankup) {
             await this.client.rankup()
         }
-
         if (this.config.modeRental) {
+            if (this.client.rcout) {
+                parentPort.postMessage({
+                    type: 'info',
+                    message: `${userName}: RC run out`,
+                })
+            }
             if (!this.client.masterKey) {
                 parentPort.postMessage({
                     type: 'info',
@@ -186,6 +191,7 @@ class WSSplinterlandsClient {
             if (
                 (this.config.expectedPower &&
                     this.client.masterKey &&
+                    !this.client.rcout &&
                     this.config.maxDec &&
                     this.config.rentalDay &&
                     this.client.user.collection_power < this.config.expectedPower) ||

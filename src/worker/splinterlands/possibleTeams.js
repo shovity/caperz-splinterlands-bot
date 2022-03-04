@@ -88,10 +88,12 @@ const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opp
         log && console.log('data', data)
         if (data && data.length > 0) {
             return data.map((d) => {
-                const cardsNum = (d.match(/-/g) || []).length / 2
+                let result = d
+
+                let cardsNum = (result.match(/-/g) || []).length / 2
                 if (
                     cards.includes('131-3-c') &&
-                    !d.includes('131-3-c') &&
+                    !result.includes('131-3-c') &&
                     cardsNum < 7 &&
                     ((matchDetails.rules &&
                         !matchDetails.rules.includes('odd') &&
@@ -100,11 +102,96 @@ const getTeamsFromAPI = async (matchDetails, account, config, ecr, spsToken, opp
                         !matchDetails.rules.includes('personal')) ||
                         !matchDetails.rules)
                 ) {
-                    const newData = d.split('::')
-                    return newData[0] + '::' + '131-3-c:' + newData[1]
-                } else {
-                    return d
+                    const newData = result.split('::')
+                    result = newData[0] + '::' + '131-3-c:' + newData[1]
                 }
+
+                cardsNum = (result.match(/-/g) || []).length / 2
+                if (
+                    cards.includes('366-7-c') &&
+                    !result.includes('366-7-c') &&
+                    result.includes('black') &&
+                    cardsNum < 7 &&
+                    ((matchDetails.rules &&
+                        !matchDetails.rules.includes('odd') &&
+                        !matchDetails.rules.includes('legendaries') &&
+                        !matchDetails.rules.includes('commons') &&
+                        !matchDetails.rules.includes('distance')) ||
+                        !matchDetails.rules)
+                ) {
+                    const newData = result.split('::')
+                    result = newData[0] + '::' + '366-7-c:' + newData[1]
+                }
+
+                cardsNum = (result.match(/-/g) || []).length / 2
+                if (
+                    cards.includes('380-7-c') &&
+                    !result.includes('380-7-c') &&
+                    result.includes('green') &&
+                    cardsNum < 7 &&
+                    ((matchDetails.rules &&
+                        !matchDetails.rules.includes('odd') &&
+                        !matchDetails.rules.includes('legendaries') &&
+                        !matchDetails.rules.includes('commons') &&
+                        !matchDetails.rules.includes('distance')) ||
+                        !matchDetails.rules)
+                ) {
+                    const newData = result.split('::')
+                    result = newData[0] + '::' + '380-7-c:' + newData[1]
+                }
+
+                cardsNum = (result.match(/-/g) || []).length / 2
+                if (
+                    cards.includes('394-7-c') &&
+                    !result.includes('394-7-c') &&
+                    result.includes('blue') &&
+                    cardsNum < 7 &&
+                    ((matchDetails.rules &&
+                        !matchDetails.rules.includes('odd') &&
+                        !matchDetails.rules.includes('legendaries') &&
+                        !matchDetails.rules.includes('commons') &&
+                        !matchDetails.rules.includes('distance')) ||
+                        !matchDetails.rules)
+                ) {
+                    const newData = result.split('::')
+                    result = newData[0] + '::' + '394-7-c:' + newData[1]
+                }
+
+                cardsNum = (result.match(/-/g) || []).length / 2
+                if (
+                    cards.includes('408-7-c') &&
+                    !result.includes('408-7-c') &&
+                    result.includes('red') &&
+                    cardsNum < 7 &&
+                    ((matchDetails.rules &&
+                        !matchDetails.rules.includes('odd') &&
+                        !matchDetails.rules.includes('legendaries') &&
+                        !matchDetails.rules.includes('commons') &&
+                        !matchDetails.rules.includes('distance')) ||
+                        !matchDetails.rules)
+                ) {
+                    const newData = result.split('::')
+                    result = newData[0] + '::' + '408-7-c:' + newData[1]
+                }
+
+                cardsNum = (result.match(/-/g) || []).length / 2
+                if (
+                    cards.includes('422-7-c') &&
+                    !result.includes('422-7-c') &&
+                    result.includes('white') &&
+                    cardsNum < 7 &&
+                    ((matchDetails.rules &&
+                        !matchDetails.rules.includes('odd') &&
+                        !matchDetails.rules.includes('legendaries') &&
+                        !matchDetails.rules.includes('commons') &&
+                        !matchDetails.rules.includes('distance')) ||
+                        !matchDetails.rules)
+                ) {
+                    const newData = result.split('::')
+                    result = newData[0] + '::' + '422-7-c:' + newData[1]
+                }
+
+                return result
             })
         } else {
             return getTeamDefault(matchDetails)

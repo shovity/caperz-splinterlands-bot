@@ -100,6 +100,7 @@ class SplinterLandsClient {
         this.masterKey = masterKey
         this.rentRequireCardDone = false
         this.cardsDetails = cardsDetail
+        this.rcout = false
     }
     sendMessage = ({ player, ...data }) => {
         if (!this.user && !player) return
@@ -157,19 +158,8 @@ class SplinterLandsClient {
             if (!this.user) return
             let d = this.getBalance('DEC')
             if (this.config.modeTransfer) {
-                // if (typeof this.config.transferKeepDec != 'number') {
-                //     this.throwError(`${this.user.name}: Transfer failed - keep dec not a number`)
-                // }
-
-                // if (typeof this.config.transferStartDec != 'number') {
-                //     this.throwError(`${this.user.name}: Transfer failed - start dec not a number`)
-                // }
-
-                // if (typeof d != 'number') {
-                //     this.throwError(`${this.user.name}: Transfer failed - can not get current DEC`)
-                // }
-
                 if (
+                    !this.rcout &&
                     this.config.majorAccount.player &&
                     this.config.majorAccount.player != this.user.name.toLowerCase() &&
                     this.config.transferStartDec &&
@@ -179,8 +169,8 @@ class SplinterLandsClient {
                     await this.transferDEC(d - this.config.transferKeepDec)
                 }
             }
-
             if (
+                !this.rcout &&
                 this.config.majorAccount.player &&
                 this.config.modeTransfer &&
                 this.config.majorAccount.player != this.user.name.toLowerCase()
@@ -749,6 +739,7 @@ class SplinterLandsClient {
                 if (response?.error == 'user_cancel') {
                     log && console.log('Transaction was cancelled.')
                 } else if (response?.error && JSON.stringify(response?.error).indexOf('Please wait to transact') >= 0) {
+                    this.rcout = true
                     log && console.log('request delegation')
                     if (callback) callback(null)
                 } else {
@@ -775,6 +766,7 @@ class SplinterLandsClient {
                     that.trxLookup(result.id, null, callback, 20, supressErrors)
                 } else {
                     if (err && JSON.stringify(err).indexOf('Please wait to transact') >= 0) {
+                        this.rcout = true
                         // this.RequestDelegation(id, title, data, callback, retries);
                         log && console.log('request delegation 123')
                         if (callback) callback(null)
@@ -847,6 +839,7 @@ class SplinterLandsClient {
                     that.trxLookup(result.id, null, callback, 20, supressErrors)
                 } else {
                     if (err && JSON.stringify(err).indexOf('Please wait to transact') >= 0) {
+                        this.rcout = true
                         // this.RequestDelegation(id, title, data, callback, retries);
                         log && console.log('request delegation 123')
                         return
@@ -884,6 +877,7 @@ class SplinterLandsClient {
                 that.trxLookup(result.id, null, callback, 20, supressErrors)
             } else {
                 if (err && JSON.stringify(err).indexOf('Please wait to transact') >= 0) {
+                    this.rcout = true
                     // this.RequestDelegation(id, title, data, callback, retries);
                     log && console.log('request delegation 123')
                     if (callback) {
@@ -1925,7 +1919,6 @@ class SplinterLandsClient {
         }
         log && console.log('undelegate', this.user.name, '<-', player)
         try {
-            
             if (!this.user.name || !this.key) {
                 console.log(`undelegate ${this.user.name} missing key or username`)
                 return null

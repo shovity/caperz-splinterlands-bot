@@ -174,6 +174,9 @@ master.change = async (name, param) => {
         case 'remaining_match':
             win.webContents.send('remaining_match.update', param)
             break
+        case 'free_match':
+            win.webContents.send('free_match.update', param)
+            break
         case 'process_loading':
             if (master.splashStatus === 'on') {
                 win.webContents.send('process', param.processPercent)

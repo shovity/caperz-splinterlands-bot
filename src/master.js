@@ -458,7 +458,7 @@ master.setIntervals = async () => {
 
         for (let i = 0; i < account_list.length; i++) {
             if ([ACCOUNT_STATUS.PENDING, ACCOUNT_STATUS.RUNNING].includes(account_list[i].status)) {
-                account_list[i].status = NONE
+                account_list[i].status = ACCOUNT_STATUS.NONE
             }
             await master.priorityQueue.enqueue(account_list[i])
         }

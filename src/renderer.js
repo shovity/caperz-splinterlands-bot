@@ -704,6 +704,24 @@ ori.use('event store emitter storage', () => {
         $('#remaining_match').removeClass('yellow-lable')
         $('#remaining_match').addClass('green-lable')
     })
+    ipc.on('free_match.update', (event, data) => {
+        $('#free_match').html(formatNumber(data))
+        if (data < 50) {
+            $('#free_match').removeClass('green-lable')
+            $('#free_match').removeClass('yellow-lable')
+            $('#free_match').addClass('red-lable')
+            return
+        }
+        if (data < 200) {
+            $('#free_match').removeClass('green-lable')
+            $('#free_match').removeClass('red-lable')
+            $('#free_match').addClass('yellow-lable')
+            return
+        }
+        $('#free_match').removeClass('red-lable')
+        $('#free_match').removeClass('yellow-lable')
+        $('#free_match').addClass('green-lable')
+    })
 
     ipc.on('log', (event, data) => {
         logError(data)
