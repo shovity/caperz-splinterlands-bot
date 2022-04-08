@@ -1,8 +1,8 @@
 {
     "name": "nftauto-desktop",
-    "productName": "NFTauto Desktop",
+    "productName": "SPS Caper Bot",
     "version": "2.3.12",
-    "description": "NFTauto Desktop",
+    "description": "SPS Caper Bot",
     "main": "src/main.js",
     "scripts": {
         "start": "electron-forge start",

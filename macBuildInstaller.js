@@ -3,8 +3,8 @@ const createDMG = require('electron-installer-dmg');
 async function buildDMG() {
     try {
         await createDMG({
-            appPath: './dist/NFTauto Desktop-darwin-x64/NFTauto Desktop.app',
-            name: 'NFTauto Desktop',
+            appPath: './dist/SPS Caper Bot-darwin-x64/SPS Caper Bot.app',
+            name: 'SPS Caper Bot',
             out: './dist',
             overwrite: true,
             debug: true,
