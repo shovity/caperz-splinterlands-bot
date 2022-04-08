@@ -1768,7 +1768,7 @@ class SplinterLandsClient {
             })
             const cards = []
             result.cards.forEach((e) => {
-                if (this.user.name == e.player) {
+                if (this.user.name == e.player && this.calculateCP(e) >= 100) {
                     cards.push(e.uid)
                 }
             })

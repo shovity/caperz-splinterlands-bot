@@ -5,11 +5,11 @@ const APP_DIR = path.resolve(__dirname, './dist/NFTauto Desktop-win32-x64')
 const OUT_DIR = path.resolve(__dirname, './installer')
 const msiCreator = new MSICreator({
     appDirectory: APP_DIR,
-    description: 'SPS NFTAuto Desktop',
+    description: 'SPS Caper Bot',
     exe: 'NFTauto Desktop',
-    name: 'SPS NFTAuto Desktop',
+    name: 'SPS Caper Bot',
     manufacturer: 'Caper Team',
-    version: '2.3.11',
+    version: '2.3.12',
     outputDirectory: OUT_DIR,
     ui: {
         chooseDirectory: true,

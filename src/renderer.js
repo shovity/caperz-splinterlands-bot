@@ -11,6 +11,11 @@ ori.use('event store emitter storage', () => {
     var requireCard = []
 
     const user = storage.user
+    const delay = (time) => {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve(), time)
+        })
+    }
     const formatNumber = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
@@ -156,6 +161,9 @@ ori.use('event store emitter storage', () => {
         storage.user = null
         ipc.send('setUser', null)
         location.href = './sign-in.html'
+    })
+    event.listen('open_url', (url) => {
+        ipc.send('open_url', url)
     })
 
     event.listen('proxy.remove', (proxy) => {
@@ -407,7 +415,7 @@ ori.use('event store emitter storage', () => {
             let rowLength = account_table.rows.length
             for (i = 1; i < rowLength; i++) {
                 let cells = account_table.rows.item(i).cells
-                if (name == cells[1].innerHTML) {
+                if (name == cells[1].innerHTML || name == cells[2].innerHTML) {
                     add_player_button.removeClass('d-none')
                     add_player_loading.addClass('d-none')
                     showNotice('Account already exists!')
@@ -452,6 +460,9 @@ ori.use('event store emitter storage', () => {
     ipc.on('account.add_success', (event, data) => {
         let row = document.getElementById(data.byEmail ? data.email : data.player)
         row.removeClass('verify_pending')
+        const node = row.childNodes[3]
+        node.setAttribute('click-emit', `account.remove:${data.byEmail ? data.email : data.player}`)
+        node.innerHTML = '<p>x</p>'
         if (data.byEmail) {
             row.children[1].innerHTML = data.player
         } else {
@@ -462,13 +473,40 @@ ori.use('event store emitter storage', () => {
         let row = document.getElementById(data.byEmail ? data.email : data.player)
         row.removeClass('verify_pending')
         row.addClass('verify_failed')
+        const node = row.childNodes[3]
+        node.setAttribute(
+            'click-emit',
+            `account.retry:${data.data.username}%${data.data.password}%${data.data.master_key}`
+        )
+        node.innerHTML = '<p>Retry</p>'
         showNotice('Cannot verify ' + data.byEmail ? data.email : data.player + '.Please try again!')
     })
 
+    event.listen('account.retry', (dataString) => {
+        const dataSplited = dataString.split('%')
+        ipc.send('account.add', {
+            username: dataSplited[0],
+            password: dataSplited[1],
+            master_key: dataSplited[2],
+        })
+        let row = document.getElementById(dataSplited[0])
+        row.removeClass('verify_failed')
+        row.addClass('verify_pending')
+    })
     event.listen('account.remove', (account) => {
         let row = document.getElementById(account)
         ipc.send('account.delete', account)
         row.remove()
+    })
+    event.listen('account.remove_all', () => {
+        ipc.send('account.delete_all')
+        const accountTable = document.querySelector('#account_table tbody')
+        accountTable.innerHTML = `<tr>
+        <th scope="col"><storng>#</storng></th>
+        <th scope="col"><strong>Player</strong></th>
+        <th scope="col"><strong>Email</strong></th>
+        <th></th>
+    </tr>`
     })
 
     event.listen('account.start_all', () => {
@@ -925,4 +963,98 @@ ori.use('event store emitter storage', () => {
 
         document.getElementById('card_list').innerHTML = html
     })
+    event.listen('account.add_file', () => {
+        //Reference the FileUpload element.
+        var fileUpload = document.getElementById('fileUpload')
+
+        //Validate whether File is valid Excel file.
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof FileReader != 'undefined') {
+                var reader = new FileReader()
+
+                //For Browsers other than IE.
+                if (reader.readAsBinaryString) {
+                    reader.onload = function (e) {
+                        GetTableFromExcel(e.target.result)
+                    }
+                    reader.readAsBinaryString(fileUpload.files[0])
+                } else {
+                    //For IE Browser.
+                    reader.onload = function (e) {
+                        var data = ''
+                        var bytes = new Uint8Array(e.target.result)
+                        for (var i = 0; i < bytes.byteLength; i++) {
+                            data += String.fromCharCode(bytes[i])
+                        }
+                        GetTableFromExcel(data)
+                    }
+                    reader.readAsArrayBuffer(fileUpload.files[0])
+                }
+            } else {
+                alert('This browser does not support HTML5.')
+            }
+        } else {
+            alert('Please upload a valid Excel file.')
+        }
+    })
+    async function GetTableFromExcel(data) {
+        //Read the Excel File data in binary
+        var workbook = XLSX.read(data, {
+            type: 'binary',
+        })
+
+        //get the name of First Sheet.
+        var Sheet = workbook.SheetNames[0]
+
+        //Read all rows from First Sheet into an JSON array.
+        var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[Sheet])
+        console.log(excelRows)
+        for (let i = 0; i < excelRows.length; i++) {
+            let existed = false
+            const name = excelRows[i]['Player/Email']
+            const password = excelRows[i]['Posting Key/Password']
+            const master_key = excelRows[i]['Master Key']
+            let rowLength = account_table.rows.length
+            for (x = 1; x < rowLength; x++) {
+                let cells = account_table.rows.item(x).cells
+                if (name == cells[1].innerHTML || name == cells[2].innerHTML) {
+                    existed = true
+                }
+            }
+            if (existed) {
+                continue
+            }
+            ipc.send('account.add', {
+                username: name,
+                password: password,
+                master_key: master_key,
+            })
+            const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+            let row = account_table.insertRow(1)
+            row.setAttribute('id', name)
+            row.addClass('verify_pending')
+            let cell1 = document.createElement('th')
+            cell1.setAttribute('scope', 'row')
+            cell1.setAttribute('class', 'count')
+            row.appendChild(cell1)
+            if (emailRegex.test(name)) {
+                let cell2 = row.insertCell(1)
+                cell2.innerHTML = ''
+                let cell3 = row.insertCell(2)
+                cell3.innerHTML = name
+            } else {
+                let cell2 = row.insertCell(1)
+                cell2.innerHTML = name
+                let cell3 = row.insertCell(2)
+                cell3.innerHTML = ''
+            }
+            let cell4 = document.createElement('td')
+            cell4.setAttribute('class', 'x_remove')
+            cell4.setAttribute('click-emit', `account.remove:${name}`)
+            cell4.innerHTML = '<p>x</p>'
+            row.appendChild(cell4)
+            await delay(3000)
+        }
+    }
 })

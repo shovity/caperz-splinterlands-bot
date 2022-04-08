@@ -302,7 +302,6 @@ const possibleTeams = async ({ matchDetails, account, config, ecr, spsToken, opp
 }
 
 const teamSelection = async (possibleTeams, cardList, getMonsterMaxLevel, matchDetails, cardsDetails) => {
-    //check if daily quest is not completed
     if (possibleTeams.length > 0) {
         for (let i = 0; i < possibleTeams.length; i++) {
             let team = possibleTeams[i]

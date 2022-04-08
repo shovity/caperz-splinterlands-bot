@@ -10,6 +10,10 @@ const account = ({ win, ipc, settings }) => {
         
         master.change('account_list', { account_list: newList})
     })
+    ipc.on('account.delete_all', async () => {
+        
+        master.change('account_list', { account_list: []})
+    })
     
     ipc.on('account.start', async (event, account) => {
         accountService.beforeEnqueue(account)
@@ -68,6 +72,7 @@ const account = ({ win, ipc, settings }) => {
                 byEmail: emailRegex.test(data.username),
                 player: data.username,
                 email: data.username || '',
+                data: data
             })
             return
         }
@@ -98,6 +103,7 @@ const account = ({ win, ipc, settings }) => {
             byEmail: emailRegex.test(data.username),
             player: res.name,
             email: res.email || '',
+            data: data
         })
     
         if (master.state === 'RUNNING') {

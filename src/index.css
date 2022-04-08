@@ -167,6 +167,7 @@ button.active {
     height: 38px !important;
     border-radius: 40px !important;
     border-color: #ffb320 !important;
+    padding: 0px 12px;
 }
 .nav-item .nav-link.active,
 .nav-item .nav-link:hover {
@@ -376,4 +377,19 @@ button.active {
 }
 #log span.error {
     color: #dc3545
+}
+div[tab="donate"] p{
+    margin: 0px;
+}
+.ref_link {
+    margin: 0px;
+    font-style: italic;
+    font-size: 12px;
+    cursor: pointer;
+}
+.url_logo {
+    width: 20px;
+    height: 20px;
+    margin-right:8px ;
+    border-radius: 50%;
 }

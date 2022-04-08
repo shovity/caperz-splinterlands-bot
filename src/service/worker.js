@@ -381,10 +381,9 @@ service.checkDelegate = async (player, proxy, master) => {
     }
     if (minDlgPower - cp > availablePower) {
         master.change('log', { type: 'info', message: `${player}: Delegate failed - major power run out` })
-        return false
     }
     const stoprc = appSetting.majorAccount.stoprc || 5
-    return minDlgPower > cp && minDlgPower - cp <= availablePower && appSetting.majorAccount.rc >= stoprc
+    return minDlgPower > cp && appSetting.majorAccount.rc >= stoprc && availablePower > 10
 }
 
 module.exports = service

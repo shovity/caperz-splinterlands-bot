@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain: ipc, nativeTheme, globalShortcut } = require('electron')
+const { app, BrowserWindow, ipcMain: ipc, nativeTheme, globalShortcut, shell } = require('electron')
 const path = require('path')
 
 const master = require('./master')
@@ -51,6 +51,10 @@ const createWindow = () => {
 
     ipc.on('run', (event, arg) => {
         console.log(arg)
+    })
+    ipc.on('open_url', (event, url) => {
+        event.preventDefault()
+        shell.openExternal(url)
     })
 
     win.webContents.on('did-finish-load', async () => {

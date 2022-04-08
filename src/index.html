@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>NFTAuto Desktop ver2.3.11</title>
+    <title>SPS Caper Bot ver2.3.12</title>
     <link rel="stylesheet" href="./assets/css/bootstrap.min.css.css">
     <link rel="stylesheet" href="./assets/css/datatables.min.css">
     <link rel="stylesheet" href="./index.css">
@@ -16,7 +16,7 @@
     flex-direction: column;">
         <img class="logo" style="    width: 169px; flex-direction: column;" src="./assets/img/icon.png">
         <p style="    margin-top: 16px;
-        font-size: 18px;">NFTAuto Desktop ver2.3.11</p>
+        font-size: 18px;">SPS Caper Bot ver2.3.12</p>
         <div style="    color: #000!important;
         background-color: #f1f1f1!important;
     width: 200px;">
@@ -36,7 +36,7 @@
     <div class="sidebar d-flex flex-column flex-shrink-0 p-3" id="sidebar">
         <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <img class="logo" src="./assets/img/icon.png">
-            <span class="fs-4">SPS NFTAuto</span>
+            <span class="fs-4">SPS Caper Bot</span>
         </a>
         <hr>
         <ul class="nav flex-column" id="nav">
@@ -56,6 +56,19 @@
             
         </div>
         <hr>
+        <div class="d-flex align-items-center mb-1" click-emit="open_url:https://discord.gg/2EpZjWWexk">
+            <img src="./assets/img/discord-logo.jpg" class="url_logo"/>
+            <p class="ref_link" >P2E Vietnam Community</p>
+        </div>
+        <div class="d-flex align-items-center mb-1" click-emit="open_url:https://p2e.tools/">
+            <img src="./assets/img/website-logo.jpg" class="url_logo"/>
+            <p class="ref_link" >https://p2e.tools/</p>
+        </div>
+        <div class="d-flex align-items-center" click-emit="open_url:https://nftauto.online/">
+            <img src="./assets/img/website-logo.jpg" class="url_logo"/>
+            <p class="ref_link" >https://nftauto.online/</p>
+        </div>
+        <hr>
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                 <strong store-bind="g_username"></strong>
@@ -67,15 +80,76 @@
     </div>
 
     <div class="content">
-        
+        <div tab="donate" class="d-none">
+            <div class="container tab-header m-2">
+                <h4>Donate Information</h4>
+                <hr/>
+                <div class="d-flex">
+                    <p class="w-25">WAX Wallet</p>
+                    <div>
+                        <p>nftautonline</p>
+
+                    </div>
+                </div>
+                <br/>
+                <div class="d-flex">
+                    <p class="w-25">HIVE Wallet</p>
+                    <div>
+                        <p>lanlanpham</p>
+
+                    </div>
+                </div>
+                <br/>
+                <div class="d-flex">
+                    <p class="w-25">BSC Wallet</p>
+                    <div>
+                        <p>0xfB77f386B1B32Fca40C23F8BaddEea9Dc5115D80</p>
+
+                    </div>
+                </div>
+                <br/>
+                <div class="d-flex">
+                    <p class="w-25">TRON TRC20</p>
+                    <div>
+                        <p>TPW7VxJVYnVzx15LoCkaBAs5q3N9SQeimd</p>
+
+                    </div>
+                </div>
+                <hr/>
+                <h5>For Vietnamese users</h5>
+                <div class="d-flex">
+                    <p class="w-25">Bank Transfer</p>
+                    <div>
+                        <p>Ngân hàng: Vietcombank</p>
+                        <p>Stk: 0451000273425</p>
+                        <p>Chủ tk: PHAM VAN KHANG</p>
+                    </div>
+                </div>
+                <br/>
+                <div class="d-flex">
+                    <p class="w-25">MOMO</p>
+                    <div>
+                        <p>Sđt: 0849009555</p>
+                        <p>Phạm Văn Khang</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
         <div tab="monitoring" >
             <div class="container tab-header">
-                <div class="d-flex justify-content-between">
-                    <h4 style="margin-right: 16px;">Dashboard</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 style="margin: 0px ;margin-right: 16px;">Dashboard</h4>
+                        <button class="active" click-emit="select_tab:donate" >
+                            Donate
+                        </button>
+                        
+                    </div>
                     <div class="d-flex align-items-center">
                         <div>
-                            <p style="margin: 0px;text-align: end; font-size: 13px;margin-right: 16px;">Total: <span id="total_dec">0</span> DEC</>
-                            <p style="margin: 0px;text-align: end; font-size: 13px;margin-right: 16px;">Remaining: <span id="remaining_match">0</span> matches/Free: <span id="free_match">0</span> matches</>
+                            <p style="margin: 0px;text-align: end; font-size: 13px;margin-right: 16px;">Total: <span id="total_dec">0</span> DEC</h>
+                            <p style="margin: 0px;text-align: end; font-size: 13px;margin-right: 16px;">Remaining: <span id="remaining_match">0</span> matches - Free: <span id="free_match">0</span> matches</>
                         </div>
                         <button id="startButton" class="btn btn-primary active" click-emit="account.start_all">
                             <div class="d-flex align-items-center">
@@ -233,23 +307,33 @@
                             
                         </div>
                     </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="fileUpload">Upload Account excel file</label>
+                            <input type="file" class="form-control" id="fileUpload">
+                        </div>
+                        <div class="col-md-3 mb-3 d-flex align-items-end">
+                            <button class="btn btn-primary active" style="min-width: 94px;" click-emit="account.add_file" id='add_player_file_button'>Add player</button>
+                        </div>
+                    </div>
                 </div>
                 
                 <HR>
-                <h4>Player List</h4>
+                    <div class="d-flex justify-content-between">
+
+                        <h4>Player List</h4>
+                        <button class="btn btn-primary active" click-emit="account.remove_all">Remove All</button>
+                    </div>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="table" id="account_table">
-                            <thead>
                             <tr>
                                 <th scope="col"><storng>#</storng></th>
                                 <th scope="col"><strong>Player</strong></th>
                                 <th scope="col"><strong>Email</strong></th>
                                 <th></th>
                             </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -454,6 +538,8 @@
 <script src="./assets/js/bootstrap.bundle.min.js"></script>
 <script src="./assets/js/jquery-3.6.0.min.js"></script>
 <script src="./assets/js/datatables.min.js"></script>
+<script src="./assets/js/xlsx.full.min.js"></script>
+<script src="./assets/js/jszip.js"></script>
 <script src="./assets/js/ori.js"></script>
 <script src="./renderer.js"></script>
 </body>
