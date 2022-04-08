@@ -134,31 +134,12 @@ service.getMajorAccountInfo = async () => {
         console.log(error)
     }
 }
-service.getRemainingMatch = async () => {
-    try {
-        const username = settings.data.user.userData.username
-        const { data } = await requester['get'](`https://nftauto.online/api/v1/users/remain?username=${username}`)
-        return {
-            remainingMatch: data.spsGetTeam,
-            freeMatch: data.spsGetTeamFree,
-        }
-    } catch (error) {
-        console.log(error)
-        return 0
-    }
-}
 service.setMajorInterval = async (master) => {
     const TIME = 60 * 1000
     const majorInfo = await service.getMajorAccountInfo()
-    const { remainingMatch, freeMatch } = await service.getRemainingMatch()
-    await master.change('remaining_match', remainingMatch)
-    await master.change('free_match', freeMatch)
     await master.change('major_account', majorInfo)
     master.minuteMajorIntervalId = setInterval(async () => {
         const majorInfo = await service.getMajorAccountInfo()
-        const { remainingMatch, freeMatch } = await service.getRemainingMatch()
-        await master.change('remaining_match', remainingMatch)
-        await master.change('free_match', freeMatch)
         await master.change('major_account', majorInfo)
     }, TIME)
 }
