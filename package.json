@@ -1,7 +1,7 @@
 {
     "name": "nftauto-desktop",
     "productName": "SPS Caper Bot",
-    "version": "2.3.12",
+    "version": "2.3.13",
     "description": "SPS Caper Bot",
     "main": "src/main.js",
     "scripts": {

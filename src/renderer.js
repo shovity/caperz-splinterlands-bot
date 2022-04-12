@@ -197,9 +197,14 @@ ori.use('event store emitter storage', () => {
             modeDelegate: mode_delegate.checked,
         })
     })
-    event.listen('modeTransferToggle', () => {
+    event.listen('modeTransferDECToggle', () => {
         ipc.send('setting.save', {
-            modeTransfer: mode_transfer.checked,
+            modeTransferDEC: mode_transfer_dec.checked,
+        })
+    })
+    event.listen('modeTransferPWToggle', () => {
+        ipc.send('setting.save', {
+            modeTransferPW: mode_transfer_pw.checked,
         })
     })
     event.listen('modeRankupToggle', () => {
@@ -289,6 +294,7 @@ ori.use('event store emitter storage', () => {
             ecr: ecr.value,
             startQuestEcr: start_quest_ecr.value,
             startEcr: start_ecr.value,
+            startPw: start_pw.value,
             botPerIp: bot_per_ip.value,
             proxies: proxyArray,
             useDefaultProxy: useDproxy.checked,
@@ -297,6 +303,7 @@ ori.use('event store emitter storage', () => {
             maxDec: acr_max_dec.value,
             transferKeepDec: transfer_keep_dec.value,
             transferStartDec: transfer_start_dec.value,
+            transferStartPW: transfer_start_pw.value,
             rentalDay: acr_rental_day.value,
             majorAccount: {
                 player: ma_username.value,
@@ -327,6 +334,7 @@ ori.use('event store emitter storage', () => {
         ecr.value = data.ecr || 0
         start_quest_ecr.value = data.startQuestEcr || 100
         start_ecr.value = data.startEcr || 80
+        start_pw.value = data.startPw || 0
         use_default_proxy.checked = data.useDefaultProxy
         bot_per_ip.value = data.botPerIp
         adc_min_power.value = data.dlgMinPower
@@ -336,12 +344,14 @@ ori.use('event store emitter storage', () => {
         mode_play.checked = data.modePlay
         mode_rental.checked = data.modeRental
         mode_delegate.checked = data.modeDelegate
-        mode_transfer.checked = data.modeTransfer
+        mode_transfer_dec.checked = data.modeTransferDEC
+        mode_transfer_pw.checked = data.modeTransferPW
         mode_rankup.checked = data.modeRankup
         mode_claim_quest.checked = data.modeClaimQuest
         mode_collect_season_reward.checked = data.modeCollectSeasonReward
         transfer_keep_dec.value = data.transferKeepDec
         transfer_start_dec.value = data.transferStartDec
+        transfer_start_pw.value = data.transferStartPW
         acr_rental_day.value = data.rentalDay
         ma_username.value = data.majorAccount?.player || ''
         ma_posting_key.value = data.majorAccount?.postingKey || ''

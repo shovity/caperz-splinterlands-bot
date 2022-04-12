@@ -105,20 +105,10 @@ class WSSplinterlandsClient {
         this.retryTimeout = null
         this.delegated = delegated
         this.opponent = null
+        this.doneTimeoutId = null
     }
 
     async Connect(player, token, new_account) {
-        // const verifyRes = await this.client.verify(this.spsToken)
-        // if (!verifyRes) {
-        //     parentPort.postMessage({
-        //         type: 'INFO_UPDATE',
-        //         status: 'NOT IN WHITELIST',
-        //         player: this.client.user.name,
-        //         matchStatus: MATCH_STATUS.NONE,
-        //     })
-        //     return
-        // }
-        // process.send('start');
         if (this.ws && this.ws.readyState == 1 && this.player == player) return
 
         log && console.log('try connect', player)
@@ -300,7 +290,11 @@ class WSSplinterlandsClient {
                 quest: quest?.completed,
                 maxQuest: quest?.total,
             })
-            if (ECR > this.config.ecr && this.config.modePlay) {
+            if (
+                ECR > this.config.ecr &&
+                this.config.modePlay &&
+                this.client.user.collection_power >= this.config.startPw
+            ) {
                 if (this.retryTimeout) {
                     clearTimeout(this.retryTimeout)
                 }
@@ -314,6 +308,9 @@ class WSSplinterlandsClient {
                     clearTimeout(this.retryTimeout)
                 }
                 await this.client.processDone()
+                if (this.doneTimeoutId) {
+                    clearTimeout(this.doneTimeoutId)
+                }
                 process.exit()
             }
         } else {
@@ -378,12 +375,6 @@ class WSSplinterlandsClient {
             balance.last_reward_time = data.last_reward_time
         }
         this.balance_update_deferred = true
-
-        // process.send({
-        //   time: getFormatedTime(), events: [
-        //     {key: 'ecr', value: this.client.getEcr(), param: 'set'},
-        //   ]
-        // });
     }
 
     async match_found(data) {
@@ -468,7 +459,13 @@ class WSSplinterlandsClient {
 
             if (possibleTeams && possibleTeams.length) {
                 log && console.log('Possible Teams: ', possibleTeams.length)
-                let teamToPlay = await ask.teamSelection(possibleTeams, myCardsUID, this.client.getMonsterMaxLevel, matchDetails, this.client.cardsDetails)
+                let teamToPlay = await ask.teamSelection(
+                    possibleTeams,
+                    myCardsUID,
+                    this.client.getMonsterMaxLevel,
+                    matchDetails,
+                    this.client.cardsDetails
+                )
                 const monstersSliced = teamToPlay.cards
                 const summoner = this.client.getUIDbyId(myCardsUID, teamToPlay.summoner)
                 const monsters = []
@@ -503,6 +500,14 @@ class WSSplinterlandsClient {
 
     async battle_result(data) {
         log && console.log('battle_result', data.id, '; winner = ', data.winner)
+        if (this.doneTimeoutId) {
+            clearTimeout(this.doneTimeoutId)
+        }
+        const id = setTimeout(async () => {
+            await this.client.processDone()
+            process.exit()
+        }, 15 * 60 * 1000)
+        this.doneTimeoutId = id
         this.client._currentBattle = null
         this.client.in_battle = false
         this.client.sendOpponentHistory(this.opponent, this.spsToken)
@@ -561,12 +566,6 @@ class WSSplinterlandsClient {
             })
         else {
             balance.balance = parseFloat(data.balance_end)
-
-            // process.send({
-            //   time: getFormatedTime(), events: [
-            //     {key: 'dec', value: this.client.getBalance('DEC'), param: 'set'},
-            //   ]
-            // });
         }
 
         if (data.type === 'dec_reward') {

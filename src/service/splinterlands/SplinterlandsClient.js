@@ -157,7 +157,7 @@ class SplinterLandsClient {
         try {
             if (!this.user) return
             let d = this.getBalance('DEC')
-            if (this.config.modeTransfer) {
+            if (this.config.modeTransferDEC) {
                 if (
                     !this.rcout &&
                     this.config.majorAccount.player &&
@@ -172,7 +172,7 @@ class SplinterLandsClient {
             if (
                 !this.rcout &&
                 this.config.majorAccount.player &&
-                this.config.modeTransfer &&
+                this.config.modeTransferPW &&
                 this.config.majorAccount.player != this.user.name.toLowerCase()
             ) {
                 await this.sendCardToMajorAccount()
@@ -1768,7 +1768,7 @@ class SplinterLandsClient {
             })
             const cards = []
             result.cards.forEach((e) => {
-                if (this.user.name == e.player && this.calculateCP(e) >= 100) {
+                if (this.user.name == e.player && this.calculateCP(e) >= this.config?.transferStartPW) {
                     cards.push(e.uid)
                 }
             })

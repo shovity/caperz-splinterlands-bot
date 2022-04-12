@@ -28,7 +28,9 @@ service.handleNotEnoughEcr = (username) => {
         const ecrNow = service.calculateECR(account_list[i].updatedAt, account_list[i].ecr)
 
         if (ecrNow <= ecrStart) {
-            settings.data.account_list[i].status = ACCOUNT_STATUS.WAITING_ECR
+            if (settings.data.account_list[i].status != ACCOUNT_STATUS.RUNNING) {
+                settings.data.account_list[i].status = ACCOUNT_STATUS.WAITING_ECR
+            }
         } else if (settings.data.account_list[i].status === ACCOUNT_STATUS.WAITING_ECR) {
             settings.data.account_list[i].status = ACCOUNT_STATUS.NONE
         }

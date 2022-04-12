@@ -9,7 +9,7 @@ const msiCreator = new MSICreator({
     exe: 'SPS Caper Bot',
     name: 'SPS Caper Bot',
     manufacturer: 'Caper Team',
-    version: '2.3.12',
+    version: '2.3.13',
     outputDirectory: OUT_DIR,
     ui: {
         chooseDirectory: true,
